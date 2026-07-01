@@ -1,19 +1,50 @@
 import { Menu, X } from 'lucide-react'
 import { useState } from 'react'
 
-import { navigation } from '../../data/links'
+import profileLogo from '../../assets/profile-placeholder.svg'
 import { profile } from '../../data/profile'
+import { PillNav } from '../effects/react-bits/PillNav'
 
 type HeaderProps = {
   activePage?: 'home' | 'lab'
 }
 
+const headerItems = [
+  { label: 'Home', href: '#home' },
+  { label: 'About', href: '#about' },
+  { label: 'Gallery', href: '#gallery' },
+  { label: 'Thoughts', href: '#thoughts' },
+  { label: 'Lab', href: '#/motion-lab' },
+  { label: 'Contact', href: '#contact' },
+]
+
 export function Header({ activePage = 'home' }: HeaderProps) {
   const [open, setOpen] = useState(false)
 
+  const handleNavigation = (href: string) => {
+    setOpen(false)
+    if (activePage !== 'lab' || href === '#/motion-lab') return
+
+    requestAnimationFrame(() => {
+      document.getElementById(href.slice(1))?.scrollIntoView()
+    })
+  }
+
   return (
     <header className="site-header">
-      <nav className="nav-shell" aria-label="Primary navigation">
+      <PillNav
+        className="header-pill-nav"
+        logo={profileLogo}
+        logoAlt={`${profile.brand} home`}
+        items={headerItems}
+        activeHref={activePage === 'lab' ? '#/motion-lab' : '#home'}
+        baseColor="rgba(5, 10, 24, 0.82)"
+        pillColor="rgba(18, 29, 54, 0.72)"
+        hoveredPillTextColor="#f3f6ff"
+        pillTextColor="#9ca6bb"
+        onItemClick={(item) => handleNavigation(item.href)}
+      />
+      <nav className="nav-shell header-mobile-nav" aria-label="Primary navigation">
         <a
           className="brand"
           href="#/"
@@ -32,23 +63,21 @@ export function Header({ activePage = 'home' }: HeaderProps) {
           {open ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
         </button>
         <div id="site-menu" className={`nav-links ${open ? 'is-open' : ''}`}>
-          {navigation.map((item) => (
+          {headerItems.map((item) => (
             <a
               key={item.href}
               href={item.href}
-              className={activePage === 'home' && item.href === '#home' ? 'is-active' : ''}
-              onClick={() => setOpen(false)}
+              className={
+                (activePage === 'home' && item.href === '#home') ||
+                (activePage === 'lab' && item.href === '#/motion-lab')
+                  ? 'is-active'
+                  : ''
+              }
+              onClick={() => handleNavigation(item.href)}
             >
               {item.label}
             </a>
           ))}
-          <a
-            href="#/motion-lab"
-            className={activePage === 'lab' ? 'is-active' : ''}
-            onClick={() => setOpen(false)}
-          >
-            Lab
-          </a>
         </div>
       </nav>
     </header>

@@ -40,6 +40,15 @@
   background: var(--color-bg-deep);
 }
 
+.rb-demo-pill-nav {
+  --nav-h: 38px;
+  --pill-pad-x: 0.8rem;
+}
+
+.rb-demo-pill-nav .pill {
+  font-size: 0.64rem;
+}
+
 @media (max-width: 1023px), (hover: none), (pointer: coarse) {
   .rb-demo-stack {
     width: min(62vw, 13rem);

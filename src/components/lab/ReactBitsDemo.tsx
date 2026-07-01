@@ -1,11 +1,19 @@
+import profileLogo from '../../assets/profile-placeholder.svg'
 import { BorderGlow } from '../effects/react-bits/BorderGlow'
 import { GlareHover } from '../effects/react-bits/GlareHover'
+import { PillNav } from '../effects/react-bits/PillNav'
 import { Stack } from '../effects/react-bits/Stack'
 import { TiltedCard } from '../effects/react-bits/TiltedCard'
 
 import './ReactBitsDemo.css'
 
 const base = import.meta.env.BASE_URL
+
+const pillNavItems = [
+  { label: 'Home', href: '#home' },
+  { label: 'Gallery', href: '#gallery' },
+  { label: 'Lab', href: '#/motion-lab' },
+]
 
 const stackCards = [
   <img
@@ -92,6 +100,22 @@ export function ReactBitsDemo({ effectId }: ReactBitsDemoProps) {
             mobileClickOnly
           />
         </div>
+      )
+
+    case 'pill-nav':
+      return (
+        <PillNav
+          className="rb-demo-pill-nav"
+          logo={profileLogo}
+          logoAlt="Seiya home"
+          items={pillNavItems}
+          activeHref="#/motion-lab"
+          baseColor="rgba(5, 10, 24, 0.92)"
+          pillColor="rgba(25, 38, 68, 0.9)"
+          hoveredPillTextColor="#f3f6ff"
+          pillTextColor="#9ca6bb"
+          initialLoadAnimation={false}
+        />
       )
 
     default:

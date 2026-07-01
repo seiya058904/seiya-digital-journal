@@ -140,7 +140,7 @@ const effectMetadata = [
     deps: 'gsap',
     status: 'ready',
     description: 'Pill-shaped navigation with smooth hover transitions.',
-    where: 'Motion Lab',
+    where: 'Header, Motion Lab',
     category: 'Navigation',
   },
   {
@@ -242,6 +242,7 @@ const realDemoNames = new Set([
   'GlareHover',
   'TiltedCard',
   'Stack',
+  'PillNav',
 ])
 
 const homepageNames = new Set([
@@ -250,6 +251,7 @@ const homepageNames = new Set([
   'GlareHover',
   'RotatingText',
   'ShinyText',
+  'PillNav',
 ])
 
 export const effects: EffectMeta[] = effectMetadata.map((effect) => ({

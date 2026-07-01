@@ -159,6 +159,14 @@ button {
   padding: 1rem var(--space-page);
 }
 
+.site-header > .pill-nav-container {
+  margin: 0 auto;
+}
+
+.pill-nav.header-pill-nav {
+  display: none;
+}
+
 .nav-shell {
   position: relative;
   display: flex;
@@ -253,6 +261,16 @@ button {
   border-radius: 0.85rem;
   background: rgb(255 255 255 / 6%);
   cursor: pointer;
+}
+
+@media (min-width: 821px) and (hover: hover) and (pointer: fine) {
+  .pill-nav.header-pill-nav {
+    display: flex;
+  }
+
+  .header-mobile-nav {
+    display: none;
+  }
 }
 
 main {
