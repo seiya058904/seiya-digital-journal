@@ -85,13 +85,13 @@ export function ShinyText({
   const handleEnter = useCallback(() => { if (pauseOnHover) setHovering(true) }, [pauseOnHover])
   const handleLeave = useCallback(() => { if (pauseOnHover) setHovering(false) }, [pauseOnHover])
 
-  const isEffectivelyDisabled = disabled || reducedMotion
+  const isAnimationDisabled = disabled || reducedMotion
 
   const shineGradient = `linear-gradient(90deg, transparent 0%, ${shineColor} 50%, transparent 100%)`
 
   const maskClasses = [
     'shiny-text__mask',
-    isEffectivelyDisabled ? 'shiny-text__mask--disabled' : '',
+    isAnimationDisabled ? 'shiny-text__mask--disabled' : '',
     pauseOnHover && hovering ? 'shiny-text__mask--paused' : '',
   ].filter(Boolean).join(' ')
 
@@ -106,19 +106,17 @@ export function ShinyText({
       onMouseLeave={handleLeave}
     >
       {text}
-      {!isEffectivelyDisabled && (
-        <motion.span
-          className={maskClasses}
-          style={{
-            backgroundImage: shineGradient,
-            backgroundPosition,
-            backgroundSize: `${spread}% 100%`,
-          }}
-          aria-hidden="true"
-        >
-          {text}
-        </motion.span>
-      )}
+      <motion.span
+        className={maskClasses}
+        style={{
+          backgroundImage: shineGradient,
+          backgroundPosition: isAnimationDisabled ? '50% 0' : backgroundPosition,
+          backgroundSize: `${spread}% 100%`,
+        }}
+        aria-hidden="true"
+      >
+        {text}
+      </motion.span>
     </span>
   )
 }

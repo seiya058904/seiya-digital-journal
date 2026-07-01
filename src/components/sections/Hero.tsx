@@ -20,23 +20,20 @@ export function Hero() {
           <TextReveal delay={0.08}>
             <GradientText
               colors={['#f3f6ff', '#56e4ff', '#8c75ff', '#f3f6ff']}
-              animationSpeed={6}
+              animationSpeed={2}
               direction="right"
             >
               {profile.hero.title[0]}
             </GradientText>
           </TextReveal>
           <TextReveal delay={0.17}>
-            {profile.hero.title[1]}
-          </TextReveal>
-          <TextReveal delay={0.26}>
             <ShinyText
-              text={profile.hero.title[2]}
-              color="#f3f6ff"
+              text={profile.hero.title[1]}
+              color="#dce8ff"
               shineColor="#56e4ff"
-              speed={3}
-              spread={100}
-              delay={2}
+              speed={6}
+              spread={80}
+              delay={3}
             />
           </TextReveal>
         </h1>
@@ -44,7 +41,7 @@ export function Hero() {
           className="hero__subtitle"
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.72, delay: 0.42, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.72, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
         >
           {profile.hero.subtitle}
         </motion.p>
@@ -52,7 +49,7 @@ export function Hero() {
           className="hero__chinese"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.7, delay: 0.55 }}
+          transition={{ duration: 0.7, delay: 0.48 }}
         >
           {profile.hero.chinese}
         </motion.p>
@@ -60,14 +57,14 @@ export function Hero() {
           className="hero__identity-words"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.7, delay: 0.65 }}
+          transition={{ duration: 0.7, delay: 0.58 }}
         >
           <RotatingText
             texts={identityWords}
-            rotationInterval={2500}
-            staggerDuration={0.03}
+            rotationInterval={3000}
+            staggerDuration={0.04}
             staggerFrom="first"
-            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            transition={{ type: 'spring', damping: 28, stiffness: 200 }}
             mainClassName="hero__rotating"
             splitBy="character"
           />

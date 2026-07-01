@@ -41,10 +41,12 @@
   }
 }
 
-/* Reduced motion: no glare animation */
+/* Reduced motion: static subtle glare, no animation */
 @media (prefers-reduced-motion: reduce) {
   .glare-hover__glare {
-    display: none;
+    opacity: 0.15;
+    animation: none;
+    background-position: 50% 0;
   }
 }
 

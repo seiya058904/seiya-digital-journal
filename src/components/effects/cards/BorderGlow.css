@@ -29,9 +29,15 @@
   opacity: 0.5;
 }
 
-/* Reduced motion: static border, no glow */
+/* Reduced motion: static subtle glow, no pointer tracking */
 @media (prefers-reduced-motion: reduce) {
   .border-glow__glow {
-    display: none;
+    opacity: 0.25;
+    background: radial-gradient(
+      200px circle at 50% 50%,
+      var(--glow-color-1, #56e4ff),
+      var(--glow-color-2, #8c75ff),
+      transparent 70%
+    );
   }
 }
