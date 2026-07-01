@@ -127,6 +127,13 @@ button {
   mix-blend-mode: screen;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .aurora__orb {
+    animation: none;
+    opacity: 0.08;
+  }
+}
+
 @keyframes aurora-drift {
   from {
     transform: translate3d(-4%, -2%, 0) scale(0.95);

@@ -13,25 +13,11 @@
 }
 
 .gradient-text--animated {
-  animation: gradient-text-move 1s linear infinite;
-  animation-play-state: running;
-}
-
-.gradient-text--paused {
-  animation-play-state: paused;
-}
-
-@keyframes gradient-text-move {
-  from {
-    background-position: var(--gradient-from, 0% 50%);
-  }
-  to {
-    background-position: var(--gradient-to, 100% 50%);
-  }
+  /* Animation controlled by framer-motion useAnimationFrame — no CSS animation */
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .gradient-text--animated {
-    animation: none;
+  .gradient-text {
+    background-size: 100% 100%;
   }
 }
