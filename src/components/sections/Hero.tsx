@@ -1,0 +1,83 @@
+import { ArrowDown, Images } from 'lucide-react'
+import { motion } from 'framer-motion'
+
+import profilePlaceholder from '../../assets/profile-placeholder.svg'
+import { profile } from '../../data/profile'
+import { CardTilt } from '../effects/CardTilt'
+import { GradientBorder } from '../effects/GradientBorder'
+import { TextReveal } from '../motion/TextReveal'
+import { ActionLink } from '../ui/ActionLink'
+
+export function Hero() {
+  return (
+    <section id="home" className="hero section">
+      <div className="hero__copy">
+        <h1>
+          {profile.hero.title.map((line, index) => (
+            <TextReveal key={line} delay={0.08 + index * 0.09}>
+              {line}
+            </TextReveal>
+          ))}
+        </h1>
+        <motion.p
+          className="hero__subtitle"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.72, delay: 0.42, ease: [0.22, 1, 0.36, 1] }}
+        >
+          {profile.hero.subtitle}
+        </motion.p>
+        <motion.p
+          className="hero__chinese"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.7, delay: 0.55 }}
+        >
+          {profile.hero.chinese}
+        </motion.p>
+        <motion.div
+          className="hero__actions"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.62, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <ActionLink href="#about">View profile</ActionLink>
+          <ActionLink href="#gallery" className="action-link--quiet">
+            <Images aria-hidden="true" size={17} strokeWidth={1.7} />
+            Explore gallery
+          </ActionLink>
+        </motion.div>
+      </div>
+
+      <motion.div
+        className="hero__portrait-wrap"
+        initial={{ opacity: 0, scale: 0.96, y: 18 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.9, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <CardTilt intensity={3.5}>
+          <GradientBorder className="portrait-frame">
+            <img
+              src={profilePlaceholder}
+              alt="Abstract gradient silhouette placeholder for Sia's portrait"
+              width="900"
+              height="1100"
+              fetchPriority="high"
+            />
+          </GradientBorder>
+        </CardTilt>
+      </motion.div>
+
+      <motion.a
+        className="scroll-cue"
+        href="#about"
+        aria-label="Scroll to About"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.75, duration: 0.5 }}
+      >
+        <ArrowDown aria-hidden="true" size={18} />
+      </motion.a>
+    </section>
+  )
+}
