@@ -1,3 +1,4 @@
+import { useReducedMotion } from 'framer-motion'
 import type { CSSProperties, PropsWithChildren } from 'react'
 
 type GlareHoverProps = PropsWithChildren<{
@@ -14,9 +15,7 @@ export function GlareHover({
   glareOpacity = 0.35,
   disabled = false,
 }: GlareHoverProps) {
-  const reducedMotion =
-    typeof window !== 'undefined' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const reducedMotion = useReducedMotion()
 
   if (disabled || reducedMotion) {
     return <div className={`glare-hover ${className}`}>{children}</div>

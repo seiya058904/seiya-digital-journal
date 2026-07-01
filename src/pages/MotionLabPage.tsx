@@ -3,6 +3,7 @@ import { effects, effectCategories } from '../data/effects'
 import { EffectCard } from '../components/lab/EffectCard'
 import '../components/lab/EffectCard.css'
 import '../components/lab/HeavyEffectGate.css'
+import './MotionLabPage.css'
 
 export function MotionLabPage() {
   return (

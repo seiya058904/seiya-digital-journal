@@ -27,10 +27,6 @@ body {
 button,
 a {
   font: inherit;
-}
-
-button,
-a {
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -209,6 +205,15 @@ button {
 
 .nav-links a:hover::after {
   transform: scaleX(1);
+}
+
+.nav-links a.is-active {
+  color: var(--color-text);
+}
+
+.nav-links a.is-active::after {
+  transform: scaleX(1);
+  opacity: 0.55;
 }
 
 .menu-button {

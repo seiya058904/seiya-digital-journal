@@ -6,7 +6,6 @@ import { CursorGlow } from './components/effects/CursorGlow'
 import { Header } from './components/ui/Header'
 import { HomePage } from './pages/HomePage'
 import { MotionLabPage } from './pages/MotionLabPage'
-import './pages/MotionLabPage.css'
 
 type Page = 'home' | 'lab'
 

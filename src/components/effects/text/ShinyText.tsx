@@ -1,5 +1,5 @@
 import { useMotionValue, useAnimationFrame, useTransform, useReducedMotion, motion } from 'framer-motion'
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 
 import './ShinyText.css'
 
@@ -22,7 +22,7 @@ type ShinyTextProps = {
 export function ShinyText({
   text,
   disabled = false,
-  speed = 5,
+  speed = 2.5,
   className,
   color = 'var(--color-muted)',
   shineColor = 'var(--color-text)',
@@ -41,17 +41,23 @@ export function ShinyText({
   const motionProgress = useMotionValue(direction === 'left' ? 100 : -100)
 
   // Handle initial delay
-  if (!delayDone && delay > 0) {
+  useEffect(() => {
+    if (delay <= 0 || delayDone || reducedMotion) return
+
     const start = performance.now()
+    let rafId: number
+
     const check = () => {
       if (performance.now() - start >= delay * 1000) {
         setDelayDone(true)
         return
       }
-      requestAnimationFrame(check)
+      rafId = requestAnimationFrame(check)
     }
-    requestAnimationFrame(check)
-  }
+    rafId = requestAnimationFrame(check)
+
+    return () => cancelAnimationFrame(rafId)
+  }, [delay, delayDone, reducedMotion])
 
   useAnimationFrame((_, delta) => {
     if (reducedMotion || disabled || !delayDone) return
