@@ -4,9 +4,7 @@ import { motion } from 'framer-motion'
 import profilePlaceholder from '../../assets/profile-placeholder.svg'
 import { profile } from '../../data/profile'
 import { GradientBorder } from '../effects/GradientBorder'
-import { GradientText } from '../effects/text/GradientText'
 import { RotatingText } from '../effects/text/RotatingText'
-import { ShinyText } from '../effects/text/ShinyText'
 import { TextReveal } from '../motion/TextReveal'
 import { ActionLink } from '../ui/ActionLink'
 
@@ -17,26 +15,17 @@ export function Hero() {
     <section id="home" className="hero section">
       <div className="hero__copy">
         <h1>
-          <TextReveal delay={0.08}>
+          <TextReveal delay={0.08} className="hero__title-line">
             {profile.hero.title[0].text}
-            <GradientText
-              colors={['#f3f6ff', '#56e4ff', '#8c75ff', '#f3f6ff']}
-              animationSpeed={0.3}
-              direction="right"
-            >
+            <span className="hero-gradient-word">
               {profile.hero.title[0].accent}
-            </GradientText>
+            </span>
           </TextReveal>
-          <TextReveal delay={0.17}>
+          <TextReveal delay={0.17} className="hero__title-line">
             {profile.hero.title[1].text}
-            <ShinyText
-              text={profile.hero.title[1].accent}
-              color="#dce8ff"
-              shineColor="#56e4ff"
-              speed={0.5}
-              spread={80}
-              delay={3}
-            />
+            <span className="hero-gradient-word">
+              {profile.hero.title[1].accent}
+            </span>
           </TextReveal>
         </h1>
         <motion.p

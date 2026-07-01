@@ -28,21 +28,27 @@ export default function App() {
 
   return (
     <MotionConfig reducedMotion="user">
-      <AuroraBackground />
-      {page === 'home' ? (
-        <DesktopGridScan
-          className="site-gridscan"
-          linesColor="#2d5a8a"
-          scanColor="#63e7ff"
-          scanOpacity={0.55}
-          gridScale={0.115}
-          lineJitter={0.08}
-          bloomIntensity={0.42}
-        />
-      ) : null}
+      <div className="site-background" aria-hidden="true">
+        <AuroraBackground />
+        {page === 'home' ? (
+          <DesktopGridScan
+            className="site-gridscan"
+            lineThickness={1.15}
+            linesColor="#5b8fc3"
+            scanColor="#78f0ff"
+            scanOpacity={0.72}
+            gridScale={0.12}
+            lineJitter={0.07}
+            bloomIntensity={0.52}
+            scanGlow={0.85}
+          />
+        ) : null}
+      </div>
       <CursorGlow />
-      <Header activePage={page} />
-      {page === 'lab' ? <MotionLabPage /> : <HomePage />}
+      <div className="site-main">
+        <Header activePage={page} />
+        {page === 'lab' ? <MotionLabPage /> : <HomePage />}
+      </div>
     </MotionConfig>
   )
 }

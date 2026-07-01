@@ -1,0 +1,96 @@
+/* Stable Hero title gradient and homepage background layer overrides.
+   Loaded after global.css so the homepage no longer depends on negative z-index. */
+
+.site-background {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.site-main {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+}
+
+.site-main main,
+.site-main .page-content {
+  position: relative;
+  z-index: 1;
+}
+
+.site-background .aurora,
+.site-background .site-gridscan {
+  position: absolute;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+
+.site-background .aurora {
+  z-index: 0;
+  display: block;
+  overflow: hidden;
+  opacity: 1;
+  background:
+    radial-gradient(circle at 76% 8%, rgb(83 133 255 / 32%), transparent 34rem),
+    radial-gradient(circle at 16% 55%, rgb(86 228 255 / 18%), transparent 39rem),
+    radial-gradient(circle at 68% 82%, rgb(140 117 255 / 17%), transparent 38rem),
+    linear-gradient(155deg, rgb(7 16 39 / 88%), rgb(3 8 22 / 72%) 48%, rgb(13 8 32 / 76%));
+}
+
+.site-background .aurora__orb {
+  opacity: 0.42;
+}
+
+.site-background .aurora__grain {
+  opacity: 0.045;
+}
+
+.site-background .site-gridscan {
+  z-index: 1;
+  min-width: 100vw;
+  min-height: 100vh;
+  opacity: 0.92;
+  mix-blend-mode: screen;
+  mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    rgb(0 0 0 / 94%) 62%,
+    rgb(0 0 0 / 62%) 100%
+  );
+}
+
+.hero-gradient-word {
+  display: inline-block;
+  background: linear-gradient(90deg, #f3f6ff 0%, #56e4ff 34%, #8c75ff 68%, #f3f6ff 100%);
+  background-size: 100% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-background .aurora__orb {
+    animation: none;
+    opacity: 0.34;
+    will-change: auto;
+  }
+
+  .hero-gradient-word {
+    background-size: 100% 100%;
+  }
+}
+
+@media (max-width: 1023px), (hover: none), (pointer: coarse) {
+  .site-background .site-gridscan {
+    display: none;
+  }
+}
