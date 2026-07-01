@@ -15,17 +15,11 @@ export function Hero() {
     <section id="home" className="hero section">
       <div className="hero__copy">
         <h1>
-          <TextReveal delay={0.08} className="hero__title-line">
-            {profile.hero.title[0].text}
-            <span className="hero-gradient-word">
-              {profile.hero.title[0].accent}
-            </span>
+          <TextReveal delay={0.08} className="hero__title-line hero-title-gradient-line">
+            {profile.hero.title[0].text}{profile.hero.title[0].accent}
           </TextReveal>
-          <TextReveal delay={0.17} className="hero__title-line">
-            {profile.hero.title[1].text}
-            <span className="hero-gradient-word">
-              {profile.hero.title[1].accent}
-            </span>
+          <TextReveal delay={0.17} className="hero__title-line hero-title-gradient-line">
+            {profile.hero.title[1].text}{profile.hero.title[1].accent}
           </TextReveal>
         </h1>
         <motion.p

@@ -33,14 +33,14 @@ export default function App() {
         {page === 'home' ? (
           <DesktopGridScan
             className="site-gridscan"
-            lineThickness={1.15}
-            linesColor="#5b8fc3"
-            scanColor="#78f0ff"
-            scanOpacity={0.72}
-            gridScale={0.12}
-            lineJitter={0.07}
-            bloomIntensity={0.52}
-            scanGlow={0.85}
+            lineThickness={1}
+            linesColor="#25315f"
+            scanColor="#a78bfa"
+            scanOpacity={0.5}
+            gridScale={0.1}
+            lineJitter={0.08}
+            bloomIntensity={0.55}
+            scanGlow={0.75}
           />
         ) : null}
       </div>

@@ -70,18 +70,11 @@ button {
 }
 
 .aurora,
-.cursor-glow,
-.site-gridscan {
+.cursor-glow {
   position: fixed;
   inset: 0;
   z-index: -2;
   pointer-events: none;
-}
-
-.site-gridscan {
-  z-index: -1;
-  opacity: 0.8;
-  mask-image: linear-gradient(to bottom, black 0%, rgb(0 0 0 / 88%) 50%, transparent 97%);
 }
 
 .aurora {
@@ -355,14 +348,6 @@ main {
 
 .text-reveal > span {
   display: block;
-}
-
-.hero h1 .text-reveal:nth-child(2) {
-  color: #dce8ff;
-}
-
-.hero h1 .text-reveal:nth-child(3) {
-  color: var(--color-text);
 }
 
 .hero__subtitle {

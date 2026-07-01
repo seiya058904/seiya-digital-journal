@@ -54,27 +54,32 @@
 
 .site-background .site-gridscan {
   z-index: 1;
-  min-width: 100vw;
-  min-height: 100vh;
-  opacity: 0.92;
-  mix-blend-mode: screen;
+  width: 100vw;
+  height: 100vh;
+  opacity: 1;
+  mix-blend-mode: normal;
   mask-image: linear-gradient(
     to bottom,
-    black 0%,
-    rgb(0 0 0 / 94%) 62%,
-    rgb(0 0 0 / 62%) 100%
+    transparent 0%,
+    rgb(0 0 0 / 35%) 38%,
+    black 58%
   );
 }
 
-.hero-gradient-word {
-  display: inline-block;
-  background: linear-gradient(90deg, #f3f6ff 0%, #56e4ff 34%, #8c75ff 68%, #f3f6ff 100%);
-  background-size: 100% 100%;
+/* Hero title full-line gradient — each line gets a static colour sweep */
+.hero-title-gradient-line > span {
+  display: block;
+  background: linear-gradient(
+    90deg,
+    #f3f6ff 0%,
+    #56e4ff 28%,
+    #a78bfa 58%,
+    #f3f6ff 100%
+  );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   -webkit-text-fill-color: transparent;
-  text-shadow: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -84,8 +89,18 @@
     will-change: auto;
   }
 
-  .hero-gradient-word {
-    background-size: 100% 100%;
+  .hero-title-gradient-line > span {
+    background: linear-gradient(
+      90deg,
+      #f3f6ff 0%,
+      #56e4ff 28%,
+      #a78bfa 58%,
+      #f3f6ff 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
   }
 }
 
