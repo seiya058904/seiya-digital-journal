@@ -75,9 +75,9 @@ export function HomePage() {
             <OrbitImages
               images={orbitImages}
               shape="ellipse"
-              baseWidth={4200}
-              radiusX={1800}
-              radiusY={540}
+              baseWidth={2200}
+              radiusX={1582}
+              radiusY={475}
               rotation={-6}
               duration={50}
               itemSize={480}

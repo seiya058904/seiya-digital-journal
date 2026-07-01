@@ -898,7 +898,7 @@ main {
 .signals-visual {
   width: 100%;
   max-width: 72rem;
-  aspect-ratio: 1;
+  aspect-ratio: 4 / 3;
 }
 
 .section--gallery {

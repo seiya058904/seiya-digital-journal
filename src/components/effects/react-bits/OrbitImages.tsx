@@ -165,6 +165,38 @@ export function OrbitImages({
     />
   ))
 
+  // Reduced-motion: render a lightweight static fallback instead of the
+  // orbit mechanism.  The CSS scaling container would otherwise enter
+  // normal document flow at baseWidth×baseWidth pixels, blowing out the
+  // section height.
+  if (reducedMotion) {
+    return (
+      <div
+        ref={containerRef}
+        className={`orbit-container orbit-reduced-fallback ${className}`.trim()}
+        aria-hidden="true"
+      >
+        <div className="orbit-reduced-items">
+          {images.map((src, index) => (
+            <img
+              key={src}
+              src={src}
+              alt={`${altPrefix} ${index + 1}`}
+              draggable={false}
+              className="orbit-reduced-image"
+              loading="lazy"
+            />
+          ))}
+        </div>
+        {centerContent && (
+          <div className="orbit-center-content">
+            {centerContent}
+          </div>
+        )}
+      </div>
+    )
+  }
+
   return (
     <div
       ref={containerRef}

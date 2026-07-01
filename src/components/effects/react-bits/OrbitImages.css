@@ -32,8 +32,13 @@
 
 .orbit-item {
   position: absolute;
-  will-change: transform;
   user-select: none;
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .orbit-item {
+    will-change: transform;
+  }
 }
 
 .orbit-center-content {
@@ -52,22 +57,33 @@
   border-radius: 50%;
 }
 
+/* Reduced-motion: hide the orbit mechanism entirely to prevent the
+   baseWidth×baseWidth scaling container from entering normal document
+   flow and blowing out section height.  The React component renders a
+   lightweight static fallback (.orbit-reduced-fallback) instead. */
 @media (prefers-reduced-motion: reduce) {
-  .orbit-item {
-    position: relative !important;
-    display: inline-block;
-    margin: 0.3rem;
+  .orbit-scaling-container {
+    display: none !important;
   }
 
-  .orbit-rotation-wrapper {
+  .orbit-reduced-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 120px;
+  }
+
+  .orbit-reduced-items {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    transform: none !important;
+    gap: 0.5rem;
   }
 
-  .orbit-scaling-container {
-    position: relative !important;
-    transform: none !important;
+  .orbit-reduced-image {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    border-radius: 50%;
   }
 }
