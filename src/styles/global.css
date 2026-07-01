@@ -1309,6 +1309,7 @@ main {
   background: linear-gradient(100deg, rgb(68 222 255 / 10%), rgb(135 91 255 / 10%), rgb(250 184 119 / 8%));
   content: "";
   filter: blur(70px);
+  pointer-events: none;
 }
 
 .contact-grid {
