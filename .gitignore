@@ -32,3 +32,6 @@ picture/
 
 # React Bits reference source files
 React bits/
+
+# Session process artifacts (reports, audits, contact sheets)
+report/
