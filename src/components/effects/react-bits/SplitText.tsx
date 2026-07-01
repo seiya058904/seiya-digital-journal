@@ -6,6 +6,8 @@ import type { ElementType } from 'react'
 
 gsap.registerPlugin(ScrollTrigger, GsapSplitText)
 
+const RM_QUERY = '(prefers-reduced-motion: reduce)'
+
 type SplitTextProps = {
   text: string
   className?: string
@@ -41,6 +43,9 @@ export function SplitText({
   useEffect(() => {
     const element = ref.current
     if (!element) return
+
+    // Reduced motion: content is already visible, skip GSAP animation
+    if (window.matchMedia(RM_QUERY).matches) return
 
     let split: GsapSplitText | null = null
     const context = gsap.context(() => {

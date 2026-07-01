@@ -32,7 +32,7 @@ const demoImages = [
   `${base}gallery/horizon.webp`,
   `${base}gallery/geometry.webp`,
   `${base}gallery/reflection.webp`,
-  `${base}gallery/night-study.webp`,
+  `${base}gallery/motion.webp`,
 ]
 
 const magicDemoItems = [

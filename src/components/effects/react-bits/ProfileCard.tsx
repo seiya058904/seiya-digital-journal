@@ -1,4 +1,5 @@
 import { memo, useCallback, useEffect, useMemo, useRef } from 'react'
+import { useReducedMotion } from 'framer-motion'
 import type { CSSProperties } from 'react'
 
 import './ProfileCard.css'
@@ -60,13 +61,15 @@ function ProfileCardComponent({
 }: ProfileCardProps) {
   const wrapRef = useRef<HTMLDivElement>(null)
   const shellRef = useRef<HTMLDivElement>(null)
+  const reducedMotion = useReducedMotion()
+  const tiltDisabled = !enableTilt || reducedMotion
 
   const enterTimerRef = useRef<number | null>(null)
   const leaveRafRef = useRef<number | null>(null)
 
   /* ── Tilt engine ─────────────────────────────── */
   const tiltEngine = useMemo(() => {
-    if (!enableTilt) return null
+    if (tiltDisabled) return null
 
     let rafId: number | null = null
     let running = false
@@ -179,7 +182,7 @@ function ProfileCardComponent({
         lastTs = 0
       },
     }
-  }, [enableTilt])
+  }, [tiltDisabled])
 
   /* ── Event handlers ──────────────────────────── */
   const getOffsets = (evt: { clientX: number; clientY: number }, el: Element) => {

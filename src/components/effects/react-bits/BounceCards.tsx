@@ -49,6 +49,9 @@ export function BounceCards({
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    // Reduced motion: cards are already at final state, skip entrance animation
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
     const context = gsap.context(() => {
       gsap.fromTo(
         '.bounce-card',

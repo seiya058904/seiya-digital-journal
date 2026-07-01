@@ -5,6 +5,8 @@ import type { HTMLAttributes, PropsWithChildren } from 'react'
 
 gsap.registerPlugin(ScrollTrigger)
 
+const RM_QUERY = '(prefers-reduced-motion: reduce)'
+
 type AnimatedContentProps = PropsWithChildren<
   HTMLAttributes<HTMLDivElement> & {
     distance?: number
@@ -37,6 +39,9 @@ export function AnimatedContent({
   useEffect(() => {
     const element = ref.current
     if (!element) return
+
+    // Reduced motion: content is already visible, skip GSAP animation
+    if (window.matchMedia(RM_QUERY).matches) return
 
     const context = gsap.context(() => {
       const axis = direction === 'horizontal' ? 'x' : 'y'

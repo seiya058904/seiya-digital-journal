@@ -80,7 +80,7 @@ const effectMetadata = [
     deps: 'none',
     status: 'ready',
     description: 'Holographic profile card with tilt, shine, and behind-glow.',
-    where: 'Motion Lab',
+    where: 'Hero, Motion Lab',
     category: 'Cards',
   },
   {

@@ -22,3 +22,13 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Design review cache
+.impeccable/
+
+# Raw image assets (source material, not in-repo)
+art picture/
+picture/
+
+# React Bits reference source files
+React bits/
