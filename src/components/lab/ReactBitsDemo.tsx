@@ -5,11 +5,14 @@ import { BounceCards } from '../effects/react-bits/BounceCards'
 import { CountUp } from '../effects/react-bits/CountUp'
 import { DesktopGridScan } from '../effects/react-bits/DesktopGridScan'
 import { GlareHover } from '../effects/react-bits/GlareHover'
+import { GradientText } from '../effects/text/GradientText'
 import { ImageTrail } from '../effects/react-bits/ImageTrail'
 import { MagicBento } from '../effects/react-bits/MagicBento'
 import { PillNav } from '../effects/react-bits/PillNav'
 import { ProfileCard } from '../effects/react-bits/ProfileCard'
+import { RotatingText } from '../effects/text/RotatingText'
 import { ScrambledText } from '../effects/react-bits/ScrambledText'
+import { ShinyText } from '../effects/text/ShinyText'
 import { SplitText } from '../effects/react-bits/SplitText'
 import { Stack } from '../effects/react-bits/Stack'
 import { TiltedCard } from '../effects/react-bits/TiltedCard'
@@ -218,6 +221,44 @@ export function ReactBitsDemo({ effectId }: ReactBitsDemoProps) {
         <div className="rb-demo-count">
           <CountUp from={0} to={2026} duration={1.4} separator="," />
           <span>still becoming</span>
+        </div>
+      )
+
+    case 'gradient-text':
+      return (
+        <GradientText
+          className="rb-demo-gradient"
+          colors={['#56e4ff', '#a78bfa', '#f472b6', '#fbbf24', '#56e4ff']}
+          animationSpeed={3}
+          direction="diagonal"
+        >
+          Gradient text in motion.
+        </GradientText>
+      )
+
+    case 'shiny-text':
+      return (
+        <ShinyText
+          className="rb-demo-shiny"
+          text="Move across the shine."
+          speed={3}
+          spread={80}
+          shineColor="#e0e8ff"
+          pauseOnHover
+          yoyo
+        />
+      )
+
+    case 'rotating-text':
+      return (
+        <div className="rb-demo-rotating-wrap">
+          <span>I </span>
+          <RotatingText
+            texts={['think deeply', 'write clearly', 'build patiently']}
+            rotationInterval={2600}
+            staggerDuration={0.04}
+            mainClassName="rb-demo-rotating"
+          />
         </div>
       )
 

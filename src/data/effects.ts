@@ -30,7 +30,7 @@ const effectMetadata = [
     deps: 'motion',
     status: 'core',
     description: 'Animated gradient text with customizable colors and direction.',
-    where: 'Hero heading',
+    where: 'Hero heading, Motion Lab',
     category: 'Text',
   },
   {
@@ -40,7 +40,7 @@ const effectMetadata = [
     deps: 'motion',
     status: 'core',
     description: 'Subtle shine sweep across text. Single-accent, not rainbow.',
-    where: 'Hero, Thoughts',
+    where: 'Hero, Thoughts, Motion Lab',
     category: 'Text',
   },
   {
@@ -50,7 +50,7 @@ const effectMetadata = [
     deps: 'motion',
     status: 'core',
     description: 'Auto-rotating text with staggered character animation.',
-    where: 'Hero secondary words',
+    where: 'Hero secondary words, Motion Lab',
     category: 'Text',
   },
   {
@@ -80,7 +80,7 @@ const effectMetadata = [
     deps: 'none',
     status: 'ready',
     description: 'Holographic profile card with tilt, shine, and behind-glow.',
-    where: 'Hero, Motion Lab',
+    where: 'Motion Lab',
     category: 'Cards',
   },
   {
@@ -90,7 +90,7 @@ const effectMetadata = [
     deps: 'motion',
     status: 'core',
     description: 'Spring-physics tilt on hover with optional caption.',
-    where: 'Hero portrait, Interests',
+    where: 'Motion Lab',
     category: 'Cards',
   },
   {
@@ -100,7 +100,7 @@ const effectMetadata = [
     deps: 'motion',
     status: 'ready',
     description: 'Draggable stacked cards that cycle to the back.',
-    where: 'Interests, Motion Lab',
+    where: 'Motion Lab',
     category: 'Cards',
   },
   {
@@ -238,6 +238,9 @@ const sourceFileByName: Record<string, string> = {
 }
 
 const realDemoNames = new Set([
+  'GradientText',
+  'ShinyText',
+  'RotatingText',
   'BorderGlow',
   'GlareHover',
   'ProfileCard',
