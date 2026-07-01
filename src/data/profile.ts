@@ -12,7 +12,7 @@ export type JourneyMilestone = {
 }
 
 export const profile = {
-  brand: 'Sia',
+  brand: 'Seiya',
   hero: {
     title: ['Designing with code.', 'Learning with curiosity.', 'Building my own digital world.'],
     subtitle:

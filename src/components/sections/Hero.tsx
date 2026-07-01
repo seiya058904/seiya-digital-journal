@@ -59,7 +59,7 @@ export function Hero() {
           <GradientBorder className="portrait-frame">
             <img
               src={profilePlaceholder}
-              alt="Abstract gradient silhouette placeholder for Sia's portrait"
+              alt="Abstract gradient silhouette placeholder for Seiya's portrait"
               width="900"
               height="1100"
               fetchPriority="high"

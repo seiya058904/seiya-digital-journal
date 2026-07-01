@@ -26,7 +26,7 @@ export function Gallery() {
                 <div className="gallery-card__image">
                   <img
                     src={`${base}${item.image.slice(1)}`}
-                    alt={`${item.theme}: abstract editorial artwork for Sia's visual journal`}
+                    alt={`${item.theme}: abstract editorial artwork for Seiya's visual journal`}
                     width={item.shape === 'portrait' ? 1122 : item.shape === 'square' ? 1254 : 1536}
                     height={item.shape === 'portrait' ? 1402 : item.shape === 'square' ? 1254 : 1024}
                     loading="lazy"

@@ -7,7 +7,7 @@ import { profile } from './profile.ts'
 import { thoughts } from './thoughts.ts'
 
 test('the journal content keeps the approved identity and chapter order', () => {
-  assert.equal(profile.brand, 'Sia')
+  assert.equal(profile.brand, 'Seiya')
   assert.deepEqual(
     navigation.map(({ label }) => label),
     ['Home', 'About', 'Interests', 'Gallery', 'Thoughts', 'Journey', 'Contact'],

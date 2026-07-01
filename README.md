@@ -1,4 +1,4 @@
-# Sia — Digital Identity & Personal Growth
+# Seiya — Digital Identity & Personal Growth
 
 A dark, editorial personal homepage built as a digital identity and growth journal. It uses React, TypeScript, Framer Motion, and local artwork—no online fonts or remote images.
 

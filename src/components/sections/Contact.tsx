@@ -44,7 +44,7 @@ export function Contact() {
       </div>
       <footer>
         <p>Built with React, motion, and curiosity. / 用代码保存一点点热爱。</p>
-        <span>© {new Date().getFullYear()} Sia</span>
+        <span>© {new Date().getFullYear()} Seiya</span>
       </footer>
     </section>
   )
