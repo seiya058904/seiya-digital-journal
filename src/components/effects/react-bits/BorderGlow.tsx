@@ -162,7 +162,7 @@ export function BorderGlow({
     (event: React.PointerEvent<HTMLDivElement>) => {
       if (
         !window.matchMedia(
-          '(min-width: 1024px) and (hover: hover) and (pointer: fine)',
+          '(hover: hover) and (pointer: fine)',
         ).matches
       ) {
         return
@@ -183,16 +183,15 @@ export function BorderGlow({
   )
 
   useEffect(() => {
+    const card = cardRef.current
     if (
       !animated ||
-      !cardRef.current ||
-      !window.matchMedia(
-        '(min-width: 1024px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)',
-      ).matches
+      !card ||
+      !window.matchMedia('(hover: hover) and (pointer: fine)').matches ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
     ) {
       return
     }
-    const card = cardRef.current
     const angleStart = 110
     const angleEnd = 465
     card.classList.add('sweep-active')
