@@ -12,30 +12,15 @@
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  animation: shine-move 1s linear infinite;
-  animation-play-state: running;
   pointer-events: none;
 }
 
-.shiny-text__mask--paused {
-  animation-play-state: paused;
-}
-
 .shiny-text__mask--disabled {
-  animation: none;
-}
-
-@keyframes shine-move {
-  from {
-    background-position: var(--shine-from, -100% 0);
-  }
-  to {
-    background-position: var(--shine-to, 200% 0);
-  }
+  opacity: 0.5;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .shiny-text__mask {
-    animation: none;
+    opacity: 0.3;
   }
 }
