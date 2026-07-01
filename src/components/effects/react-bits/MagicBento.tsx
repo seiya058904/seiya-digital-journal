@@ -321,10 +321,12 @@ export function MagicBento({
     >
       {items.map((item) => (
         <article className="magic-bento-card" key={item.title}>
-          <span className="magic-bento-card__label">{item.label}</span>
-          <div className="magic-bento-card__body">
-            <h3>{item.title}</h3>
-            <p>{item.description}</p>
+          <div className="magic-bento-card__header">
+            <div className="magic-bento-card__label">{item.label}</div>
+          </div>
+          <div className="magic-bento-card__content">
+            <h2 className="magic-bento-card__title">{item.title}</h2>
+            <p className="magic-bento-card__description">{item.description}</p>
           </div>
         </article>
       ))}
