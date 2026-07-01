@@ -38,39 +38,38 @@ function CardNavComponent({
   const cardsRef = useRef<(HTMLDivElement | null)[]>([])
   const tlRef = useRef<gsap.core.Timeline | null>(null)
 
+  /* ── Dynamically measure expanded height ────── */
   const calculateHeight = () => {
     const navEl = navRef.current
-    if (!navEl) return 200
+    if (!navEl) return 260
 
-    const isMobile = window.matchMedia('(max-width: 820px)').matches
-    if (isMobile) {
-      const contentEl = navEl.querySelector('.card-nav-content') as HTMLElement
-      if (contentEl) {
-        const wasVisible = contentEl.style.visibility
-        const wasPointerEvents = contentEl.style.pointerEvents
-        const wasPosition = contentEl.style.position
-        const wasHeight = contentEl.style.height
+    const contentEl = navEl.querySelector('.card-nav-content') as HTMLElement
+    if (!contentEl) return 260
 
-        contentEl.style.visibility = 'visible'
-        contentEl.style.pointerEvents = 'auto'
-        contentEl.style.position = 'static'
-        contentEl.style.height = 'auto'
+    // Temporarily make content measurable
+    const wasVisibility = contentEl.style.visibility
+    const wasPointerEvents = contentEl.style.pointerEvents
+    const wasPosition = contentEl.style.position
+    const wasHeight = contentEl.style.height
 
-        void contentEl.offsetHeight
+    contentEl.style.visibility = 'visible'
+    contentEl.style.pointerEvents = 'auto'
+    contentEl.style.position = 'static'
+    contentEl.style.height = 'auto'
 
-        const topBar = 60
-        const padding = 16
-        const contentHeight = contentEl.scrollHeight
+    void contentEl.offsetHeight // force reflow
 
-        contentEl.style.visibility = wasVisible
-        contentEl.style.pointerEvents = wasPointerEvents
-        contentEl.style.position = wasPosition
-        contentEl.style.height = wasHeight
+    const topBar = 60
+    const padding = 12
+    const contentHeight = contentEl.scrollHeight
 
-        return topBar + contentHeight + padding
-      }
-    }
-    return 260
+    // Restore
+    contentEl.style.visibility = wasVisibility
+    contentEl.style.pointerEvents = wasPointerEvents
+    contentEl.style.position = wasPosition
+    contentEl.style.height = wasHeight
+
+    return topBar + contentHeight + padding
   }
 
   const createTimeline = () => {
@@ -78,7 +77,7 @@ function CardNavComponent({
     if (!navEl) return null
 
     gsap.set(navEl, { height: 60, overflow: 'hidden' })
-    gsap.set(cardsRef.current, { y: 50, opacity: 0 })
+    gsap.set(cardsRef.current, { y: 40, opacity: 0 })
 
     const tl = gsap.timeline({ paused: true })
 
@@ -176,7 +175,10 @@ function CardNavComponent({
   }
 
   return (
-    <div ref={cardNavRef} className={`card-nav-outer ${className}`.trim()}>
+    <div
+      ref={cardNavRef}
+      className={`card-nav-outer ${isExpanded ? 'is-expanded' : ''} ${className}`.trim()}
+    >
       <nav
         ref={navRef}
         className={`card-nav ${isExpanded ? 'open' : ''}`}
