@@ -4,7 +4,7 @@ import {
   useReducedMotion,
   useSpring,
 } from 'framer-motion'
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useRef, useState, type ReactNode } from 'react'
 
 import './TiltedCard.css'
 
@@ -34,7 +34,7 @@ export function TiltedCard({
   imageSrc,
   altText = 'Tilted card image',
   captionText = '',
-  containerHeight = '300px',
+  containerHeight = '600px',
   containerWidth = '100%',
   imageHeight = '300px',
   imageWidth = '300px',
@@ -45,10 +45,9 @@ export function TiltedCard({
   overlayContent = null,
   displayOverlayContent = false,
 }: TiltedCardProps) {
-  const figureRef = useRef<HTMLElement>(null)
+  const ref = useRef<HTMLElement>(null)
   const reducedMotion = useReducedMotion()
-  const [desktopInteraction, setDesktopInteraction] = useState(false)
-  const [lastY, setLastY] = useState(0)
+
   const x = useMotionValue(0)
   const y = useMotionValue(0)
   const rotateX = useSpring(useMotionValue(0), springValues)
@@ -61,23 +60,13 @@ export function TiltedCard({
     mass: 1,
   })
 
-  useEffect(() => {
-    const query = window.matchMedia(
-      '(min-width: 1024px) and (hover: hover) and (pointer: fine)',
-    )
-    const update = () => setDesktopInteraction(query.matches)
-    update()
-    query.addEventListener('change', update)
-    return () => query.removeEventListener('change', update)
-  }, [])
-
-  const interactive = desktopInteraction && !reducedMotion
+  const [lastY, setLastY] = useState(0)
+  const interactive = !reducedMotion
 
   function handleMouse(event: React.MouseEvent<HTMLElement>) {
-    const figure = figureRef.current
-    if (!figure || !interactive) return
+    if (!ref.current || !interactive) return
 
-    const rect = figure.getBoundingClientRect()
+    const rect = ref.current.getBoundingClientRect()
     const offsetX = event.clientX - rect.left - rect.width / 2
     const offsetY = event.clientY - rect.top - rect.height / 2
     const rotationX = (offsetY / (rect.height / 2)) * -rotateAmplitude
@@ -87,7 +76,9 @@ export function TiltedCard({
     rotateY.set(rotationY)
     x.set(event.clientX - rect.left)
     y.set(event.clientY - rect.top)
-    rotateFigcaption.set(-(offsetY - lastY) * 0.6)
+
+    const velocityY = offsetY - lastY
+    rotateFigcaption.set(-velocityY * 0.6)
     setLastY(offsetY)
   }
 
@@ -107,7 +98,7 @@ export function TiltedCard({
 
   return (
     <figure
-      ref={figureRef}
+      ref={ref}
       className="tilted-card-figure"
       style={{ height: containerHeight, width: containerWidth }}
       onMouseMove={handleMouse}
@@ -116,7 +107,7 @@ export function TiltedCard({
     >
       {showMobileWarning && (
         <div className="tilted-card-mobile-alert">
-          Desktop interaction preview
+          This effect is not optimized for mobile. Check on desktop.
         </div>
       )}
 
@@ -138,9 +129,7 @@ export function TiltedCard({
         />
 
         {displayOverlayContent && overlayContent && (
-          <motion.div className="tilted-card-overlay">
-            {overlayContent}
-          </motion.div>
+          <motion.div className="tilted-card-overlay">{overlayContent}</motion.div>
         )}
       </motion.div>
 
