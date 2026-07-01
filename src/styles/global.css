@@ -310,6 +310,7 @@ main {
 .hero {
   display: grid;
   grid-template-columns: minmax(0, 1.08fr) minmax(22rem, 0.92fr);
+  column-gap: 2rem;
   align-items: center;
   min-height: 100svh;
   padding-top: 7.4rem;
@@ -441,9 +442,24 @@ main {
 .hero__portrait-wrap {
   position: relative;
   z-index: 1;
-  width: min(100%, 35rem);
-  margin-left: -10%;
+  width: min(100%, 22rem);
   justify-self: end;
+  display: flex;
+  justify-content: end;
+}
+
+/* ProfileCard in Hero — reduced size */
+.hero-profile-card .pc-card {
+  max-height: 440px;
+}
+
+.hero-profile-card .pc-details h3 {
+  font-size: min(4svh, 1.8em);
+}
+
+.hero-profile-card .pc-details p {
+  font-size: 13px;
+  top: -8px;
 }
 
 .gradient-border {
@@ -712,7 +728,7 @@ main {
 }
 
 .gallery-card:hover img {
-  transform: scale(1.035);
+  transform: scale(1.025);
 }
 
 .gallery-card__image > span {
@@ -1101,10 +1117,14 @@ footer {
   .hero h1 { max-width: 11ch; }
   .hero__subtitle { max-width: 35rem; }
 
+  .hero-profile-card .pc-card {
+    max-height: 380px;
+  }
+
   .hero__portrait-wrap {
-    width: min(68vw, 27rem);
-    margin: -3.5rem -1rem 0 auto;
-    opacity: 0.78;
+    width: min(50vw, 20rem);
+    margin: -1.5rem 0 0 auto;
+    opacity: 0.75;
   }
 
   .about-grid,
@@ -1165,8 +1185,7 @@ footer {
   }
 
   .hero__portrait-wrap {
-    width: min(70vw, 19rem);
-    margin-top: -1.9rem;
+    display: none;
   }
 
   .scroll-cue { display: none; }

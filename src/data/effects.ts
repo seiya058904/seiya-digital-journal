@@ -80,7 +80,7 @@ const effectMetadata = [
     deps: 'none',
     status: 'ready',
     description: 'Holographic profile card with tilt, shine, and behind-glow.',
-    where: 'Motion Lab',
+    where: 'Hero, Motion Lab',
     category: 'Cards',
   },
   {
@@ -179,8 +179,8 @@ const effectMetadata = [
     type: 'navigation',
     deps: 'gsap',
     status: 'ready',
-    description: 'Card-based navigation with expand/collapse.',
-    where: 'Motion Lab',
+    description: 'Card-based navigation with expand/collapse. Intentionally skipped — not planned.',
+    where: 'Not integrated',
     category: 'Navigation',
   },
   {
@@ -199,8 +199,8 @@ const effectMetadata = [
     type: '3d',
     deps: 'three',
     status: 'heavy',
-    description: '3D physics lanyard card with Three.js + Rapier.',
-    where: 'Motion Lab only',
+    description: '3D physics lanyard card with Three.js + Rapier. Intentionally skipped — not planned.',
+    where: 'Not integrated',
     category: '3D',
   },
   {
@@ -240,6 +240,7 @@ const sourceFileByName: Record<string, string> = {
 const realDemoNames = new Set([
   'BorderGlow',
   'GlareHover',
+  'ProfileCard',
   'TiltedCard',
   'Stack',
   'PillNav',
@@ -259,6 +260,7 @@ const homepageNames = new Set([
   'GlareHover',
   'RotatingText',
   'ShinyText',
+  'ProfileCard',
   'PillNav',
   'GridScan',
   'MagicBento',
@@ -267,7 +269,7 @@ const homepageNames = new Set([
   'AnimatedContent',
 ])
 
-const plannedNames = new Set(['Lanyard', 'CardNav'])
+const plannedNames = new Set<string>()
 
 export const effects: EffectMeta[] = effectMetadata.map((effect) => ({
   ...effect,

@@ -55,7 +55,7 @@ export function AnimatedContent({
           scrollTrigger: {
             trigger: element,
             start: `top ${(1 - threshold) * 100}%`,
-            once: true,
+            toggleActions: 'play reverse play reverse',
           },
         },
       )

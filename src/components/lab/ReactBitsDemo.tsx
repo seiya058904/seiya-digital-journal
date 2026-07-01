@@ -8,6 +8,7 @@ import { GlareHover } from '../effects/react-bits/GlareHover'
 import { ImageTrail } from '../effects/react-bits/ImageTrail'
 import { MagicBento } from '../effects/react-bits/MagicBento'
 import { PillNav } from '../effects/react-bits/PillNav'
+import { ProfileCard } from '../effects/react-bits/ProfileCard'
 import { ScrambledText } from '../effects/react-bits/ScrambledText'
 import { SplitText } from '../effects/react-bits/SplitText'
 import { Stack } from '../effects/react-bits/Stack'
@@ -217,6 +218,20 @@ export function ReactBitsDemo({ effectId }: ReactBitsDemoProps) {
         <div className="rb-demo-count">
           <CountUp from={0} to={2026} duration={1.4} separator="," />
           <span>still becoming</span>
+        </div>
+      )
+
+    case 'profile-card':
+      return (
+        <div className="rb-demo-profile-card">
+          <ProfileCard
+            avatarUrl={profileLogo}
+            name="Seiya"
+            title="Personal Journal"
+            showUserInfo={false}
+            behindGlowEnabled
+            enableTilt
+          />
         </div>
       )
 

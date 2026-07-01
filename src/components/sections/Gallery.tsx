@@ -25,7 +25,7 @@ export function Gallery() {
               borderColor="transparent"
               borderRadius="var(--radius-lg)"
               glareColor="#ffffff"
-              glareOpacity={0.22}
+              glareOpacity={0.16}
               glareAngle={-35}
               transitionDuration={750}
             >

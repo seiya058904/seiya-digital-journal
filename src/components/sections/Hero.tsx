@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 
 import profilePlaceholder from '../../assets/profile-placeholder.svg'
 import { profile } from '../../data/profile'
-import { GradientBorder } from '../effects/GradientBorder'
+import { ProfileCard } from '../effects/react-bits/ProfileCard'
 import { GradientText } from '../effects/text/GradientText'
 import { RotatingText } from '../effects/text/RotatingText'
 import { TextReveal } from '../motion/TextReveal'
@@ -87,15 +87,15 @@ export function Hero() {
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.9, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
       >
-        <GradientBorder className="portrait-frame">
-          <img
-            src={profilePlaceholder}
-            alt="Abstract gradient silhouette placeholder for Seiya's portrait"
-            width="900"
-            height="1100"
-            fetchPriority="high"
-          />
-        </GradientBorder>
+        <ProfileCard
+          avatarUrl={profilePlaceholder}
+          name={profile.brand}
+          title="Personal Journal"
+          showUserInfo={false}
+          enableTilt={true}
+          behindGlowEnabled={false}
+          className="hero-profile-card"
+        />
       </motion.div>
 
       <motion.a

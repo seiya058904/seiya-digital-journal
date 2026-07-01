@@ -113,6 +113,16 @@
   text-transform: uppercase;
 }
 
+/* Demo ProfileCard — constrained inside effect card */
+.rb-demo-profile-card {
+  max-width: 280px;
+  margin: 0 auto;
+}
+
+.rb-demo-profile-card .pc-card {
+  max-height: 400px;
+}
+
 @media (max-width: 1023px), (hover: none), (pointer: coarse) {
   .rb-demo-stack {
     width: min(62vw, 13rem);
