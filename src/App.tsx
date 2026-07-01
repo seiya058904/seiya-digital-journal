@@ -32,12 +32,12 @@ export default function App() {
       {page === 'home' ? (
         <DesktopGridScan
           className="site-gridscan"
-          linesColor="#24466d"
+          linesColor="#2d5a8a"
           scanColor="#63e7ff"
-          scanOpacity={0.46}
+          scanOpacity={0.55}
           gridScale={0.115}
           lineJitter={0.08}
-          bloomIntensity={0.38}
+          bloomIntensity={0.42}
         />
       ) : null}
       <CursorGlow />

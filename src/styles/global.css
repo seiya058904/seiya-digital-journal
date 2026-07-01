@@ -80,15 +80,15 @@ button {
 
 .site-gridscan {
   z-index: -1;
-  opacity: 0.72;
-  mask-image: linear-gradient(to bottom, black 0%, rgb(0 0 0 / 82%) 48%, transparent 94%);
+  opacity: 0.8;
+  mask-image: linear-gradient(to bottom, black 0%, rgb(0 0 0 / 88%) 50%, transparent 97%);
 }
 
 .aurora {
   overflow: hidden;
   background:
-    radial-gradient(circle at 78% 8%, rgb(64 101 190 / 18%), transparent 34rem),
-    radial-gradient(circle at 18% 58%, rgb(86 228 255 / 8%), transparent 40rem),
+    radial-gradient(circle at 78% 8%, rgb(64 101 190 / 24%), transparent 34rem),
+    radial-gradient(circle at 18% 58%, rgb(86 228 255 / 12%), transparent 40rem),
     linear-gradient(155deg, rgb(6 14 34 / 72%), rgb(3 7 19 / 34%) 48%, rgb(13 8 31 / 52%));
 }
 
@@ -98,7 +98,7 @@ button {
   aspect-ratio: 1;
   border-radius: 50%;
   filter: blur(90px);
-  opacity: 0.22;
+  opacity: 0.3;
   will-change: transform;
   animation: aurora-drift 24s var(--ease-out) infinite alternate;
 }
@@ -143,7 +143,7 @@ button {
 @media (prefers-reduced-motion: reduce) {
   .aurora__orb {
     animation: none;
-    opacity: 0.18;
+    opacity: 0.22;
     will-change: auto;
   }
 }
