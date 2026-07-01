@@ -35,3 +35,6 @@ React bits/
 
 # Session process artifacts (reports, audits, contact sheets)
 report/
+
+# Visual candidate cache (conversion output, not accessioned assets)
+public/visual-candidates/

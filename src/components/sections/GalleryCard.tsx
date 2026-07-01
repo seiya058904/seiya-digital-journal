@@ -1,14 +1,30 @@
 import { BorderGlow } from '../effects/react-bits/BorderGlow'
 import { GlareHover } from '../effects/react-bits/GlareHover'
-import type { GalleryItem } from '../../data/gallery'
 
 const base = import.meta.env.BASE_URL
 
+type GalleryCardItem = {
+  image: string
+  title: string
+  caption: string
+  note: string
+  aspect: 'portrait' | 'landscape' | 'square'
+  alt?: string
+  /** legacy — maps to VisualArchiveItem.id as display label */
+  theme?: string
+  /** visual archive — used as display label when theme is absent */
+  id?: string
+}
+
 type GalleryCardProps = {
-  item: GalleryItem
+  item: GalleryCardItem
 }
 
 export function GalleryCard({ item }: GalleryCardProps) {
+  const label = item.theme ?? item.id ?? ''
+  const aspect = item.aspect
+  const altText = item.alt ?? `${label}: visual archive image`
+
   const image = (
     <GlareHover
       className="gallery-card__image"
@@ -24,9 +40,9 @@ export function GalleryCard({ item }: GalleryCardProps) {
     >
       <img
         src={`${base}${item.image.slice(1)}`}
-        alt={`${item.theme}: abstract editorial artwork for Seiya's visual journal`}
-        width={item.shape === 'portrait' ? 1122 : item.shape === 'square' ? 1254 : 1536}
-        height={item.shape === 'portrait' ? 1402 : item.shape === 'square' ? 1254 : 1024}
+        alt={altText}
+        width={aspect === 'portrait' ? 1122 : aspect === 'square' ? 1254 : 1536}
+        height={aspect === 'portrait' ? 1402 : aspect === 'square' ? 1254 : 1024}
         loading="lazy"
         decoding="async"
       />
@@ -48,7 +64,7 @@ export function GalleryCard({ item }: GalleryCardProps) {
       </BorderGlow>
       <figcaption>
         <div>
-          <span>{item.theme}</span>
+          <span>{label}</span>
           <h3>{item.title}</h3>
         </div>
         <p>{item.caption}</p>
