@@ -154,6 +154,26 @@
   max-height: 400px;
 }
 
+/* Lab ProfileCard — tone down shine and glare */
+.rb-demo-profile-card .pc-shine {
+  filter: brightness(0.35) contrast(1.1) saturate(0.15) opacity(0.25);
+}
+
+.rb-demo-profile-card .pc-card:hover .pc-shine,
+.rb-demo-profile-card .pc-card.active .pc-shine {
+  filter: brightness(0.5) contrast(1.2) saturate(0.25);
+  animation-play-state: paused;
+}
+
+.rb-demo-profile-card .pc-glare {
+  opacity: 0.15;
+}
+
+.rb-demo-profile-card .pc-card:hover .pc-glare,
+.rb-demo-profile-card .pc-card.active .pc-glare {
+  opacity: 0.25;
+}
+
 @media (max-width: 1023px), (hover: none), (pointer: coarse) {
   .rb-demo-stack {
     width: min(62vw, 13rem);
