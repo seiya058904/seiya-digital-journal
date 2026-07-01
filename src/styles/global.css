@@ -897,7 +897,7 @@ main {
 
 .signals-visual {
   width: 100%;
-  max-width: 36rem;
+  max-width: 72rem;
   aspect-ratio: 1;
 }
 
@@ -1515,7 +1515,7 @@ footer {
   }
 
   .signals-visual {
-    width: min(100%, 18rem);
+    width: min(100%, 36rem);
     margin: 0 auto;
   }
 
