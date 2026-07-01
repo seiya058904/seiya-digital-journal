@@ -2,6 +2,8 @@ export type Interest = {
   title: string
   description: string
   chinese: string
+  keywords: readonly string[]
+  image: string
   accent: 'cyan' | 'violet' | 'gold' | 'magenta'
 }
 
@@ -32,26 +34,34 @@ export const profile = {
   interests: [
     {
       title: 'Technology',
-      description: 'I explore computers, frontend development, AI tools, hardware, and small personal projects. I like understanding how systems work, from code structure to the machine underneath.',
+      description: 'I explore computers, frontend development, AI tools, hardware, and personal projects.',
       chinese: '计算机',
+      keywords: ['Windows', 'Frontend', 'AI tools', 'Hardware'],
+      image: '/gallery/geometry.webp',
       accent: 'cyan',
     },
     {
       title: 'Language',
-      description: 'English is not only a test subject for me. It is a tool for thinking, communication, and entering a wider world.',
+      description: 'English is a second world for thinking, communication, and future study.',
       chinese: '英语',
+      keywords: ['English', 'PTE', 'Speaking', 'Vocabulary'],
+      image: '/gallery/reflection.webp',
       accent: 'violet',
     },
     {
       title: 'Making',
-      description: 'I enjoy turning ideas into visible things: websites, game prototypes, visual pages, presentations, and interactive experiments.',
+      description: 'I turn ideas into websites, game prototypes, visual pages, and presentations.',
       chinese: '创作',
+      keywords: ['Websites', 'Games', 'PPT', 'Visual design'],
+      image: '/gallery/motion.webp',
       accent: 'gold',
     },
     {
       title: 'Exploration',
-      description: 'I am preparing for a wider future through study, travel, projects, and a long-term plan to grow beyond my current environment.',
+      description: 'I use travel, study, and projects to move toward a wider future.',
       chinese: '探索',
+      keywords: ['Travel', 'Canada', 'Growth', 'Future'],
+      image: '/gallery/horizon.webp',
       accent: 'magenta',
     },
   ] satisfies Interest[],

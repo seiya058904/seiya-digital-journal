@@ -299,8 +299,8 @@ main {
 
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 1.08fr) minmax(22rem, 0.92fr);
-  column-gap: 2rem;
+  grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.65fr);
+  column-gap: clamp(1.5rem, 3.5vw, 4rem);
   align-items: center;
   min-height: 100svh;
   padding-top: 7.4rem;
@@ -325,11 +325,12 @@ main {
 }
 
 .hero h1 {
-  max-width: 18ch;
-  font-size: clamp(3.15rem, 6.2vw, 7.3rem);
+  max-width: 19ch;
+  font-size: clamp(3.15rem, 5.5vw, 6rem);
   font-weight: 430;
-  letter-spacing: -0.07em;
-  line-height: 0.97;
+  letter-spacing: -0.04em;
+  line-height: 1.02;
+  text-wrap: balance;
 }
 
 .text-reveal {
@@ -339,6 +340,10 @@ main {
 
 .text-reveal > span {
   display: block;
+}
+
+.hero__title-line .gradient-text {
+  display: inline;
 }
 
 .hero__subtitle {
@@ -546,6 +551,7 @@ main {
   color: var(--color-muted);
   font-size: clamp(1rem, 1.5vw, 1.25rem);
   line-height: 1.8;
+  text-wrap: pretty;
 }
 
 .about-grid__intro span {
@@ -559,10 +565,11 @@ main {
 .about-grid__statement h2 {
   max-width: 13ch;
   font-family: var(--font-editorial);
-  font-size: clamp(3rem, 6vw, 7rem);
+  font-size: clamp(3rem, 5.4vw, 6rem);
   font-weight: 400;
-  letter-spacing: -0.055em;
+  letter-spacing: -0.04em;
   line-height: 1.04;
+  text-wrap: balance;
 }
 
 .section-intro,
@@ -587,11 +594,49 @@ main {
 .section-intro h2,
 .gallery-heading h2,
 .journey-heading h2 {
-  max-width: 13ch;
-  font-size: clamp(2.7rem, 5vw, 5.6rem);
+  max-width: 14ch;
+  font-size: clamp(2.7rem, 4.6vw, 5.2rem);
   font-weight: 430;
-  letter-spacing: -0.06em;
-  line-height: 1;
+  letter-spacing: -0.04em;
+  line-height: 1.03;
+  text-wrap: balance;
+}
+
+.interests-bento {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1rem, 2vw, 1.5rem);
+  width: 100%;
+  max-width: none;
+  padding: 0;
+}
+
+.interests-bento .magic-bento-card:nth-child(n) {
+  grid-column: auto;
+  grid-row: auto;
+  min-height: clamp(15rem, 24vw, 19rem);
+  aspect-ratio: 16 / 9;
+  padding: clamp(1.15rem, 2vw, 1.6rem);
+}
+
+.interests-bento .magic-bento-card__label {
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+}
+
+.interests-bento .magic-bento-card__title {
+  margin-bottom: 0.35rem;
+  font-size: clamp(1.2rem, 2vw, 1.55rem);
+  font-weight: 520;
+  letter-spacing: -0.025em;
+}
+
+.interests-bento .magic-bento-card__description {
+  max-width: 42ch;
+  color: #eef2ff;
+  font-size: 0.86rem;
+  line-height: 1.5;
+  opacity: 0.92;
+  text-wrap: pretty;
 }
 
 .interest-orbits {
@@ -775,12 +820,14 @@ main {
   font-size: clamp(1rem, 1.4vw, 1.25rem);
   font-weight: 510;
   letter-spacing: -0.025em;
+  text-wrap: balance;
 }
 
 .gallery-card figcaption p {
   color: var(--color-muted);
   font-size: 0.78rem;
   line-height: 1.6;
+  text-wrap: pretty;
 }
 
 .section--thoughts {
@@ -807,12 +854,13 @@ main {
 }
 
 .featured-thought h2 {
-  max-width: 8ch;
+  max-width: 9ch;
   font-family: var(--font-editorial);
-  font-size: clamp(4rem, 7.2vw, 8rem);
+  font-size: clamp(3.8rem, 6.2vw, 6rem);
   font-weight: 400;
-  letter-spacing: -0.06em;
-  line-height: 0.94;
+  letter-spacing: -0.04em;
+  line-height: 0.98;
+  text-wrap: balance;
 }
 
 .featured-thought p {
@@ -821,6 +869,7 @@ main {
   color: var(--color-muted);
   font-size: 0.95rem;
   line-height: 1.75;
+  text-wrap: pretty;
 }
 
 .featured-thought > span:last-child {
@@ -844,8 +893,8 @@ main {
   grid-template-columns: 2rem 1fr auto;
   gap: 1.1rem;
   align-items: center;
-  min-height: 9rem;
-  padding: 1.2rem 0.35rem;
+  min-height: 8rem;
+  padding: 1.35rem 0.35rem;
   transition:
     background var(--duration-fast) ease,
     padding var(--duration-fast) ease;
@@ -878,9 +927,12 @@ main {
 
 .thought-row div > span {
   display: block;
+  max-width: 62ch;
   margin-top: 0.45rem;
   color: var(--color-muted);
   font-size: 0.78rem;
+  line-height: 1.55;
+  text-wrap: pretty;
 }
 
 .thought-row svg {
@@ -952,11 +1004,12 @@ main {
 }
 
 .journey-step p {
-  max-width: 19rem;
+  max-width: 31ch;
   margin: 0.75rem auto 0;
   color: var(--color-muted);
   font-size: 0.84rem;
   line-height: 1.65;
+  text-wrap: pretty;
 }
 
 .section--contact {
@@ -998,10 +1051,11 @@ main {
 
 .contact-grid h2 {
   font-family: var(--font-editorial);
-  font-size: clamp(5rem, 10vw, 11rem);
+  font-size: clamp(4.5rem, 8vw, 6rem);
   font-weight: 400;
-  letter-spacing: -0.07em;
-  line-height: 0.88;
+  letter-spacing: -0.04em;
+  line-height: 0.94;
+  text-wrap: balance;
 }
 
 .contact-links {
@@ -1046,8 +1100,12 @@ footer {
 }
 
 @media (max-width: 1080px) {
-  .hero { grid-template-columns: 1.1fr 0.9fr; }
-  .hero__portrait-wrap { margin-left: -5%; }
+  .hero {
+    grid-template-columns: minmax(0, 1.25fr) minmax(18rem, 0.75fr);
+    column-gap: 2rem;
+  }
+
+  .hero__portrait-wrap { margin-left: 0; }
   .interest-orbits { grid-template-columns: repeat(2, 1fr); }
   .interest-orbit { min-height: 24rem; }
   .interest-orbit:nth-child(even) { margin-top: 3rem; }
@@ -1119,12 +1177,13 @@ footer {
 
   .hero {
     grid-template-columns: 1fr;
+    row-gap: 1.5rem;
     align-content: center;
     padding-top: 8rem;
   }
 
   .hero__copy { z-index: 3; }
-  .hero h1 { max-width: 11ch; }
+  .hero h1 { max-width: 14ch; }
   .hero__subtitle { max-width: 35rem; }
 
   .hero-profile-card .pc-card {
@@ -1132,8 +1191,8 @@ footer {
   }
 
   .hero__portrait-wrap {
-    width: min(50vw, 20rem);
-    margin: -1.5rem 0 0 auto;
+    width: min(45vw, 18rem);
+    margin: 0 0 0 auto;
     opacity: 0.75;
   }
 
@@ -1184,8 +1243,9 @@ footer {
   }
 
   .hero h1 {
-    max-width: 10.7ch;
-    font-size: clamp(2.75rem, 12.8vw, 4.2rem);
+    max-width: 11ch;
+    font-size: clamp(2.65rem, 12vw, 3.5rem);
+    line-height: 1.02;
   }
 
   .hero__subtitle {
@@ -1201,7 +1261,17 @@ footer {
   .scroll-cue { display: none; }
   .chapter { margin-bottom: 3rem; }
   .about-grid { gap: 2.5rem; }
-  .about-grid__statement h2 { font-size: clamp(3rem, 14vw, 4.8rem); }
+  .about-grid__statement h2 { font-size: clamp(3rem, 13vw, 4.6rem); }
+  .interests-bento {
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .interests-bento .magic-bento-card:nth-child(n) {
+    min-height: 17rem;
+    aspect-ratio: auto;
+  }
+
   .interest-orbits { grid-template-columns: 1fr; }
 
   .interest-orbit,
@@ -1228,9 +1298,13 @@ footer {
   .gallery-item { margin-bottom: 3rem !important; }
   .gallery-card figcaption { grid-template-columns: 1fr; }
   .gallery-card figcaption p { max-width: 28rem; }
-  .featured-thought h2 { font-size: clamp(3.8rem, 18vw, 6rem); }
+  .featured-thought h2 { font-size: clamp(3.2rem, 15vw, 5rem); }
   .thoughts-grid { gap: 5rem; }
-  .thought-row { min-height: 8rem; }
+  .thought-row {
+    min-height: auto;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
   .journey-line { display: block; }
 
   .journey-line::before {
@@ -1256,7 +1330,7 @@ footer {
 
   .journey-step p { margin: 0.6rem 0 0; }
   .contact-grid { gap: 4rem; }
-  .contact-grid h2 { font-size: clamp(4.6rem, 22vw, 7.5rem); }
+  .contact-grid h2 { font-size: clamp(3.8rem, 18vw, 5.5rem); }
 
   footer {
     flex-direction: column;

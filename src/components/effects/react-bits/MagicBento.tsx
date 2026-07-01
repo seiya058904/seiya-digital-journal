@@ -8,6 +8,8 @@ export type MagicBentoItem = {
   title: string
   description: string
   label: string
+  image?: string
+  keywords?: readonly string[]
 }
 
 type MagicBentoProps = {
@@ -28,6 +30,40 @@ const MOBILE_BP = 768
 const DEFAULT_GLOW = '132, 0, 255'
 const DEFAULT_RADIUS = 300
 const DEFAULT_PARTICLES = 12
+
+function BentoCardContent({ item }: { item: MagicBentoItem }) {
+  return (
+    <>
+      {item.image ? (
+        <img
+          className="magic-bento-card__media"
+          src={item.image}
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          decoding="async"
+        />
+      ) : null}
+      <div className="magic-bento-card__header">
+        <div className="magic-bento-card__label">{item.label}</div>
+      </div>
+      <div className="magic-bento-card__content">
+        <h2 className="magic-bento-card__title">{item.title}</h2>
+        <p className="magic-bento-card__description">{item.description}</p>
+        {item.keywords?.length ? (
+          <ul
+            className="magic-bento-card__keywords"
+            aria-label={`${item.title} keywords`}
+          >
+            {item.keywords.map((keyword) => (
+              <li key={keyword}>{keyword}</li>
+            ))}
+          </ul>
+        ) : null}
+      </div>
+    </>
+  )
+}
 
 function createParticleEl(x: number, y: number, color: string) {
   const el = document.createElement('div')
@@ -341,6 +377,7 @@ export function MagicBento({
         {items.map((item) => {
           const baseCls = [
             'magic-bento-card',
+            item.image ? 'magic-bento-card--with-media' : '',
             textAutoHide ? 'magic-bento-card--text-autohide' : '',
             enableBorderGlow ? 'magic-bento-card--border-glow' : '',
           ].filter(Boolean).join(' ')
@@ -358,26 +395,14 @@ export function MagicBento({
                 enableMagnetism={enableMagnetism}
                 style={{ '--glow-color': glowColor } as CSSProperties}
               >
-                <div className="magic-bento-card__header">
-                  <div className="magic-bento-card__label">{item.label}</div>
-                </div>
-                <div className="magic-bento-card__content">
-                  <h2 className="magic-bento-card__title">{item.title}</h2>
-                  <p className="magic-bento-card__description">{item.description}</p>
-                </div>
+                <BentoCardContent item={item} />
               </ParticleCard>
             )
           }
 
           return (
             <div key={item.title} className={`${baseCls} magic-bento-card--no-particles`}>
-              <div className="magic-bento-card__header">
-                <div className="magic-bento-card__label">{item.label}</div>
-              </div>
-              <div className="magic-bento-card__content">
-                <h2 className="magic-bento-card__title">{item.title}</h2>
-                <p className="magic-bento-card__description">{item.description}</p>
-              </div>
+              <BentoCardContent item={item} />
             </div>
           )
         })}
