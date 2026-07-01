@@ -3,6 +3,8 @@ import { CardTilt } from '../effects/CardTilt'
 import { ScrollReveal } from '../motion/ScrollReveal'
 import { Chapter } from '../ui/Chapter'
 
+const base = import.meta.env.BASE_URL
+
 export function Gallery() {
   return (
     <section id="gallery" className="section section--gallery">
@@ -23,7 +25,7 @@ export function Gallery() {
               <figure>
                 <div className="gallery-card__image">
                   <img
-                    src={item.image}
+                    src={`${base}${item.image.slice(1)}`}
                     alt={`${item.theme}: abstract editorial artwork for Sia's visual journal`}
                     width={item.shape === 'portrait' ? 1122 : item.shape === 'square' ? 1254 : 1536}
                     height={item.shape === 'portrait' ? 1402 : item.shape === 'square' ? 1254 : 1024}
