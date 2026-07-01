@@ -10,6 +10,8 @@ const icons = {
   work: BriefcaseBusiness,
 }
 
+const externalKinds = new Set(['github', 'work'])
+
 export function Contact() {
   return (
     <section id="contact" className="section section--contact">
@@ -22,12 +24,13 @@ export function Contact() {
         <ScrollReveal className="contact-links" delay={0.12}>
           {socialLinks.map((link) => {
             const Icon = icons[link.kind]
+            const isExternal = externalKinds.has(link.kind)
             return (
               <a
                 key={link.kind}
-                href={link.placeholder ? undefined : link.href}
-                aria-disabled={link.placeholder}
-                onClick={(event) => link.placeholder && event.preventDefault()}
+                href={link.href}
+                target={isExternal ? '_blank' : undefined}
+                rel={isExternal ? 'noreferrer' : undefined}
               >
                 <Icon aria-hidden="true" size={20} strokeWidth={1.45} />
                 <span>{link.label}</span>

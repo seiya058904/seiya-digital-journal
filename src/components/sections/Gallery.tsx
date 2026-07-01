@@ -1,8 +1,11 @@
 import { useState } from 'react'
 import { visualArchiveItems, type VisualArchiveItem } from '../../data/visualArchive'
+import { BounceCards } from '../effects/react-bits/BounceCards'
 import { ScrollReveal } from '../motion/ScrollReveal'
 import { Chapter } from '../ui/Chapter'
 import { GalleryCard } from './GalleryCard'
+
+const base = import.meta.env.BASE_URL
 
 type FilterKey = 'all' | 'editorial' | 'memory' | 'Chongqing' | 'Chengdu' | 'Wuhan'
 
@@ -35,19 +38,16 @@ function sortItems(items: VisualArchiveItem[]): VisualArchiveItem[] {
   })
 }
 
-/**
- * Map item aspect + featured flag to a magazine layout size class.
- *   hero    → featured landscape (spans 6 cols)
- *   wide    → regular landscape (spans 4 cols)
- *   large   → featured portrait/square (spans 4 cols)
- *   standard→ regular portrait or square (spans 3 cols)
- */
 function sizeClass(item: VisualArchiveItem): string {
   if (item.featured && item.aspect === 'landscape') return 'gallery-item--hero'
   if (item.aspect === 'landscape') return 'gallery-item--wide'
   if (item.featured) return 'gallery-item--large'
   return 'gallery-item--standard'
 }
+
+/** Pick 4 featured items for the BounceCards preview */
+const bounceItems = visualArchiveItems.filter((item) => item.featured).slice(0, 4)
+const bounceImages = bounceItems.map((item) => `${base}${item.image.slice(1)}`)
 
 export function Gallery() {
   const [activeFilter, setActiveFilter] = useState<FilterKey>('all')
@@ -62,6 +62,26 @@ export function Gallery() {
       <ScrollReveal className="gallery-heading">
         <p>VISUAL ARCHIVE</p>
         <h2>Fragments of learning, cities, and inner weather.</h2>
+      </ScrollReveal>
+
+      {/* BounceCards — Selected fragments preview */}
+      <ScrollReveal className="gallery-bounce-wrapper" delay={0.08}>
+        <span className="gallery-bounce-label">Selected fragments</span>
+        <BounceCards
+          className="gallery-bounce"
+          images={bounceImages}
+          containerWidth={480}
+          containerHeight={280}
+          animationDelay={0.3}
+          animationStagger={0.05}
+          transformStyles={[
+            'rotate(12deg) translate(-140px)',
+            'rotate(6deg) translate(-70px)',
+            'rotate(-4deg)',
+            'rotate(-12deg) translate(70px)',
+          ]}
+          enableHover
+        />
       </ScrollReveal>
 
       <p className="gallery-subtitle">

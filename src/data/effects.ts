@@ -179,8 +179,8 @@ const effectMetadata = [
     type: 'navigation',
     deps: 'gsap',
     status: 'ready',
-    description: 'Card-based navigation with expand/collapse. Intentionally skipped — not planned.',
-    where: 'Not integrated',
+    description: 'Card-based navigation with expand/collapse for explore menu.',
+    where: 'Header — Explore menu',
     category: 'Navigation',
   },
   {
@@ -213,6 +213,36 @@ const effectMetadata = [
     where: 'Homepage background, Motion Lab',
     category: '3D',
   },
+  {
+    id: 'orbit-images',
+    name: 'OrbitImages',
+    type: 'experimental',
+    deps: 'motion',
+    status: 'ready',
+    description: 'Images orbit along an elliptical path with configurable shapes.',
+    where: 'Signals section (homepage), Motion Lab',
+    category: 'Experimental',
+  },
+  {
+    id: 'flowing-menu',
+    name: 'FlowingMenu',
+    type: 'navigation',
+    deps: 'motion',
+    status: 'experimental',
+    description: 'Flowing animated menu for category pages. Candidate for future Archive page.',
+    where: 'Planned — Visual Archive category page',
+    category: 'Navigation',
+  },
+  {
+    id: 'infinite-menu',
+    name: 'InfiniteMenu',
+    type: 'navigation',
+    deps: 'motion',
+    status: 'experimental',
+    description: 'Infinite scrolling menu for large collections. Candidate for future Journal category page.',
+    where: 'Planned — Journal category page',
+    category: 'Navigation',
+  },
 ] satisfies BaseEffectMeta[]
 
 const sourceFileByName: Record<string, string> = {
@@ -235,6 +265,9 @@ const sourceFileByName: Record<string, string> = {
   TiltedCard: 'React bits/17.txt',
   CountUp: 'React bits/18.txt',
   CardNav: 'React bits/19.txt',
+  OrbitImages: 'React bits/20.txt',
+  FlowingMenu: 'React bits/21.txt',
+  InfiniteMenu: 'React bits/22.txt',
 }
 
 const realDemoNames = new Set([
@@ -255,6 +288,8 @@ const realDemoNames = new Set([
   'SplitText',
   'AnimatedContent',
   'CountUp',
+  'CardNav',
+  'OrbitImages',
 ])
 
 const homepageNames = new Set([
@@ -270,9 +305,12 @@ const homepageNames = new Set([
   'ScrambledText',
   'SplitText',
   'AnimatedContent',
+  'Stack',
+  'CardNav',
+  'OrbitImages',
 ])
 
-const plannedNames = new Set<string>()
+const plannedNames = new Set<string>(['FlowingMenu', 'InfiniteMenu'])
 
 export const effects: EffectMeta[] = effectMetadata.map((effect) => ({
   ...effect,

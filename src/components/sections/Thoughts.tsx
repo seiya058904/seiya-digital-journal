@@ -36,7 +36,7 @@ export function Thoughts() {
         <div className="thought-list" aria-label="Short thoughts">
           {thoughts.entries.map((thought, index) => (
             <ScrollReveal key={thought.title} delay={index * 0.08}>
-              <article className="thought-row">
+              <a className="thought-row" href={thought.href} aria-label={thought.ariaLabel}>
                 <span>0{index + 1}</span>
                 <div>
                   <p>{thought.date}</p>
@@ -44,7 +44,7 @@ export function Thoughts() {
                   <span>{thought.excerpt}</span>
                 </div>
                 <ArrowUpRight aria-hidden="true" size={20} strokeWidth={1.4} />
-              </article>
+              </a>
             </ScrollReveal>
           ))}
         </div>

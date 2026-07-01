@@ -3,6 +3,7 @@ import { useState } from 'react'
 
 import profileLogo from '../../assets/profile-placeholder.svg'
 import { profile } from '../../data/profile'
+import { CardNav, type CardNavItem } from '../effects/react-bits/CardNav'
 import { PillNav } from '../effects/react-bits/PillNav'
 
 type HeaderProps = {
@@ -16,6 +17,39 @@ const headerItems = [
   { label: 'Thoughts', href: '#thoughts' },
   { label: 'Lab', href: '#/motion-lab' },
   { label: 'Contact', href: '#contact' },
+]
+
+const exploreItems: CardNavItem[] = [
+  {
+    label: 'Archive',
+    bgColor: '#1B1722',
+    textColor: '#fff',
+    links: [
+      { label: 'All', href: '#gallery', ariaLabel: 'Visual Archive — all' },
+      { label: 'Editorial', href: '#gallery', ariaLabel: 'Visual Archive — editorial' },
+      { label: 'Memory', href: '#gallery', ariaLabel: 'Visual Archive — memory' },
+    ],
+  },
+  {
+    label: 'Journal',
+    bgColor: '#16213B',
+    textColor: '#fff',
+    links: [
+      { label: 'Thoughts', href: '#thoughts', ariaLabel: 'Journal thoughts' },
+      { label: 'Journey', href: '#journey', ariaLabel: 'Journey timeline' },
+      { label: 'Making', href: '#gallery', ariaLabel: 'Things I make' },
+    ],
+  },
+  {
+    label: 'Connect',
+    bgColor: '#1A1B2E',
+    textColor: '#fff',
+    links: [
+      { label: 'Motion Lab', href: '#/motion-lab', ariaLabel: 'Motion Lab experiments' },
+      { label: 'GitHub', href: 'https://github.com/seiya058904', ariaLabel: 'GitHub profile' },
+      { label: 'Contact', href: '#contact', ariaLabel: 'Contact page' },
+    ],
+  },
 ]
 
 export function Header({ activePage = 'home' }: HeaderProps) {
@@ -43,6 +77,12 @@ export function Header({ activePage = 'home' }: HeaderProps) {
         hoveredPillTextColor="#f3f6ff"
         pillTextColor="#9ca6bb"
         onItemClick={(item) => handleNavigation(item.href)}
+      />
+      <CardNav
+        className="header-card-nav"
+        items={exploreItems}
+        baseColor="rgba(5, 10, 24, 0.88)"
+        menuColor="#9ca6bb"
       />
       <nav className="nav-shell header-mobile-nav" aria-label="Primary navigation">
         <a

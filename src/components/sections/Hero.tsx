@@ -1,7 +1,7 @@
 import { ArrowDown, Images } from 'lucide-react'
 import { motion } from 'framer-motion'
 
-import profilePlaceholder from '../../assets/profile-placeholder.svg'
+import avatarSeiya from '../../assets/avatar-seiya.webp'
 import { profile } from '../../data/profile'
 import { ProfileCard } from '../effects/react-bits/ProfileCard'
 import { GradientText } from '../effects/text/GradientText'
@@ -88,7 +88,7 @@ export function Hero() {
         transition={{ duration: 0.9, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
       >
         <ProfileCard
-          avatarUrl={profilePlaceholder}
+          avatarUrl={avatarSeiya}
           name={profile.brand}
           title="Personal Journal"
           showUserInfo={false}
