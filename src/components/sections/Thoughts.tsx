@@ -16,7 +16,7 @@ export function Thoughts() {
               text={'"'}
               color="var(--color-gold)"
               shineColor="var(--color-text)"
-              speed={4}
+              speed={0.4}
               spread={80}
               delay={3}
             />

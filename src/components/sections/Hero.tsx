@@ -20,7 +20,7 @@ export function Hero() {
           <TextReveal delay={0.08}>
             <GradientText
               colors={['#f3f6ff', '#56e4ff', '#8c75ff', '#f3f6ff']}
-              animationSpeed={2}
+              animationSpeed={0.3}
               direction="right"
             >
               {profile.hero.title[0]}
@@ -31,7 +31,7 @@ export function Hero() {
               text={profile.hero.title[1]}
               color="#dce8ff"
               shineColor="#56e4ff"
-              speed={6}
+              speed={0.5}
               spread={80}
               delay={3}
             />
