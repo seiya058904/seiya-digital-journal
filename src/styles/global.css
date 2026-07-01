@@ -297,9 +297,7 @@ main {
 }
 
 .hero h1 .text-reveal:nth-child(3) {
-  background: linear-gradient(100deg, var(--color-text) 8%, #9deeff 45%, #c09dff 72%, #ffc695);
-  background-clip: text;
-  color: transparent;
+  color: var(--color-text);
 }
 
 .hero__subtitle {
@@ -322,6 +320,20 @@ main {
   flex-wrap: wrap;
   gap: 0.8rem;
   margin-top: 2.3rem;
+}
+
+.hero__identity-words {
+  margin-top: 1.6rem;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-faint);
+  overflow: hidden;
+}
+
+.hero__rotating {
+  color: var(--color-cyan);
 }
 
 .action-link {

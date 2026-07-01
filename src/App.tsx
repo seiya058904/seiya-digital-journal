@@ -1,31 +1,37 @@
 import { MotionConfig } from 'framer-motion'
+import { useEffect, useState } from 'react'
 
 import { AuroraBackground } from './components/effects/AuroraBackground'
 import { CursorGlow } from './components/effects/CursorGlow'
-import { About } from './components/sections/About'
-import { Contact } from './components/sections/Contact'
-import { Gallery } from './components/sections/Gallery'
-import { Hero } from './components/sections/Hero'
-import { Interests } from './components/sections/Interests'
-import { Journey } from './components/sections/Journey'
-import { Thoughts } from './components/sections/Thoughts'
 import { Header } from './components/ui/Header'
+import { HomePage } from './pages/HomePage'
+import { MotionLabPage } from './pages/MotionLabPage'
+import './pages/MotionLabPage.css'
+
+type Page = 'home' | 'lab'
+
+function getPageFromHash(): Page {
+  if (typeof window === 'undefined') return 'home'
+  return window.location.hash === '#/motion-lab' ? 'lab' : 'home'
+}
 
 export default function App() {
+  const [page, setPage] = useState<Page>(getPageFromHash)
+
+  useEffect(() => {
+    function onHashChange() {
+      setPage(getPageFromHash())
+    }
+    window.addEventListener('hashchange', onHashChange)
+    return () => window.removeEventListener('hashchange', onHashChange)
+  }, [])
+
   return (
     <MotionConfig reducedMotion="user">
       <AuroraBackground />
       <CursorGlow />
-      <Header />
-      <main>
-        <Hero />
-        <About />
-        <Interests />
-        <Gallery />
-        <Thoughts />
-        <Journey />
-        <Contact />
-      </main>
+      <Header activePage={page} />
+      {page === 'lab' ? <MotionLabPage /> : <HomePage />}
     </MotionConfig>
   )
 }

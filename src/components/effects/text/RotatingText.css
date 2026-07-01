@@ -1,0 +1,58 @@
+.rotating-text {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+}
+
+.rotating-text__item {
+  display: inline-block;
+  width: max-content;
+}
+
+.text-split {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0;
+  overflow: hidden;
+}
+
+.text-split--words {
+  row-gap: 0.3em;
+}
+
+.text-split--lines {
+  display: flex;
+  flex-direction: column;
+}
+
+.text-split__element {
+  display: inline-block;
+}
+
+.stagger-element {
+  display: inline-block;
+  animation-fill-mode: both;
+}
+
+.stagger-element--visible {
+  animation: stagger-in var(--duration-slow, 800ms) var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1)) both;
+}
+
+@keyframes stagger-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.35em);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stagger-element--visible {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}

@@ -1,5 +1,5 @@
 import { galleryItems } from '../../data/gallery'
-import { CardTilt } from '../effects/CardTilt'
+import { GlareHover } from '../effects/cards/GlareHover'
 import { ScrollReveal } from '../motion/ScrollReveal'
 import { Chapter } from '../ui/Chapter'
 
@@ -21,7 +21,10 @@ export function Gallery() {
             delay={(index % 3) * 0.08}
             amount={0.12}
           >
-            <CardTilt className="gallery-card" intensity={3}>
+            <GlareHover
+              className="gallery-card"
+              glareColor="rgba(255, 255, 255, 0.12)"
+            >
               <figure>
                 <div className="gallery-card__image">
                   <img
@@ -42,7 +45,7 @@ export function Gallery() {
                   <p>{item.caption}</p>
                 </figcaption>
               </figure>
-            </CardTilt>
+            </GlareHover>
           </ScrollReveal>
         ))}
       </div>

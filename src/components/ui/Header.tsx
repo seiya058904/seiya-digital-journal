@@ -4,13 +4,21 @@ import { useState } from 'react'
 import { navigation } from '../../data/links'
 import { profile } from '../../data/profile'
 
-export function Header() {
+type HeaderProps = {
+  activePage?: 'home' | 'lab'
+}
+
+export function Header({ activePage = 'home' }: HeaderProps) {
   const [open, setOpen] = useState(false)
 
   return (
     <header className="site-header">
       <nav className="nav-shell" aria-label="Primary navigation">
-        <a className="brand" href="#home" onClick={() => setOpen(false)}>
+        <a
+          className="brand"
+          href="#/"
+          onClick={() => setOpen(false)}
+        >
           {profile.brand}
         </a>
         <button
@@ -29,6 +37,13 @@ export function Header() {
               {item.label}
             </a>
           ))}
+          <a
+            href="#/motion-lab"
+            className={activePage === 'lab' ? 'is-active' : ''}
+            onClick={() => setOpen(false)}
+          >
+            Lab
+          </a>
         </div>
       </nav>
     </header>

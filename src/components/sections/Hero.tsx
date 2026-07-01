@@ -3,21 +3,42 @@ import { motion } from 'framer-motion'
 
 import profilePlaceholder from '../../assets/profile-placeholder.svg'
 import { profile } from '../../data/profile'
-import { CardTilt } from '../effects/CardTilt'
 import { GradientBorder } from '../effects/GradientBorder'
+import { GradientText } from '../effects/text/GradientText'
+import { RotatingText } from '../effects/text/RotatingText'
+import { ShinyText } from '../effects/text/ShinyText'
 import { TextReveal } from '../motion/TextReveal'
 import { ActionLink } from '../ui/ActionLink'
+
+const identityWords = ['Learning', 'Creating', 'Remembering', 'Becoming']
 
 export function Hero() {
   return (
     <section id="home" className="hero section">
       <div className="hero__copy">
         <h1>
-          {profile.hero.title.map((line, index) => (
-            <TextReveal key={line} delay={0.08 + index * 0.09}>
-              {line}
-            </TextReveal>
-          ))}
+          <TextReveal delay={0.08}>
+            <GradientText
+              colors={['#f3f6ff', '#56e4ff', '#8c75ff', '#f3f6ff']}
+              animationSpeed={6}
+              direction="right"
+            >
+              {profile.hero.title[0]}
+            </GradientText>
+          </TextReveal>
+          <TextReveal delay={0.17}>
+            {profile.hero.title[1]}
+          </TextReveal>
+          <TextReveal delay={0.26}>
+            <ShinyText
+              text={profile.hero.title[2]}
+              color="#f3f6ff"
+              shineColor="#56e4ff"
+              speed={3}
+              spread={100}
+              delay={2}
+            />
+          </TextReveal>
         </h1>
         <motion.p
           className="hero__subtitle"
@@ -34,6 +55,22 @@ export function Hero() {
           transition={{ duration: 0.7, delay: 0.55 }}
         >
           {profile.hero.chinese}
+        </motion.p>
+        <motion.p
+          className="hero__identity-words"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.7, delay: 0.65 }}
+        >
+          <RotatingText
+            texts={identityWords}
+            rotationInterval={2500}
+            staggerDuration={0.03}
+            staggerFrom="first"
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            mainClassName="hero__rotating"
+            splitBy="character"
+          />
         </motion.p>
         <motion.div
           className="hero__actions"
@@ -55,17 +92,15 @@ export function Hero() {
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.9, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
       >
-        <CardTilt intensity={3.5}>
-          <GradientBorder className="portrait-frame">
-            <img
-              src={profilePlaceholder}
-              alt="Abstract gradient silhouette placeholder for Seiya's portrait"
-              width="900"
-              height="1100"
-              fetchPriority="high"
-            />
-          </GradientBorder>
-        </CardTilt>
+        <GradientBorder className="portrait-frame">
+          <img
+            src={profilePlaceholder}
+            alt="Abstract gradient silhouette placeholder for Seiya's portrait"
+            width="900"
+            height="1100"
+            fetchPriority="high"
+          />
+        </GradientBorder>
       </motion.div>
 
       <motion.a

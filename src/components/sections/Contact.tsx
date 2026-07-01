@@ -16,8 +16,8 @@ export function Contact() {
       <Chapter number="07" title="Contact" />
       <div className="contact-grid">
         <ScrollReveal>
-          <p className="contact-kicker">This site is still evolving.</p>
-          <h2>Let’s connect.</h2>
+          <p className="contact-kicker">This journal is still growing.</p>
+          <h2>Let&rsquo;s connect.</h2>
         </ScrollReveal>
         <ScrollReveal className="contact-links" delay={0.12}>
           {socialLinks.map((link) => {
@@ -25,14 +25,12 @@ export function Contact() {
             return (
               <a
                 key={link.kind}
-                href={link.href}
+                href={link.placeholder ? undefined : link.href}
                 aria-disabled={link.placeholder}
-                title="Placeholder — update this address in src/data/links.ts"
                 onClick={(event) => link.placeholder && event.preventDefault()}
               >
                 <Icon aria-hidden="true" size={20} strokeWidth={1.45} />
                 <span>{link.label}</span>
-                <small>add link</small>
               </a>
             )
           })}
@@ -43,8 +41,8 @@ export function Contact() {
         </ScrollReveal>
       </div>
       <footer>
-        <p>Built with React, motion, and curiosity. / 用代码保存一点点热爱。</p>
-        <span>© {new Date().getFullYear()} Seiya</span>
+        <p>Crafted with motion, precision, and curiosity. / 用代码保存一点点热爱。</p>
+        <span>&copy; {new Date().getFullYear()} Seiya</span>
       </footer>
     </section>
   )

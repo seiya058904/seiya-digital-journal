@@ -1,0 +1,226 @@
+/* ProfileCard - scoped custom properties */
+.pc-card-wrapper {
+  --pc-bg: #06060f;
+  --pc-border: rgba(255 255 255 / 8%);
+  --pc-border-light: rgba(255 255 255 / 12%);
+  --pc-text: #f3f6ff;
+  --pc-text-muted: #9ca6bb;
+  --pc-accent: #8c75ff;
+  --pc-accent-2: #56e4ff;
+  --pc-glow-1: #56e4ff;
+  --pc-glow-2: #8c75ff;
+  --pc-glow-3: #ed6dff;
+
+  position: relative;
+  width: 340px;
+  font-family: var(--font-sans);
+}
+
+.pc-card-wrapper *,
+.pc-card-wrapper *::before,
+.pc-card-wrapper *::after {
+  box-sizing: border-box;
+}
+
+/* Behind glow */
+.pc-behind-glow {
+  pointer-events: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 220px;
+  height: 220px;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    var(--pc-glow-1) 0%,
+    var(--pc-glow-2) 40%,
+    var(--pc-glow-3) 70%,
+    transparent 100%
+  );
+  opacity: 0.25;
+  filter: blur(50px);
+  z-index: 0;
+  transition: opacity var(--duration-slow) var(--ease-out);
+}
+
+.pc-card-wrapper:hover .pc-behind-glow {
+  opacity: 0.4;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pc-behind-glow {
+    opacity: 0.2;
+    transition: none;
+  }
+}
+
+/* Main card surface */
+.pc-card {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1.5rem 1.5rem;
+  background: var(--pc-bg);
+  border: 1px solid var(--pc-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  will-change: transform;
+}
+
+/* Iridescent top border */
+.pc-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--pc-glow-1),
+    var(--pc-glow-2),
+    var(--pc-glow-3),
+    transparent
+  );
+  opacity: 0.7;
+}
+
+/* Subtle mesh gradient overlay */
+.pc-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 30% 0%, rgba(86 228 255 / 6%) 0%, transparent 60%),
+    radial-gradient(ellipse at 70% 100%, rgba(140 117 255 / 5%) 0%, transparent 60%);
+  z-index: 0;
+}
+
+/* Avatar */
+.pc-avatar-wrap {
+  position: relative;
+  z-index: 1;
+  width: 96px;
+  height: 96px;
+  margin-bottom: 1rem;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--pc-border-light);
+  box-shadow: 0 0 20px rgba(140 117 255 / 15%);
+}
+
+.pc-avatar {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Text block */
+.pc-info {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  width: 100%;
+}
+
+.pc-name {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--pc-text);
+}
+
+.pc-title {
+  margin: 0.25rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--pc-text-muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.pc-handle {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+  color: var(--pc-accent-2);
+  background: rgba(86 228 255 / 8%);
+  border: 1px solid rgba(86 228 255 / 15%);
+  border-radius: 999px;
+}
+
+/* Status dot */
+.pc-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+  font-size: 0.75rem;
+  color: var(--pc-text-muted);
+}
+
+.pc-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 6px rgba(34 197 94 / 50%);
+  animation: pc-pulse 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pc-status-dot {
+    animation: none;
+  }
+  .pc-card {
+    will-change: auto;
+  }
+}
+
+@keyframes pc-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Shine line on hover */
+.pc-shine {
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  z-index: 2;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255 255 255 / 4%),
+    transparent
+  );
+  transition: none;
+}
+
+.pc-card-wrapper:hover .pc-shine {
+  animation: pc-shine-sweep 1.2s var(--ease-out) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pc-shine {
+    display: none;
+  }
+}
+
+@keyframes pc-shine-sweep {
+  from { left: -100%; }
+  to { left: 150%; }
+}

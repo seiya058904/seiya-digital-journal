@@ -1,0 +1,37 @@
+.gradient-text {
+  display: inline-block;
+  background-size: 300% 300%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.gradient-text--border {
+  padding: 0.15em 0.4em;
+  border-radius: var(--radius-sm);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+.gradient-text--animated {
+  animation: gradient-text-move 1s linear infinite;
+  animation-play-state: running;
+}
+
+.gradient-text--paused {
+  animation-play-state: paused;
+}
+
+@keyframes gradient-text-move {
+  from {
+    background-position: var(--gradient-from, 0% 50%);
+  }
+  to {
+    background-position: var(--gradient-to, 100% 50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gradient-text--animated {
+    animation: none;
+  }
+}

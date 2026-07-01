@@ -1,6 +1,7 @@
 import { ArrowUpRight } from 'lucide-react'
 
 import { thoughts } from '../../data/thoughts'
+import { ShinyText } from '../effects/text/ShinyText'
 import { ScrollReveal } from '../motion/ScrollReveal'
 import { Chapter } from '../ui/Chapter'
 
@@ -11,7 +12,14 @@ export function Thoughts() {
       <div className="thoughts-grid">
         <ScrollReveal className="featured-thought">
           <span className="featured-thought__mark" aria-hidden="true">
-            “
+            <ShinyText
+              text={'"'}
+              color="var(--color-gold)"
+              shineColor="var(--color-text)"
+              speed={4}
+              spread={80}
+              delay={3}
+            />
           </span>
           <h2>{thoughts.featured.quote}</h2>
           <p>{thoughts.featured.body}</p>

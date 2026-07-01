@@ -1,0 +1,41 @@
+.shiny-text {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+}
+
+.shiny-text__mask {
+  position: absolute;
+  inset: 0;
+  background-size: var(--shine-spread, 100%) 100%;
+  background-repeat: no-repeat;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: shine-move 1s linear infinite;
+  animation-play-state: running;
+  pointer-events: none;
+}
+
+.shiny-text__mask--paused {
+  animation-play-state: paused;
+}
+
+.shiny-text__mask--disabled {
+  animation: none;
+}
+
+@keyframes shine-move {
+  from {
+    background-position: var(--shine-from, -100% 0);
+  }
+  to {
+    background-position: var(--shine-to, 200% 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shiny-text__mask {
+    animation: none;
+  }
+}

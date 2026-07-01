@@ -1,4 +1,5 @@
 import { profile } from '../../data/profile'
+import { GlareHover } from '../effects/cards/GlareHover'
 import { ScrollReveal } from '../motion/ScrollReveal'
 import { Chapter } from '../ui/Chapter'
 
@@ -17,14 +18,19 @@ export function Interests() {
             className={`interest-orbit interest-orbit--${interest.accent}`}
             delay={index * 0.08}
           >
-            <div className="interest-orbit__visual" aria-hidden="true">
-              <i />
-              <span />
-            </div>
-            <p className="interest-orbit__index">0{index + 1}</p>
-            <h3>{interest.title}</h3>
-            <p>{interest.description}</p>
-            <span className="interest-orbit__cn">{interest.chinese}</span>
+            <GlareHover
+              className="interest-orbit__card"
+              glareColor="rgba(255, 255, 255, 0.08)"
+            >
+              <div className="interest-orbit__visual" aria-hidden="true">
+                <i />
+                <span />
+              </div>
+              <p className="interest-orbit__index">0{index + 1}</p>
+              <h3>{interest.title}</h3>
+              <p>{interest.description}</p>
+              <span className="interest-orbit__cn">{interest.chinese}</span>
+            </GlareHover>
           </ScrollReveal>
         ))}
       </div>
