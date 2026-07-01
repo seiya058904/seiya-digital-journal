@@ -1339,6 +1339,8 @@ main {
 }
 
 .contact-links {
+  position: relative;
+  z-index: 2;
   border-top: 1px solid var(--color-border);
 }
 
@@ -1352,6 +1354,8 @@ main {
   border-bottom: 1px solid var(--color-border);
   color: var(--color-muted);
   font-size: 0.86rem;
+  position: relative;
+  z-index: 2;
   transition:
     color var(--duration-fast) ease,
     background var(--duration-fast) ease;
@@ -1363,9 +1367,36 @@ main {
 }
 
 .contact-link-detail {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
   color: var(--color-faint);
   font-size: 0.78rem;
   letter-spacing: 0.02em;
+}
+
+.contact-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.55rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 4%);
+  color: var(--color-faint);
+  font-size: 0.68rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition:
+    background var(--duration-fast) ease,
+    color var(--duration-fast) ease,
+    border-color var(--duration-fast) ease;
+}
+
+.contact-copy-btn:hover {
+  background: rgb(255 255 255 / 8%);
+  color: var(--color-text);
+  border-color: var(--color-border-strong);
 }
 
 .contact-links a[aria-disabled="true"] {

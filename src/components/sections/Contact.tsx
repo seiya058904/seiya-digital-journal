@@ -1,4 +1,5 @@
-import { ArrowUp, BriefcaseBusiness, GitBranch, Mail } from 'lucide-react'
+import { ArrowUp, BriefcaseBusiness, Copy, GitBranch, Mail } from 'lucide-react'
+import { useCallback, useState } from 'react'
 
 import { socialLinks } from '../../data/links'
 import { ScrollReveal } from '../motion/ScrollReveal'
@@ -10,9 +11,20 @@ const icons = {
   work: BriefcaseBusiness,
 }
 
+const EMAIL_ADDRESS = 'sunmengsaiyi@gmail.com'
+
 const externalKinds = new Set(['github', 'work'])
 
 export function Contact() {
+  const [copied, setCopied] = useState(false)
+
+  const handleCopyEmail = useCallback(() => {
+    navigator.clipboard.writeText(EMAIL_ADDRESS).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }, [])
+
   return (
     <section id="contact" className="section section--contact">
       <Chapter number="07" title="Contact" />
@@ -34,9 +46,25 @@ export function Contact() {
               >
                 <Icon aria-hidden="true" size={20} strokeWidth={1.45} />
                 <span>{link.label}</span>
-                {link.kind === 'email' && (
-                  <span className="contact-link-detail">sunmengsaiyi@gmail.com</span>
-                )}
+                {link.kind === 'email' ? (
+                  <span className="contact-link-detail">
+                    {EMAIL_ADDRESS}
+                    <button
+                      type="button"
+                      className="contact-copy-btn"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        handleCopyEmail()
+                      }}
+                      aria-label="Copy email address"
+                      title="Copy email address"
+                    >
+                      <Copy size={13} strokeWidth={1.6} />
+                      {copied ? 'Copied!' : 'Copy'}
+                    </button>
+                  </span>
+                ) : null}
               </a>
             )
           })}
