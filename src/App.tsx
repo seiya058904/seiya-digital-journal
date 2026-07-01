@@ -36,21 +36,23 @@ export default function App() {
             sensitivity={0.55}
             lineThickness={1}
             linesColor="#2F293A"
-            scanColor="#a78bfa"
+            scanColor="#FF9FFC"
             scanOpacity={0.4}
             gridScale={0.1}
             lineStyle="solid"
-            lineJitter={0.08}
+            lineJitter={0.1}
             scanDirection="pingpong"
             enablePost
-            bloomIntensity={0.5}
-            chromaticAberration={0.0015}
-            noiseIntensity={0.005}
-            scanGlow={0.6}
+            bloomIntensity={0.6}
+            chromaticAberration={0.002}
+            noiseIntensity={0.01}
+            scanGlow={0.5}
             scanSoftness={2}
-            scanPhaseTaper={0.85}
+            scanPhaseTaper={0.9}
             scanDuration={2.0}
             scanDelay={2.0}
+            scanOnClick
+            snapBackDelay={250}
           />
         ) : null}
       </div>

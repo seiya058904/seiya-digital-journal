@@ -476,10 +476,8 @@ export function GridScan({
   const maxSpeed = Infinity
   const yBoost = THREE.MathUtils.lerp(1.2, 1.6, s)
 
-  /* ---- mouse / click events ---- */
+  /* ---- mouse / click events (listening on window so pointer-events:none ancestors don't block) ---- */
   useEffect(() => {
-    const el = containerRef.current
-    if (!el) return
     let leaveTimer: ReturnType<typeof setTimeout> | null = null
 
     const onMove = (e: PointerEvent) => {
@@ -487,20 +485,24 @@ export function GridScan({
         clearTimeout(leaveTimer)
         leaveTimer = null
       }
+      const el = containerRef.current
+      if (!el) return
       const rect = el.getBoundingClientRect()
       const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1
       const ny = -(((e.clientY - rect.top) / rect.height) * 2 - 1)
       lookTarget.current.set(nx, ny)
     }
 
-    const onClick = () => {
-      if (scanOnClick) pushScan(performance.now() / 1000)
-    }
-
-    const onEnter = () => {
-      if (leaveTimer) {
-        clearTimeout(leaveTimer)
-        leaveTimer = null
+    const onClick = (e: MouseEvent) => {
+      if (!scanOnClick) return
+      const el = containerRef.current
+      if (!el) return
+      const rect = el.getBoundingClientRect()
+      if (
+        e.clientX >= rect.left && e.clientX <= rect.right &&
+        e.clientY >= rect.top && e.clientY <= rect.bottom
+      ) {
+        pushScan(performance.now() / 1000)
       }
     }
 
@@ -516,16 +518,14 @@ export function GridScan({
       )
     }
 
-    el.addEventListener('pointermove', onMove)
-    el.addEventListener('pointerenter', onEnter)
-    el.addEventListener('pointerleave', onLeave)
-    if (scanOnClick) el.addEventListener('click', onClick)
+    window.addEventListener('pointermove', onMove)
+    document.addEventListener('mouseleave', onLeave)
+    window.addEventListener('click', onClick)
 
     return () => {
-      el.removeEventListener('pointermove', onMove)
-      el.removeEventListener('pointerenter', onEnter)
-      el.removeEventListener('pointerleave', onLeave)
-      if (scanOnClick) el.removeEventListener('click', onClick)
+      window.removeEventListener('pointermove', onMove)
+      document.removeEventListener('mouseleave', onLeave)
+      window.removeEventListener('click', onClick)
       if (leaveTimer) clearTimeout(leaveTimer)
     }
   }, [scanOnClick, snapBackDelay])
