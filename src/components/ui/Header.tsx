@@ -1,7 +1,7 @@
 import { Menu, X } from 'lucide-react'
 import { useState } from 'react'
 
-import profileLogo from '../../assets/profile-placeholder.svg'
+import profileLogo from '../../assets/brand-icon.webp'
 import { profile } from '../../data/profile'
 import { CardNav, type CardNavItem } from '../effects/react-bits/CardNav'
 import { PillNav } from '../effects/react-bits/PillNav'

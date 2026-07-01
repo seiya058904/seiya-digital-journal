@@ -38,17 +38,21 @@ src/
       react-bits/    — ported React Bits components (GlareHover, BorderGlow, Stack,
                        TiltedCard, ProfileCard, PillNav, GridScan, BounceCards,
                        ImageTrail, MagicBento, ScrambledText, SplitText,
-                       AnimatedContent, CountUp)
+                       AnimatedContent, CountUp, OrbitImages, DesktopGridScan,
+                       CardNav)
       text/          — custom animated text (GradientText, ShinyText, RotatingText)
       cards/         — (removed, all migrated to react-bits/)
       AuroraBackground.tsx, CardTilt.tsx, GradientBorder.tsx
     lab/             — EffectCard, HeavyEffectGate, ReactBitsDemo (Motion Lab UI)
   pages/             — HomePage, MotionLabPage
   data/              — profile.ts, gallery.ts, thoughts.ts, links.ts, effects.ts
-  styles/            — tokens.css (design tokens), global.css (all page CSS)
+  styles/            — tokens.css (design tokens), global.css (all page CSS),
+                       hero-background.css (animated background effect)
   assets/            — profile-placeholder.svg
 public/
   gallery/           — 6 WebP artworks (aurora, horizon, motion, reflection, geometry, future)
+  visual-archive/    — editorial + memory photos (with thumbs/ for previews)
+  orbit/             — 6 WebP images for the OrbitImages component
   favicon.svg
 report/              — session completion reports (Markdown, dated filenames)
 ```
@@ -71,6 +75,8 @@ report/              — session completion reports (Markdown, dated filenames)
 - `effects/text/` — custom animated text components
 - `effects/react-bits/` — ported components from React Bits, each matching a source file in `React bits/{N}.txt`
 - `effects/CardTilt.tsx` — standalone spring-physics tilt (not from React Bits)
+- `OrbitImages` — elliptical orbit animation used in the Signals section of the homepage
+- `DesktopGridScan` — Three.js grid scan background rendered in App.tsx (home page only)
 - ScrollReveal uses `viewport: { once: false }` — animations replay on scroll revisit
 
 ### Motion Lab

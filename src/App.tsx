@@ -1,12 +1,13 @@
 import { MotionConfig } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 
 import { AuroraBackground } from './components/effects/AuroraBackground'
 
 import { DesktopGridScan } from './components/effects/react-bits/DesktopGridScan'
 import { Header } from './components/ui/Header'
 import { HomePage } from './pages/HomePage'
-import { MotionLabPage } from './pages/MotionLabPage'
+
+const MotionLabPage = lazy(() => import('./pages/MotionLabPage').then(m => ({ default: m.MotionLabPage })))
 
 type Page = 'home' | 'lab'
 
@@ -58,7 +59,7 @@ export default function App() {
       </div>
       <div className="site-main">
         <Header activePage={page} />
-        {page === 'lab' ? <MotionLabPage /> : <HomePage />}
+        {page === 'lab' ? <Suspense fallback={null}><MotionLabPage /></Suspense> : <HomePage />}
       </div>
     </MotionConfig>
   )
