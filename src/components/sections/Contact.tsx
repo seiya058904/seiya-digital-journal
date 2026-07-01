@@ -30,7 +30,7 @@ export function Contact() {
                 key={link.kind}
                 href={link.href}
                 target={isExternal ? '_blank' : undefined}
-                rel={isExternal ? 'noreferrer' : undefined}
+                rel={isExternal ? 'noopener noreferrer' : undefined}
               >
                 <Icon aria-hidden="true" size={20} strokeWidth={1.45} />
                 <span>{link.label}</span>

@@ -37,7 +37,7 @@ export const profile = {
       description: 'I explore computers, frontend development, AI tools, hardware, and personal projects.',
       chinese: '计算机',
       keywords: ['Windows', 'Frontend', 'AI tools', 'Hardware'],
-      image: '/gallery/geometry.webp',
+      image: '/interests/technology.webp',
       accent: 'cyan',
     },
     {
@@ -45,7 +45,7 @@ export const profile = {
       description: 'English is a second world for thinking, communication, and future study.',
       chinese: '英语',
       keywords: ['English', 'PTE', 'Speaking', 'Vocabulary'],
-      image: '/gallery/reflection.webp',
+      image: '/interests/language.webp',
       accent: 'violet',
     },
     {
@@ -53,7 +53,7 @@ export const profile = {
       description: 'I turn ideas into websites, game prototypes, visual pages, and presentations.',
       chinese: '创作',
       keywords: ['Websites', 'Games', 'PPT', 'Visual design'],
-      image: '/gallery/motion.webp',
+      image: '/interests/making.webp',
       accent: 'gold',
     },
     {
@@ -61,7 +61,7 @@ export const profile = {
       description: 'I use travel, study, and projects to move toward a wider future.',
       chinese: '探索',
       keywords: ['Travel', 'Canada', 'Growth', 'Future'],
-      image: '/gallery/horizon.webp',
+      image: '/interests/exploration.webp',
       accent: 'magenta',
     },
   ] satisfies Interest[],

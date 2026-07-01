@@ -15,7 +15,6 @@ const headerItems = [
   { label: 'About', href: '#about' },
   { label: 'Gallery', href: '#gallery' },
   { label: 'Thoughts', href: '#thoughts' },
-  { label: 'Lab', href: '#/motion-lab' },
   { label: 'Contact', href: '#contact' },
 ]
 
@@ -46,7 +45,7 @@ const exploreItems: CardNavItem[] = [
     textColor: '#fff',
     links: [
       { label: 'Motion Lab', href: '#/motion-lab', ariaLabel: 'Motion Lab experiments' },
-      { label: 'GitHub', href: 'https://github.com/seiya058904', ariaLabel: 'GitHub profile' },
+      { label: 'GitHub', href: 'https://github.com/seiya058904/', ariaLabel: 'GitHub profile' },
       { label: 'Contact', href: '#contact', ariaLabel: 'Contact page' },
     ],
   },

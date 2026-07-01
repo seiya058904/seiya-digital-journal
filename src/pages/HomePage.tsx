@@ -75,11 +75,11 @@ export function HomePage() {
             <OrbitImages
               images={orbitImages}
               shape="ellipse"
-              radiusX={320}
-              radiusY={80}
+              radiusX={440}
+              radiusY={130}
               rotation={-6}
               duration={35}
-              itemSize={72}
+              itemSize={100}
               responsive
             />
           </ScrollReveal>

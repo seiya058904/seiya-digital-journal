@@ -27,6 +27,7 @@ export function Interests() {
         glowColor="86, 228, 255"
         spotlightRadius={320}
         textAutoHide={false}
+        enableBorderGlow
       />
     </section>
   )
