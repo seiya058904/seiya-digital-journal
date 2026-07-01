@@ -452,6 +452,26 @@ main {
   top: -8px;
 }
 
+/* Hero ProfileCard — tone down shine and glare */
+.hero-profile-card .pc-shine {
+  filter: brightness(0.35) contrast(1.1) saturate(0.15) opacity(0.25);
+}
+
+.hero-profile-card .pc-card:hover .pc-shine,
+.hero-profile-card .pc-card.active .pc-shine {
+  filter: brightness(0.5) contrast(1.2) saturate(0.25);
+  animation-play-state: paused;
+}
+
+.hero-profile-card .pc-glare {
+  opacity: 0.15;
+}
+
+.hero-profile-card .pc-card:hover .pc-glare,
+.hero-profile-card .pc-card.active .pc-glare {
+  opacity: 0.25;
+}
+
 .gradient-border {
   position: relative;
   padding: 1px;
