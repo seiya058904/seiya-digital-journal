@@ -1,7 +1,13 @@
 import { profile } from '../../data/profile'
-import { GlareHover } from '../effects/cards/GlareHover'
+import { MagicBento } from '../effects/react-bits/MagicBento'
 import { ScrollReveal } from '../motion/ScrollReveal'
 import { Chapter } from '../ui/Chapter'
+
+const interestItems = profile.interests.map((interest) => ({
+  title: interest.title,
+  description: interest.description,
+  label: interest.chinese,
+}))
 
 export function Interests() {
   return (
@@ -11,29 +17,12 @@ export function Interests() {
         <p>Four signals I keep returning to.</p>
         <h2>Curiosity has more than one orbit.</h2>
       </ScrollReveal>
-      <div className="interest-orbits">
-        {profile.interests.map((interest, index) => (
-          <ScrollReveal
-            key={interest.title}
-            className={`interest-orbit interest-orbit--${interest.accent}`}
-            delay={index * 0.08}
-          >
-            <GlareHover
-              className="interest-orbit__card"
-              glareColor="rgba(255, 255, 255, 0.08)"
-            >
-              <div className="interest-orbit__visual" aria-hidden="true">
-                <i />
-                <span />
-              </div>
-              <p className="interest-orbit__index">0{index + 1}</p>
-              <h3>{interest.title}</h3>
-              <p>{interest.description}</p>
-              <span className="interest-orbit__cn">{interest.chinese}</span>
-            </GlareHover>
-          </ScrollReveal>
-        ))}
-      </div>
+      <MagicBento
+        className="interests-bento"
+        items={interestItems}
+        glowColor="86, 228, 255"
+        spotlightRadius={320}
+      />
     </section>
   )
 }

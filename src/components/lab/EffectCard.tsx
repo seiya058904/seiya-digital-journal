@@ -53,7 +53,11 @@ export function EffectCard({
           <span
             className={`effect-card__badge effect-card__badge--${integrationStatus}`}
           >
-            {integrationStatus === 'real-demo' ? 'real demo' : 'metadata only'}
+            {integrationStatus === 'real-demo'
+              ? 'real demo'
+              : integrationStatus === 'planned'
+                ? 'planned'
+                : 'metadata only'}
           </span>
         </div>
       </div>

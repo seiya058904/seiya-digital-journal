@@ -1,5 +1,5 @@
 import { profile } from '../../data/profile'
-import { ScrollReveal } from '../motion/ScrollReveal'
+import { AnimatedContent } from '../effects/react-bits/AnimatedContent'
 import { Chapter } from '../ui/Chapter'
 
 export function About() {
@@ -7,13 +7,19 @@ export function About() {
     <section id="about" className="section section--about">
       <Chapter number="02" title="About" />
       <div className="about-grid">
-        <ScrollReveal className="about-grid__intro">
+        <AnimatedContent className="about-grid__intro" distance={70}>
           <p>{profile.about.intro}</p>
           <span>{profile.about.chinese}</span>
-        </ScrollReveal>
-        <ScrollReveal className="about-grid__statement" delay={0.12}>
+        </AnimatedContent>
+        <AnimatedContent
+          className="about-grid__statement"
+          direction="horizontal"
+          reverse
+          distance={80}
+          delay={0.12}
+        >
           <h2>{profile.about.statement}</h2>
-        </ScrollReveal>
+        </AnimatedContent>
       </div>
     </section>
   )

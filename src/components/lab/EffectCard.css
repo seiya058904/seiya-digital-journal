@@ -55,6 +55,10 @@
   color: var(--color-faint);
 }
 
+.effect-card__badge--planned {
+  color: var(--color-gold);
+}
+
 .effect-card__desc {
   font-family: var(--font-sans);
   font-size: 0.88rem;

@@ -70,11 +70,18 @@ button {
 }
 
 .aurora,
-.cursor-glow {
+.cursor-glow,
+.site-gridscan {
   position: fixed;
   inset: 0;
   z-index: -2;
   pointer-events: none;
+}
+
+.site-gridscan {
+  z-index: -1;
+  opacity: 0.72;
+  mask-image: linear-gradient(to bottom, black 0%, rgb(0 0 0 / 82%) 48%, transparent 94%);
 }
 
 .aurora {

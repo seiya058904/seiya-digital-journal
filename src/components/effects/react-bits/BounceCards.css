@@ -1,0 +1,33 @@
+.bounce-cards {
+  position: relative;
+  display: flex;
+  max-width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.bounce-card {
+  position: absolute;
+  width: min(42%, 11rem);
+  overflow: hidden;
+  border: 3px solid rgb(255 255 255 / 72%);
+  border-radius: 1.2rem;
+  aspect-ratio: 1;
+  box-shadow: 0 0.8rem 2.5rem rgb(0 0 0 / 30%);
+}
+
+.bounce-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .bounce-card {
+    transform: none !important;
+  }
+
+  .bounce-card:not(:first-child) {
+    display: none;
+  }
+}

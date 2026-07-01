@@ -1,0 +1,8 @@
+.scrambled-text {
+  margin: 0;
+}
+
+.scrambled-char {
+  display: inline-block;
+  will-change: transform;
+}

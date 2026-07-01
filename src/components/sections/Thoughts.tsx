@@ -1,6 +1,7 @@
 import { ArrowUpRight } from 'lucide-react'
 
 import { thoughts } from '../../data/thoughts'
+import { SplitText } from '../effects/react-bits/SplitText'
 import { ShinyText } from '../effects/text/ShinyText'
 import { ScrollReveal } from '../motion/ScrollReveal'
 import { Chapter } from '../ui/Chapter'
@@ -21,7 +22,14 @@ export function Thoughts() {
               delay={3}
             />
           </span>
-          <h2>{thoughts.featured.quote}</h2>
+          <SplitText
+            tag="h2"
+            text={thoughts.featured.quote}
+            splitType="words"
+            delay={85}
+            duration={1}
+            threshold={0.15}
+          />
           <p>{thoughts.featured.body}</p>
           <span>{thoughts.featured.chinese}</span>
         </ScrollReveal>

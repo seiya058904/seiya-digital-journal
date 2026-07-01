@@ -1,7 +1,7 @@
 export type EffectStatus = 'core' | 'ready' | 'experimental' | 'heavy'
 export type EffectType = 'text' | 'card' | 'cursor' | 'navigation' | '3d' | 'experimental'
-export type EffectDeps = 'none' | 'motion' | 'gsap' | 'three'
-export type EffectIntegrationStatus = 'real-demo' | 'metadata-only'
+export type EffectDeps = 'none' | 'motion' | 'gsap' | 'three' | 'three + postprocessing'
+export type EffectIntegrationStatus = 'real-demo' | 'metadata-only' | 'planned'
 
 export type EffectMeta = {
   id: string
@@ -130,7 +130,7 @@ const effectMetadata = [
     deps: 'gsap',
     status: 'experimental',
     description: 'Bento grid with spotlight, tilt, magnetism, and particle effects.',
-    where: 'Motion Lab',
+    where: 'Interests, Motion Lab',
     category: 'Cards',
   },
   {
@@ -150,7 +150,7 @@ const effectMetadata = [
     deps: 'gsap',
     status: 'experimental',
     description: 'Text scrambles and reveals on hover. Hacker aesthetic.',
-    where: 'Motion Lab',
+    where: 'Chapter labels, Motion Lab',
     category: 'Text',
   },
   {
@@ -160,7 +160,7 @@ const effectMetadata = [
     deps: 'gsap',
     status: 'experimental',
     description: 'Per-character/word/line scroll-triggered animation.',
-    where: 'Motion Lab',
+    where: 'Thoughts quote, Motion Lab',
     category: 'Text',
   },
   {
@@ -170,7 +170,7 @@ const effectMetadata = [
     deps: 'gsap',
     status: 'ready',
     description: 'Scroll-triggered content entrance with direction and easing.',
-    where: 'Motion Lab',
+    where: 'About, Motion Lab',
     category: 'Experimental',
   },
   {
@@ -207,10 +207,10 @@ const effectMetadata = [
     id: 'grid-scan',
     name: 'GridScan',
     type: '3d',
-    deps: 'three',
+    deps: 'three + postprocessing',
     status: 'heavy',
     description: '3D grid with scan line and post-processing effects.',
-    where: 'Motion Lab only',
+    where: 'Homepage background, Motion Lab',
     category: '3D',
   },
 ] satisfies BaseEffectMeta[]
@@ -243,6 +243,14 @@ const realDemoNames = new Set([
   'TiltedCard',
   'Stack',
   'PillNav',
+  'GridScan',
+  'BounceCards',
+  'ImageTrail',
+  'MagicBento',
+  'ScrambledText',
+  'SplitText',
+  'AnimatedContent',
+  'CountUp',
 ])
 
 const homepageNames = new Set([
@@ -252,14 +260,23 @@ const homepageNames = new Set([
   'RotatingText',
   'ShinyText',
   'PillNav',
+  'GridScan',
+  'MagicBento',
+  'ScrambledText',
+  'SplitText',
+  'AnimatedContent',
 ])
+
+const plannedNames = new Set(['Lanyard', 'CardNav'])
 
 export const effects: EffectMeta[] = effectMetadata.map((effect) => ({
   ...effect,
   sourceFile: sourceFileByName[effect.name],
   integrationStatus: realDemoNames.has(effect.name)
     ? 'real-demo'
-    : 'metadata-only',
+    : plannedNames.has(effect.name)
+      ? 'planned'
+      : 'metadata-only',
   homepageUsage: homepageNames.has(effect.name),
 }))
 
