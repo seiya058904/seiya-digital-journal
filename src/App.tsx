@@ -33,14 +33,24 @@ export default function App() {
         {page === 'home' ? (
           <DesktopGridScan
             className="site-gridscan"
+            sensitivity={0.55}
             lineThickness={1}
-            linesColor="#25315f"
+            linesColor="#2F293A"
             scanColor="#a78bfa"
-            scanOpacity={0.5}
+            scanOpacity={0.4}
             gridScale={0.1}
+            lineStyle="solid"
             lineJitter={0.08}
-            bloomIntensity={0.55}
-            scanGlow={0.75}
+            scanDirection="pingpong"
+            enablePost
+            bloomIntensity={0.5}
+            chromaticAberration={0.0015}
+            noiseIntensity={0.005}
+            scanGlow={0.6}
+            scanSoftness={2}
+            scanPhaseTaper={0.85}
+            scanDuration={2.0}
+            scanDelay={2.0}
           />
         ) : null}
       </div>
