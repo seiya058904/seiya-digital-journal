@@ -1,6 +1,7 @@
 import { ArrowLeft } from 'lucide-react'
 import { effects, effectCategories } from '../data/effects'
 import { EffectCard } from '../components/lab/EffectCard'
+import { ReactBitsDemo } from '../components/lab/ReactBitsDemo'
 import '../components/lab/EffectCard.css'
 import '../components/lab/HeavyEffectGate.css'
 import './MotionLabPage.css'
@@ -29,7 +30,11 @@ export function MotionLabPage() {
               <h2 className="motion-lab__category">{category}</h2>
               <div className="motion-lab__cards">
                 {categoryEffects.map((effect) => (
-                  <EffectCard key={effect.id} {...effect} />
+                  <EffectCard key={effect.id} {...effect}>
+                    {effect.integrationStatus === 'real-demo' ? (
+                      <ReactBitsDemo effectId={effect.id} />
+                    ) : null}
+                  </EffectCard>
                 ))}
               </div>
             </section>

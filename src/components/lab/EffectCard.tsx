@@ -25,6 +25,9 @@ export function EffectCard({
   status,
   description,
   where,
+  sourceFile,
+  integrationStatus,
+  homepageUsage,
   children,
 }: EffectCardProps) {
   return (
@@ -47,11 +50,21 @@ export function EffectCard({
           >
             {deps}
           </span>
+          <span
+            className={`effect-card__badge effect-card__badge--${integrationStatus}`}
+          >
+            {integrationStatus === 'real-demo' ? 'real demo' : 'metadata only'}
+          </span>
         </div>
       </div>
       <p className="effect-card__desc">{description}</p>
+      <p className="effect-card__source">Source: {sourceFile}</p>
       <p className="effect-card__where">
         <span className="effect-card__where-label">Where:</span> {where}
+      </p>
+      <p className="effect-card__where">
+        <span className="effect-card__where-label">Homepage:</span>{' '}
+        {homepageUsage ? 'yes' : 'no'}
       </p>
       {children && <div className="effect-card__demo">{children}</div>}
     </article>

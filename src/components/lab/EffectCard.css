@@ -46,12 +46,28 @@
   color: var(--color-faint);
 }
 
+.effect-card__badge--real-demo {
+  border-color: rgb(86 228 255 / 32%);
+  color: var(--color-cyan);
+}
+
+.effect-card__badge--metadata-only {
+  color: var(--color-faint);
+}
+
 .effect-card__desc {
   font-family: var(--font-sans);
   font-size: 0.88rem;
   line-height: 1.6;
   color: var(--color-muted);
   margin: 0;
+}
+
+.effect-card__source {
+  margin: 0;
+  color: var(--color-cyan);
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-size: 0.72rem;
 }
 
 .effect-card__where {
@@ -70,10 +86,18 @@
 .effect-card__demo {
   margin-top: 0.5rem;
   padding: 1.5rem;
+  overflow: hidden;
   background: var(--color-surface-strong);
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 120px;
+}
+
+@media (max-width: 1023px) {
+  .effect-card__demo {
+    min-height: auto;
+    padding: 1rem;
+  }
 }

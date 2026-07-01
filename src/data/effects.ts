@@ -1,6 +1,7 @@
 export type EffectStatus = 'core' | 'ready' | 'experimental' | 'heavy'
 export type EffectType = 'text' | 'card' | 'cursor' | 'navigation' | '3d' | 'experimental'
 export type EffectDeps = 'none' | 'motion' | 'gsap' | 'three'
+export type EffectIntegrationStatus = 'real-demo' | 'metadata-only'
 
 export type EffectMeta = {
   id: string
@@ -11,9 +12,17 @@ export type EffectMeta = {
   description: string
   where: string
   category: string
+  sourceFile: string
+  integrationStatus: EffectIntegrationStatus
+  homepageUsage: boolean
 }
 
-export const effects: EffectMeta[] = [
+type BaseEffectMeta = Omit<
+  EffectMeta,
+  'sourceFile' | 'integrationStatus' | 'homepageUsage'
+>
+
+const effectMetadata = [
   {
     id: 'gradient-text',
     name: 'GradientText',
@@ -204,7 +213,53 @@ export const effects: EffectMeta[] = [
     where: 'Motion Lab only',
     category: '3D',
   },
-]
+] satisfies BaseEffectMeta[]
+
+const sourceFileByName: Record<string, string> = {
+  GradientText: 'React bits/1.txt',
+  BorderGlow: 'React bits/2.txt',
+  Lanyard: 'React bits/3.txt',
+  BounceCards: 'React bits/4.txt',
+  GlareHover: 'React bits/5.txt',
+  GridScan: 'React bits/6.txt',
+  ImageTrail: 'React bits/7.txt',
+  MagicBento: 'React bits/8.txt',
+  PillNav: 'React bits/9.txt',
+  ProfileCard: 'React bits/10.txt',
+  RotatingText: 'React bits/11.txt',
+  ScrambledText: 'React bits/12.txt',
+  ShinyText: 'React bits/13.txt',
+  SplitText: 'React bits/14.txt',
+  AnimatedContent: 'React bits/15.txt',
+  Stack: 'React bits/16.txt',
+  TiltedCard: 'React bits/17.txt',
+  CountUp: 'React bits/18.txt',
+  CardNav: 'React bits/19.txt',
+}
+
+const realDemoNames = new Set([
+  'BorderGlow',
+  'GlareHover',
+  'TiltedCard',
+  'Stack',
+])
+
+const homepageNames = new Set([
+  'GradientText',
+  'BorderGlow',
+  'GlareHover',
+  'RotatingText',
+  'ShinyText',
+])
+
+export const effects: EffectMeta[] = effectMetadata.map((effect) => ({
+  ...effect,
+  sourceFile: sourceFileByName[effect.name],
+  integrationStatus: realDemoNames.has(effect.name)
+    ? 'real-demo'
+    : 'metadata-only',
+  homepageUsage: homepageNames.has(effect.name),
+}))
 
 export const effectCategories = [
   'Text',

@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 
+import { effects } from './effects.ts'
 import { galleryItems } from './gallery.ts'
 import { navigation, socialLinks } from './links.ts'
 import { profile } from './profile.ts'
@@ -34,4 +35,23 @@ test('thoughts and placeholder links are explicit', () => {
   assert.equal(thoughts.featured.quote, 'Curiosity drives everything.')
   assert.equal(socialLinks.every(({ placeholder }) => placeholder), true)
   assert.equal(socialLinks.every(({ href }) => href === '#'), true)
+})
+
+test('Motion Lab distinguishes real React Bits demos from metadata', () => {
+  assert.deepEqual(
+    effects
+      .filter(({ integrationStatus }) => integrationStatus === 'real-demo')
+      .map(({ name }) => name),
+    ['BorderGlow', 'GlareHover', 'TiltedCard', 'Stack'],
+  )
+  assert.equal(
+    effects
+      .filter(({ integrationStatus }) => integrationStatus === 'real-demo')
+      .every(({ sourceFile }) => sourceFile.startsWith('React bits/')),
+    true,
+  )
+  assert.equal(
+    effects.find(({ name }) => name === 'GlareHover')?.homepageUsage,
+    true,
+  )
 })
