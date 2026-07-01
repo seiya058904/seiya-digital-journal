@@ -2,7 +2,7 @@ import { MotionConfig } from 'framer-motion'
 import { useEffect, useState } from 'react'
 
 import { AuroraBackground } from './components/effects/AuroraBackground'
-import { CursorGlow } from './components/effects/CursorGlow'
+
 import { DesktopGridScan } from './components/effects/react-bits/DesktopGridScan'
 import { Header } from './components/ui/Header'
 import { HomePage } from './pages/HomePage'
@@ -56,7 +56,6 @@ export default function App() {
           />
         ) : null}
       </div>
-      <CursorGlow />
       <div className="site-main">
         <Header activePage={page} />
         {page === 'lab' ? <MotionLabPage /> : <HomePage />}
