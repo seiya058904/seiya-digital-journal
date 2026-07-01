@@ -58,7 +58,7 @@ function CardNavComponent({
 
         void contentEl.offsetHeight
 
-        const topBar = 60
+        const topBar = 48
         const padding = 16
         const contentHeight = contentEl.scrollHeight
 
@@ -77,7 +77,7 @@ function CardNavComponent({
     const navEl = navRef.current
     if (!navEl) return null
 
-    gsap.set(navEl, { height: 60, overflow: 'hidden' })
+    gsap.set(navEl, { height: 48, overflow: 'hidden' })
     gsap.set(cardsRef.current, { y: 50, opacity: 0 })
 
     const tl = gsap.timeline({ paused: true })

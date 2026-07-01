@@ -4,10 +4,10 @@
 
 .card-nav {
   display: block;
-  height: 60px;
+  height: 48px;
   background-color: rgba(5, 10, 24, 0.88);
   border: 0.5px solid rgba(194, 215, 255, 0.12);
-  border-radius: 0.75rem;
+  border-radius: 0.65rem;
   position: relative;
   overflow: hidden;
   will-change: height;
@@ -22,10 +22,10 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 60px;
+  height: 48px;
   display: flex;
   align-items: center;
-  padding: 0.5rem 0.45rem 0.55rem 1.1rem;
+  padding: 0.35rem 0.4rem 0.4rem 0.9rem;
   z-index: 2;
 }
 
@@ -42,8 +42,8 @@
 }
 
 .hamburger-line {
-  width: 22px;
-  height: 2px;
+  width: 18px;
+  height: 1.5px;
   background-color: currentColor;
   transition:
     transform 0.25s ease,
@@ -52,7 +52,7 @@
 }
 
 .hamburger-label {
-  font-size: 0.75rem;
+  font-size: 0.68rem;
   letter-spacing: 0.08em;
   opacity: 0.7;
 }
@@ -73,7 +73,7 @@
   position: absolute;
   left: 0;
   right: 0;
-  top: 60px;
+  top: 48px;
   bottom: 0;
   padding: 0.5rem;
   display: flex;
@@ -93,18 +93,18 @@
   height: 100%;
   flex: 1 1 0;
   min-width: 0;
-  border-radius: calc(0.75rem - 0.2rem);
+  border-radius: calc(0.65rem - 0.2rem);
   position: relative;
   display: flex;
   flex-direction: column;
-  padding: 12px 14px;
-  gap: 8px;
+  padding: 10px 12px;
+  gap: 6px;
   user-select: none;
 }
 
 .nav-card-label {
   font-weight: 500;
-  font-size: 1.05rem;
+  font-size: 0.92rem;
   letter-spacing: -0.02em;
 }
 
@@ -116,13 +116,13 @@
 }
 
 .nav-card-link {
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   cursor: pointer;
   text-decoration: none;
   transition: opacity 0.3s ease;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   opacity: 0.85;
 }
 

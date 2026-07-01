@@ -20,12 +20,12 @@ const stackImages = [
 ]
 
 const orbitImages = [
-  `${base}gallery/geometry.webp`,
-  `${base}gallery/reflection.webp`,
-  `${base}gallery/motion.webp`,
-  `${base}gallery/horizon.webp`,
-  `${base}gallery/aurora.webp`,
-  `${base}gallery/future.webp`,
+  `${base}orbit/orbit-01.webp`,
+  `${base}orbit/orbit-02.webp`,
+  `${base}orbit/orbit-03.webp`,
+  `${base}orbit/orbit-04.webp`,
+  `${base}orbit/orbit-05.webp`,
+  `${base}orbit/orbit-06.webp`,
 ]
 
 export function HomePage() {
@@ -75,11 +75,11 @@ export function HomePage() {
             <OrbitImages
               images={orbitImages}
               shape="ellipse"
-              radiusX={440}
-              radiusY={130}
+              radiusX={480}
+              radiusY={150}
               rotation={-6}
-              duration={35}
-              itemSize={100}
+              duration={40}
+              itemSize={120}
               responsive
             />
           </ScrollReveal>

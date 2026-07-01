@@ -339,13 +339,14 @@ main {
   font-size: clamp(3.15rem, 5.5vw, 6rem);
   font-weight: 430;
   letter-spacing: -0.04em;
-  line-height: 1.05;
+  line-height: 1.22;
   text-wrap: balance;
 }
 
 .text-reveal {
   display: block;
   overflow: hidden;
+  padding-bottom: 0.08em;
 }
 
 .text-reveal > span {
