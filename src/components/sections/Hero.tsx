@@ -18,17 +18,19 @@ export function Hero() {
       <div className="hero__copy">
         <h1>
           <TextReveal delay={0.08}>
+            {profile.hero.title[0].text}
             <GradientText
               colors={['#f3f6ff', '#56e4ff', '#8c75ff', '#f3f6ff']}
               animationSpeed={0.3}
               direction="right"
             >
-              {profile.hero.title[0]}
+              {profile.hero.title[0].accent}
             </GradientText>
           </TextReveal>
           <TextReveal delay={0.17}>
+            {profile.hero.title[1].text}
             <ShinyText
-              text={profile.hero.title[1]}
+              text={profile.hero.title[1].accent}
               color="#dce8ff"
               shineColor="#56e4ff"
               speed={0.5}

@@ -33,7 +33,12 @@ export function Header({ activePage = 'home' }: HeaderProps) {
         </button>
         <div id="site-menu" className={`nav-links ${open ? 'is-open' : ''}`}>
           {navigation.map((item) => (
-            <a key={item.href} href={item.href} onClick={() => setOpen(false)}>
+            <a
+              key={item.href}
+              href={item.href}
+              className={activePage === 'home' && item.href === '#home' ? 'is-active' : ''}
+              onClick={() => setOpen(false)}
+            >
               {item.label}
             </a>
           ))}
