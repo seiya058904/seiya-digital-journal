@@ -19,7 +19,7 @@ export const navigation = [
 ] satisfies NavigationItem[]
 
 export const socialLinks = [
-  { label: 'Email me', href: 'mailto:sunmengsaiyi@gmail.com', placeholder: false, kind: 'email' },
+  { label: 'Email me', href: 'mailto:sunmengsaiyi@gmail.com?subject=Hello%20Seiya', placeholder: false, kind: 'email' },
   { label: 'GitHub', href: 'https://github.com/seiya058904/', placeholder: false, kind: 'github' },
   { label: 'Visit my work', href: 'https://seiya058904.github.io/', placeholder: false, kind: 'work' },
 ] satisfies SocialLink[]

@@ -1361,6 +1361,12 @@ main {
   color: var(--color-text);
 }
 
+.contact-link-detail {
+  color: var(--color-faint);
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+}
+
 .contact-links a[aria-disabled="true"] {
   cursor: not-allowed;
   opacity: 0.5;

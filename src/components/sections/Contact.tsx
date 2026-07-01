@@ -34,6 +34,9 @@ export function Contact() {
               >
                 <Icon aria-hidden="true" size={20} strokeWidth={1.45} />
                 <span>{link.label}</span>
+                {link.kind === 'email' && (
+                  <span className="contact-link-detail">sunmengsaiyi@gmail.com</span>
+                )}
               </a>
             )
           })}

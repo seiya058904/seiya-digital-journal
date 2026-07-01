@@ -4,10 +4,11 @@
 
 .card-nav {
   display: block;
-  height: 48px;
+  height: 60px;
   background-color: rgba(5, 10, 24, 0.88);
   border: 0.5px solid rgba(194, 215, 255, 0.12);
-  border-radius: 0.65rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   position: relative;
   overflow: hidden;
   will-change: height;
@@ -22,18 +23,21 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 48px;
+  height: 60px;
   display: flex;
   align-items: center;
-  padding: 0.35rem 0.4rem 0.4rem 0.9rem;
+  justify-content: space-between;
+  padding: 0.5rem 0.45rem 0.55rem 1.1rem;
   z-index: 2;
 }
 
 .hamburger-menu {
   height: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  gap: 6px;
   cursor: pointer;
 }
 
@@ -42,19 +46,21 @@
 }
 
 .hamburger-line {
-  width: 18px;
-  height: 1.5px;
+  width: 24px;
+  height: 2px;
   background-color: currentColor;
   transition:
     transform 0.25s ease,
-    opacity 0.2s ease;
+    opacity 0.2s ease,
+    margin 0.3s ease;
   transform-origin: 50% 50%;
 }
 
 .hamburger-label {
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   letter-spacing: 0.08em;
   opacity: 0.7;
+  margin-left: 10px;
 }
 
 .hamburger-menu.open .hamburger-line:first-child {
@@ -73,12 +79,12 @@
   position: absolute;
   left: 0;
   right: 0;
-  top: 48px;
+  top: 60px;
   bottom: 0;
   padding: 0.5rem;
   display: flex;
   align-items: flex-end;
-  gap: 10px;
+  gap: 12px;
   visibility: hidden;
   pointer-events: none;
   z-index: 1;
@@ -93,18 +99,18 @@
   height: 100%;
   flex: 1 1 0;
   min-width: 0;
-  border-radius: calc(0.65rem - 0.2rem);
+  border-radius: calc(0.75rem - 0.2rem);
   position: relative;
   display: flex;
   flex-direction: column;
-  padding: 10px 12px;
-  gap: 6px;
+  padding: 12px 16px;
+  gap: 8px;
   user-select: none;
 }
 
 .nav-card-label {
-  font-weight: 500;
-  font-size: 0.92rem;
+  font-weight: 400;
+  font-size: 1.1rem;
   letter-spacing: -0.02em;
 }
 
@@ -116,18 +122,17 @@
 }
 
 .nav-card-link {
-  font-size: 0.72rem;
+  font-size: 0.85rem;
   cursor: pointer;
   text-decoration: none;
   transition: opacity 0.3s ease;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  opacity: 0.85;
+  gap: 6px;
 }
 
 .nav-card-link:hover {
-  opacity: 1;
+  opacity: 0.75;
 }
 
 .nav-card-link-icon {
@@ -149,7 +154,7 @@
 
   .nav-card {
     height: auto;
-    min-height: 54px;
+    min-height: 60px;
     flex: 1 1 auto;
     max-height: none;
   }
@@ -159,7 +164,7 @@
   }
 
   .nav-card-link {
-    font-size: 0.78rem;
+    font-size: 0.82rem;
   }
 }
 
