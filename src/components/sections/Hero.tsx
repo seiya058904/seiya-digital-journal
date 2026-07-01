@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import profilePlaceholder from '../../assets/profile-placeholder.svg'
 import { profile } from '../../data/profile'
 import { GradientBorder } from '../effects/GradientBorder'
+import { GradientText } from '../effects/text/GradientText'
 import { RotatingText } from '../effects/text/RotatingText'
 import { TextReveal } from '../motion/TextReveal'
 import { ActionLink } from '../ui/ActionLink'
@@ -15,11 +16,23 @@ export function Hero() {
     <section id="home" className="hero section">
       <div className="hero__copy">
         <h1>
-          <TextReveal delay={0.08} className="hero__title-line hero-title-gradient-line">
-            {profile.hero.title[0].text}{profile.hero.title[0].accent}
+          <TextReveal delay={0.08} className="hero__title-line">
+            <GradientText
+              colors={['#f3f6ff', '#56e4ff', '#a78bfa', '#f0abfc', '#f3f6ff']}
+              animationSpeed={7}
+              direction="right"
+            >
+              {profile.hero.title[0].text}{profile.hero.title[0].accent}
+            </GradientText>
           </TextReveal>
-          <TextReveal delay={0.17} className="hero__title-line hero-title-gradient-line">
-            {profile.hero.title[1].text}{profile.hero.title[1].accent}
+          <TextReveal delay={0.17} className="hero__title-line">
+            <GradientText
+              colors={['#f3f6ff', '#56e4ff', '#a78bfa', '#f0abfc', '#f3f6ff']}
+              animationSpeed={7}
+              direction="right"
+            >
+              {profile.hero.title[1].text}{profile.hero.title[1].accent}
+            </GradientText>
           </TextReveal>
         </h1>
         <motion.p

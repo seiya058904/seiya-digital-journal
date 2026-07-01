@@ -66,41 +66,11 @@
   );
 }
 
-/* Hero title full-line gradient — each line gets a static colour sweep */
-.hero-title-gradient-line > span {
-  display: block;
-  background: linear-gradient(
-    90deg,
-    #f3f6ff 0%,
-    #56e4ff 28%,
-    #a78bfa 58%,
-    #f3f6ff 100%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .site-background .aurora__orb {
     animation: none;
     opacity: 0.34;
     will-change: auto;
-  }
-
-  .hero-title-gradient-line > span {
-    background: linear-gradient(
-      90deg,
-      #f3f6ff 0%,
-      #56e4ff 28%,
-      #a78bfa 58%,
-      #f3f6ff 100%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    -webkit-text-fill-color: transparent;
   }
 }
 
