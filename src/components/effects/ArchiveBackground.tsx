@@ -8,10 +8,12 @@ export function ArchiveBackground({ hidden = false }: { hidden?: boolean }) {
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches
   }, [])
 
-  if (hidden || reducedMotion) return null
+  // Keep Silk mounted even when hidden so WebGL context survives navigation
+  // — prevents stutter on home↔archive transitions.
+  if (reducedMotion) return null
 
   return (
-    <div className="archive-bg" aria-hidden="true">
+    <div className={`archive-bg${hidden ? ' archive-bg--hidden' : ''}`} aria-hidden="true">
       <Silk
         speed={4}
         scale={2}
