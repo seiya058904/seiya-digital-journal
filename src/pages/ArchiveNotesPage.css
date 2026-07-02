@@ -1,0 +1,157 @@
+.archive-notes {
+  min-height: 100vh;
+  padding: clamp(6rem, 12vw, 10rem) var(--space-page) clamp(4rem, 8vw, 6rem);
+  max-width: var(--content-max);
+  margin: 0 auto;
+}
+
+.archive-notes__header {
+  margin-bottom: clamp(3rem, 6vw, 5rem);
+}
+
+.archive-notes__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  color: var(--color-muted);
+  text-decoration: none;
+  margin-bottom: 1.5rem;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.archive-notes__back:hover {
+  color: var(--color-text);
+}
+
+.archive-notes__title {
+  font-family: var(--font-editorial);
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  color: var(--color-text);
+  margin: 0 0 1rem;
+}
+
+.archive-notes__subtitle {
+  font-family: var(--font-sans);
+  font-size: clamp(0.9rem, 1.1vw, 1.05rem);
+  line-height: 1.7;
+  color: var(--color-muted);
+  max-width: 42rem;
+  margin: 0;
+}
+
+/* ── Section titles ───────────────────────────── */
+
+.archive-notes__section-title {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  margin: 0 0 1.5rem;
+}
+
+/* ── Categories grid ──────────────────────────── */
+
+.archive-notes__categories {
+  margin-bottom: clamp(3rem, 6vw, 5rem);
+}
+
+.archive-notes__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: clamp(0.75rem, 1.5vw, 1.2rem);
+}
+
+.archive-note-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.archive-note-card__icon {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 2.8rem;
+  height: 2.8rem;
+  border-radius: var(--radius-sm);
+  background: rgb(255 255 255 / 4%);
+  color: var(--color-violet);
+}
+
+.archive-note-card__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.archive-note-card__body h3 {
+  font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+  font-weight: 520;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+  margin: 0 0 0.3rem;
+}
+
+.archive-note-card__body p {
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--color-muted);
+  margin: 0;
+}
+
+.archive-note-card__status {
+  flex-shrink: 0;
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  color: var(--color-faint);
+  align-self: center;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+}
+
+/* ── Vision card ──────────────────────────────── */
+
+.archive-notes__vision {
+  margin-bottom: 3rem;
+}
+
+.archive-notes__vision-card {
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.archive-notes__vision-card p {
+  font-size: clamp(0.9rem, 1.1vw, 1rem);
+  line-height: 1.75;
+  color: var(--color-muted);
+  max-width: 52ch;
+  margin: 0;
+}
+
+.archive-notes__vision-card__cn {
+  margin-top: 1rem;
+  color: var(--color-gold);
+  font-size: clamp(0.82rem, 1vw, 0.92rem);
+  opacity: 0.85;
+}
+
+/* ── Mobile ───────────────────────────────────── */
+
+@media (max-width: 560px) {
+  .archive-notes__grid {
+    grid-template-columns: 1fr;
+  }
+}

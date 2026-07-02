@@ -39,12 +39,13 @@ src/
                        TiltedCard, ProfileCard, PillNav, GridScan, BounceCards,
                        ImageTrail, MagicBento, ScrambledText, SplitText,
                        AnimatedContent, CountUp, OrbitImages, DesktopGridScan,
-                       CardNav)
+                       CardNav, FlowingMenu)
       text/          — custom animated text (GradientText, ShinyText, RotatingText)
       cards/         — (removed, all migrated to react-bits/)
       AuroraBackground.tsx, CardTilt.tsx, GradientBorder.tsx
     lab/             — EffectCard, HeavyEffectGate, ReactBitsDemo (Motion Lab UI)
-  pages/             — HomePage, MotionLabPage
+  pages/             — HomePage, MotionLabPage, ArchivePage, ArchiveImagesPage,
+                       ArchiveNotesPage, ArchiveCollectionsPage, GalleryPage
   data/              — profile.ts, gallery.ts, thoughts.ts, links.ts, effects.ts
   styles/            — tokens.css (design tokens), global.css (all page CSS),
                        hero-background.css (animated background effect)
@@ -59,9 +60,9 @@ report/              — session completion reports (Markdown, dated filenames)
 
 ### Component Hierarchy
 
-**Pages** route between `HomePage` (main journal) and `MotionLabPage` (experimental effects showcase). Routing is hash-based (`#/motion-lab`), handled by a simple `hashchange` listener in `App.tsx` — no router library.
+**Pages** route between `HomePage` (main journal), `MotionLabPage` (experimental effects showcase), and Archive pages (`ArchivePage`, `ArchiveImagesPage`, `ArchiveNotesPage`, `ArchiveCollectionsPage`, `GalleryPage`). Routing is hash-based (`#/motion-lab`, `#/archive`, `#/archive/images`, etc.), handled by a simple `hashchange` listener in `App.tsx` — no router library.
 
-**Sections** compose layout and content only. They call animation wrappers from `motion/` and `effects/`. Section order: Hero → About → Interests → Gallery → Thoughts → Journey → Contact. Each section is a `<section id="...">` linked from the nav.
+**Sections** compose layout and content only. They call animation wrappers from `motion/` and `effects/`. Section order: Hero → About → Current Stack → Signals → Interests → Visual Archive → Thoughts → Journey → Contact. Each section is a `<section id="...">` linked from the nav.
 
 **Data files** are the single source of truth. Edit `src/data/profile.ts` for personal text, `gallery.ts` for gallery items, `thoughts.ts` for journal entries, `links.ts` for social links. Never hardcode content in components.
 

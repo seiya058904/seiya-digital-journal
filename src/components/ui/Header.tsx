@@ -7,7 +7,7 @@ import { CardNav, type CardNavItem } from '../effects/react-bits/CardNav'
 import { PillNav } from '../effects/react-bits/PillNav'
 
 type HeaderProps = {
-  activePage?: 'home' | 'lab'
+  activePage?: 'home' | 'lab' | 'archive' | 'archive-images' | 'archive-notes' | 'archive-collections' | 'gallery'
 }
 
 const headerItems = [
@@ -20,33 +20,33 @@ const headerItems = [
 
 const exploreItems: CardNavItem[] = [
   {
-    label: 'Archive',
+    label: 'Start',
     bgColor: '#1B1722',
     textColor: '#fff',
     links: [
-      { label: 'All', href: '#gallery', ariaLabel: 'Visual Archive — all' },
-      { label: 'Editorial', href: '#gallery', ariaLabel: 'Visual Archive — editorial' },
-      { label: 'Memory', href: '#gallery', ariaLabel: 'Visual Archive — memory' },
+      { label: 'Home', href: '#home', ariaLabel: 'Back to top' },
+      { label: 'Digital Journal', href: '#about', ariaLabel: 'About section' },
+      { label: 'Contact', href: '#contact', ariaLabel: 'Contact section' },
     ],
   },
   {
-    label: 'Journal',
+    label: 'Explore',
     bgColor: '#16213B',
     textColor: '#fff',
     links: [
+      { label: 'Visual Archive', href: '#gallery', ariaLabel: 'Visual Archive section' },
       { label: 'Thoughts', href: '#thoughts', ariaLabel: 'Journal thoughts' },
-      { label: 'Journey', href: '#journey', ariaLabel: 'Journey timeline' },
-      { label: 'Making', href: '#gallery', ariaLabel: 'Things I make' },
+      { label: 'Motion Lab', href: '#/lab', ariaLabel: 'Motion Lab experiments' },
     ],
   },
   {
-    label: 'Connect',
+    label: 'Archive',
     bgColor: '#1A1B2E',
     textColor: '#fff',
     links: [
-      { label: 'Motion Lab', href: '#/motion-lab', ariaLabel: 'Motion Lab experiments' },
-      { label: 'GitHub', href: 'https://github.com/seiya058904/', ariaLabel: 'GitHub profile' },
-      { label: 'Contact', href: '#contact', ariaLabel: 'Contact page' },
+      { label: 'Archive Home', href: '#/archive', ariaLabel: 'Archive home' },
+      { label: 'Image Vault', href: '#/archive/images', ariaLabel: 'Image Vault' },
+      { label: 'Text Vault', href: '#/archive/notes', ariaLabel: 'Text Vault' },
     ],
   },
 ]
@@ -54,12 +54,24 @@ const exploreItems: CardNavItem[] = [
 export function Header({ activePage = 'home' }: HeaderProps) {
   const [open, setOpen] = useState(false)
 
+  const isHashPage = activePage !== 'home'
+
   const handleNavigation = (href: string) => {
     setOpen(false)
-    if (activePage !== 'lab' || href === '#/motion-lab') return
+    if (href.startsWith('#/')) return
+
+    if (isHashPage) {
+      window.location.hash = '#/'
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          document.getElementById(href.slice(1))?.scrollIntoView({ behavior: 'smooth' })
+        }, 60)
+      })
+      return
+    }
 
     requestAnimationFrame(() => {
-      document.getElementById(href.slice(1))?.scrollIntoView()
+      document.getElementById(href.slice(1))?.scrollIntoView({ behavior: 'smooth' })
     })
   }
 
@@ -70,7 +82,7 @@ export function Header({ activePage = 'home' }: HeaderProps) {
         logo={profileLogo}
         logoAlt={`${profile.brand} home`}
         items={headerItems}
-        activeHref={activePage === 'lab' ? '#/motion-lab' : '#home'}
+        activeHref={isHashPage ? `#/${activePage === 'lab' ? 'motion-lab' : activePage === 'archive-images' ? 'archive/images' : activePage === 'archive-notes' ? 'archive/notes' : activePage === 'archive-collections' ? 'archive/collections' : activePage}` : '#home'}
         baseColor="rgba(5, 10, 24, 0.82)"
         pillColor="rgba(18, 29, 54, 0.72)"
         hoveredPillTextColor="#f3f6ff"
@@ -107,16 +119,15 @@ export function Header({ activePage = 'home' }: HeaderProps) {
               key={item.href}
               href={item.href}
               className={
-                (activePage === 'home' && item.href === '#home') ||
-                (activePage === 'lab' && item.href === '#/motion-lab')
-                  ? 'is-active'
-                  : ''
+                (activePage === 'home' && item.href === '#home') ? 'is-active' : ''
               }
               onClick={() => handleNavigation(item.href)}
             >
               {item.label}
             </a>
           ))}
+          <a href="#/archive" onClick={() => setOpen(false)}>Archive</a>
+          <a href="#/lab" onClick={() => setOpen(false)}>Motion Lab</a>
         </div>
       </nav>
     </header>

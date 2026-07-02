@@ -1602,6 +1602,21 @@ footer {
   .scroll-cue { display: none; }
   .chapter { margin-bottom: 3rem; }
 
+  /* ── Mobile flicker reduction: lighten heavy blur layers ── */
+  .aurora__orb {
+    filter: blur(48px);
+    animation-duration: 36s;
+  }
+
+  .section--contact::before {
+    filter: blur(36px);
+    opacity: 0.7;
+  }
+
+  .hero::before {
+    filter: blur(16px);
+  }
+
   .about-editorial {
     gap: 1.5rem;
   }
@@ -1704,8 +1719,33 @@ footer {
   }
 
   .journey-step p { margin: 0.6rem 0 0; }
-  .contact-grid { gap: 4rem; }
-  .contact-grid h2 { font-size: clamp(3.8rem, 18vw, 5.5rem); }
+  .contact-grid { gap: 3rem; }
+  .contact-grid h2 {
+    font-size: clamp(2.2rem, 11vw, 3.4rem);
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    text-wrap: balance;
+  }
+
+  .contact-links a {
+    grid-template-columns: 2.2rem 1fr;
+    gap: 0.5rem 0.65rem;
+    padding: 0.6rem 0.6rem;
+    min-height: auto;
+  }
+
+  .contact-link-detail {
+    grid-column: 1 / -1;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    padding-left: 2.85rem;
+    font-size: 0.72rem;
+    word-break: break-all;
+  }
+
+  .contact-copy-btn {
+    flex-shrink: 0;
+  }
 
   footer {
     flex-direction: column;

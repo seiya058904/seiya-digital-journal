@@ -8,6 +8,8 @@ export type CardNavLink = {
   label: string
   href: string
   ariaLabel?: string
+  target?: string
+  rel?: string
 }
 
 export type CardNavItem = {
@@ -223,6 +225,8 @@ function CardNavComponent({
                     className="nav-card-link"
                     href={lnk.href}
                     aria-label={lnk.ariaLabel ?? lnk.label}
+                    target={lnk.target}
+                    rel={lnk.rel}
                   >
                     <ArrowUpRight className="nav-card-link-icon" aria-hidden="true" size={14} strokeWidth={1.6} />
                     {lnk.label}
