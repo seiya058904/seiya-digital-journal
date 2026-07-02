@@ -11,9 +11,10 @@
 .card-nav {
   display: block;
   height: 60px;
-  background-color: rgba(5, 10, 24, 0.88);
+  background-color: rgba(5, 10, 24, 0.3);
   border: 0.5px solid rgba(194, 215, 255, 0.12);
   border-radius: 0.75rem;
+  backdrop-filter: blur(16px) saturate(140%);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   position: relative;
   overflow: hidden;
@@ -56,7 +57,8 @@
   background-color: currentColor;
   transition:
     transform 0.25s ease,
-    opacity 0.2s ease;
+    opacity 0.2s ease,
+    margin 0.3s ease;
   transform-origin: 50% 50%;
 }
 
@@ -68,11 +70,11 @@
 }
 
 .hamburger-menu.open .hamburger-line:first-child {
-  transform: translateY(3.25px) rotate(45deg);
+  transform: translateY(4px) rotate(45deg);
 }
 
 .hamburger-menu.open .hamburger-line:last-child {
-  transform: translateY(-3.25px) rotate(-45deg);
+  transform: translateY(-4px) rotate(-45deg);
 }
 
 .hamburger-menu.open .hamburger-label {

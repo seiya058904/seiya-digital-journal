@@ -99,7 +99,7 @@
   z-index: 1;
   display: block;
   border-radius: 50%;
-  background: var(--base);
+  background: rgba(10, 6, 20, 0.85);
   pointer-events: none;
   will-change: transform;
 }

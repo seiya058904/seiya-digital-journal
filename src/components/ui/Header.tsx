@@ -105,7 +105,7 @@ export function Header({ activePage = 'home' }: HeaderProps) {
       <CardNav
         className="header-card-nav"
         items={exploreItems}
-        baseColor="rgba(5, 10, 24, 0.88)"
+        baseColor="rgba(5, 10, 24, 0.25)"
         menuColor="#9ca6bb"
       />
       <nav className="nav-shell header-mobile-nav" aria-label="Primary navigation">

@@ -79,7 +79,7 @@ function CardNavComponent({
     if (!navEl) return null
 
     gsap.set(navEl, { height: 60, overflow: 'hidden' })
-    gsap.set(cardsRef.current, { y: 40, opacity: 0 })
+    gsap.set(cardsRef.current, { y: 50, opacity: 0 })
 
     const tl = gsap.timeline({ paused: true })
 
