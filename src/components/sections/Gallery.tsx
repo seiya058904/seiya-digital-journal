@@ -1,5 +1,4 @@
-import { useState } from 'react'
-import { visualArchiveItems, type VisualArchiveItem } from '../../data/visualArchive'
+import { visualArchiveItems } from '../../data/visualArchive'
 import { BounceCards } from '../effects/react-bits/BounceCards'
 import { ScrollReveal } from '../motion/ScrollReveal'
 import { Chapter } from '../ui/Chapter'
@@ -7,55 +6,34 @@ import { GalleryCard } from './GalleryCard'
 
 const base = import.meta.env.BASE_URL
 
-type FilterKey = 'all' | 'editorial' | 'memory' | 'Chongqing' | 'Chengdu' | 'Wuhan'
-
-const FILTERS: { key: FilterKey; label: string }[] = [
-  { key: 'all', label: 'All' },
-  { key: 'editorial', label: 'Editorial' },
-  { key: 'memory', label: 'Memory' },
-  { key: 'Chongqing', label: 'Chongqing' },
-  { key: 'Chengdu', label: 'Chengdu' },
-  { key: 'Wuhan', label: 'Wuhan' },
+/** 15 curated images covering all categories and cities */
+const CURATED_IDS = [
+  'editorial-005',
+  'editorial-012',
+  'editorial-014',
+  'editorial-020',
+  'editorial-021',
+  'chongqing-001',
+  'chongqing-011',
+  'chengdu-002',
+  'wuhan-005',
+  'kaifeng-001',
+  'tianjin-001',
+  'emei-001',
+  'illustration-003',
+  'art-002',
+  'design-001',
 ]
 
-function matchesFilter(item: VisualArchiveItem, filter: FilterKey): boolean {
-  switch (filter) {
-    case 'all':
-      return true
-    case 'editorial':
-      return item.category === 'editorial'
-    case 'memory':
-      return item.category === 'memory'
-    default:
-      return item.city === filter
-  }
-}
-
-function sortItems(items: VisualArchiveItem[]): VisualArchiveItem[] {
-  return [...items].sort((a, b) => {
-    if (a.featured !== b.featured) return a.featured ? -1 : 1
-    return 0
-  })
-}
-
-function sizeClass(item: VisualArchiveItem): string {
-  if (item.featured && item.aspect === 'landscape') return 'gallery-item--hero'
-  if (item.aspect === 'landscape') return 'gallery-item--wide'
-  if (item.featured) return 'gallery-item--large'
-  return 'gallery-item--standard'
-}
+const curated = visualArchiveItems.filter((item) =>
+  CURATED_IDS.includes(item.id),
+)
 
 /** Pick 4 featured items for the BounceCards preview */
 const bounceItems = visualArchiveItems.filter((item) => item.featured).slice(0, 4)
 const bounceImages = bounceItems.map((item) => `${base}${item.image.slice(1)}`)
 
 export function Gallery() {
-  const [activeFilter, setActiveFilter] = useState<FilterKey>('all')
-
-  const filtered = sortItems(
-    visualArchiveItems.filter((item) => matchesFilter(item, activeFilter)),
-  )
-
   return (
     <section id="gallery" className="section section--gallery">
       <Chapter number="04" title="Visual Archive" />
@@ -92,29 +70,11 @@ export function Gallery() {
         不是相册，而是一些被留下来的片刻。
       </p>
 
-      <nav className="gallery-filters" role="tablist" aria-label="Filter archive">
-        {FILTERS.map(({ key, label }) => (
-          <button
-            key={key}
-            role="tab"
-            aria-selected={activeFilter === key}
-            className={`gallery-filter ${activeFilter === key ? 'gallery-filter--active' : ''}`}
-            onClick={() => setActiveFilter(key)}
-          >
-            {label}
-          </button>
-        ))}
-      </nav>
-
-      {filtered.length === 0 && (
-        <p className="gallery-empty">No images for this category yet.</p>
-      )}
-
       <div className="gallery-grid">
-        {filtered.map((item, index) => (
+        {curated.map((item, index) => (
           <ScrollReveal
             key={item.id}
-            className={`gallery-item ${sizeClass(item)} gallery-item--${item.aspect}`}
+            className={`gallery-item gallery-item--${item.aspect}`}
             delay={(index % 4) * 0.06}
             amount={0.08}
           >
