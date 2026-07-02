@@ -1,0 +1,129 @@
+/* ── GlassIcons (React Bits #24) ───────────────── */
+
+.rb-glass-icons {
+  display: grid;
+  grid-gap: 5em;
+  grid-template-columns: repeat(2, 1fr);
+  margin: auto;
+  padding: 3em 0;
+  overflow: visible;
+}
+
+.rb-glass-icon {
+  background-color: transparent;
+  outline: none;
+  position: relative;
+  width: 4.5em;
+  height: 4.5em;
+  perspective: 24em;
+  transform-style: preserve-3d;
+  -webkit-tap-highlight-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.rb-glass-icon__back,
+.rb-glass-icon__front,
+.rb-glass-icon__label {
+  transition:
+    opacity 0.3s cubic-bezier(0.83, 0, 0.17, 1),
+    transform 0.3s cubic-bezier(0.83, 0, 0.17, 1);
+}
+
+.rb-glass-icon__back,
+.rb-glass-icon__front {
+  border-radius: 1.25em;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.rb-glass-icon__back {
+  box-shadow: 0.5em -0.5em 0.75em hsla(223, 10%, 10%, 0.15);
+  display: block;
+  transform: rotate(15deg);
+  transform-origin: 100% 100%;
+  will-change: transform;
+}
+
+.rb-glass-icon__front {
+  background-color: hsla(0, 0%, 100%, 0.15);
+  box-shadow: 0 0 0 0.1em hsla(0, 0%, 100%, 0.3) inset;
+  backdrop-filter: blur(0.75em);
+  -webkit-backdrop-filter: blur(0.75em);
+  display: flex;
+  transform-origin: 80% 50%;
+  will-change: transform;
+}
+
+.rb-glass-icon__icon {
+  margin: auto;
+  width: 1.5em;
+  height: 1.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rb-glass-icon__label {
+  font-size: 1em;
+  white-space: nowrap;
+  text-align: center;
+  line-height: 2;
+  opacity: 0;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: 0;
+  transform: translateY(0);
+}
+
+.rb-glass-icon:focus-visible .rb-glass-icon__back,
+.rb-glass-icon:hover .rb-glass-icon__back {
+  transform: rotate(25deg) translate3d(-0.5em, -0.5em, 0.5em);
+}
+
+.rb-glass-icon:focus-visible .rb-glass-icon__front,
+.rb-glass-icon:hover .rb-glass-icon__front {
+  transform: translate3d(0, 0, 2em);
+}
+
+.rb-glass-icon:focus-visible .rb-glass-icon__label,
+.rb-glass-icon:hover .rb-glass-icon__label {
+  opacity: 1;
+  transform: translateY(20%);
+}
+
+@media (min-width: 768px) {
+  .rb-glass-icons {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ── reduced-motion ────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .rb-glass-icon__back,
+  .rb-glass-icon__front,
+  .rb-glass-icon__label {
+    transition: none !important;
+  }
+
+  .rb-glass-icon:hover .rb-glass-icon__back,
+  .rb-glass-icon:focus-visible .rb-glass-icon__back {
+    transform: rotate(15deg);
+  }
+
+  .rb-glass-icon:hover .rb-glass-icon__front,
+  .rb-glass-icon:focus-visible .rb-glass-icon__front {
+    transform: none;
+  }
+
+  .rb-glass-icon:hover .rb-glass-icon__label,
+  .rb-glass-icon:focus-visible .rb-glass-icon__label {
+    opacity: 1;
+    transform: translateY(20%);
+  }
+}

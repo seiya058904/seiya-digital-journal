@@ -56,68 +56,84 @@
   margin: 0 0 1.5rem;
 }
 
-/* ── Categories grid ──────────────────────────── */
+/* ── Categories (GlassIcons) ──────────────────── */
 
 .archive-notes__categories {
   margin-bottom: clamp(3rem, 6vw, 5rem);
 }
 
-.archive-notes__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: clamp(0.75rem, 1.5vw, 1.2rem);
-}
-
-.archive-note-card {
+.archive-notes__glass-wrap {
   display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  padding: clamp(1rem, 2vw, 1.5rem);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-surface);
+  justify-content: center;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
 }
 
-.archive-note-card__icon {
-  flex-shrink: 0;
+.archive-notes__glass {
+  max-width: 28rem;
+}
+
+.archive-notes__category-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.archive-note-item {
   display: grid;
-  place-items: center;
-  width: 2.8rem;
-  height: 2.8rem;
-  border-radius: var(--radius-sm);
-  background: rgb(255 255 255 / 4%);
-  color: var(--color-violet);
+  grid-template-columns: 6rem 1fr auto;
+  align-items: baseline;
+  gap: 1rem;
+  padding: clamp(0.6rem, 1.2vw, 0.9rem) 0;
+  border-bottom: 1px solid var(--color-border);
 }
 
-.archive-note-card__body {
-  flex: 1;
-  min-width: 0;
+.archive-note-item:last-child {
+  border-bottom: none;
 }
 
-.archive-note-card__body h3 {
-  font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+.archive-note-item__label {
+  font-family: var(--font-sans);
+  font-size: clamp(0.85rem, 1vw, 0.95rem);
   font-weight: 520;
   letter-spacing: -0.02em;
   color: var(--color-text);
-  margin: 0 0 0.3rem;
 }
 
-.archive-note-card__body p {
+.archive-note-item__desc {
   font-size: 0.78rem;
   line-height: 1.5;
   color: var(--color-muted);
-  margin: 0;
 }
 
-.archive-note-card__status {
-  flex-shrink: 0;
+.archive-note-item__status {
   font-size: 0.66rem;
   letter-spacing: 0.08em;
   color: var(--color-faint);
-  align-self: center;
   padding: 0.2rem 0.6rem;
   border: 1px solid var(--color-border);
   border-radius: 999px;
+  white-space: nowrap;
+}
+
+/* ── Mobile ───────────────────────────────────── */
+
+@media (max-width: 560px) {
+  .archive-note-item {
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
+  }
+
+  .archive-note-item__status {
+    justify-self: start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rb-glass-icon__back,
+  .rb-glass-icon__front,
+  .rb-glass-icon__label {
+    transition: none !important;
+  }
 }
 
 /* ── Vision card ──────────────────────────────── */
@@ -148,10 +164,3 @@
   opacity: 0.85;
 }
 
-/* ── Mobile ───────────────────────────────────── */
-
-@media (max-width: 560px) {
-  .archive-notes__grid {
-    grid-template-columns: 1fr;
-  }
-}

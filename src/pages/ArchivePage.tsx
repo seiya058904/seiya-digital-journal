@@ -2,6 +2,8 @@ import { ArrowLeft, BookOpen, Camera, FolderOpen, GraduationCap, Layers, Map, Pe
 
 import { visualArchiveItems } from '../data/visualArchive'
 import { ScrollReveal } from '../components/motion/ScrollReveal'
+import { Folder } from '../components/effects/react-bits/Folder'
+import '../components/effects/react-bits/Folder.css'
 import './ArchivePage.css'
 
 const editorialCount = visualArchiveItems.filter(i => i.category === 'editorial').length
@@ -9,13 +11,41 @@ const memoryCount = visualArchiveItems.filter(i => i.category === 'memory').leng
 const cities = [...new Set(visualArchiveItems.map(i => i.city).filter(Boolean))]
 
 const archiveSections = [
-  { label: 'Images', desc: 'Visual archive — editorial, memory, cities', href: '#/archive/images', icon: Camera, count: visualArchiveItems.length },
-  { label: 'Notes', desc: 'Text vault — learning, thoughts, projects', href: '#/archive/notes', icon: PenTool, count: null },
-  { label: 'Travel', desc: 'Cities and places — Chongqing, Chengdu, Wuhan', href: '#/archive/images', icon: Map, count: memoryCount },
-  { label: 'Projects', desc: 'Things I build and experiment with', href: '#/archive/notes', icon: FolderOpen, count: null },
-  { label: 'Learning', desc: 'Language, code, and creative practice', href: '#/archive/notes', icon: GraduationCap, count: null },
-  { label: 'Journal', desc: 'Longer thoughts and reflections', href: '#/archive/notes', icon: BookOpen, count: null },
-  { label: 'Collections', desc: 'Curated groupings — by mood, place, and type', href: '#/archive/collections', icon: Layers, count: null },
+  {
+    label: 'Images', desc: 'Visual archive — editorial, memory, cities', href: '#/archive/images', icon: Camera, count: visualArchiveItems.length,
+    color: '#56e4ff',
+    papers: ['Editorial', 'Memory', 'Cities'],
+  },
+  {
+    label: 'Notes', desc: 'Text vault — learning, thoughts, projects', href: '#/archive/notes', icon: PenTool, count: null,
+    color: '#8c75ff',
+    papers: ['Learning', 'Thoughts', 'Projects'],
+  },
+  {
+    label: 'Travel', desc: 'Cities and places — Chongqing, Chengdu, Wuhan', href: '#/archive/images', icon: Map, count: memoryCount,
+    color: '#f2b976',
+    papers: ['Chongqing', 'Chengdu', 'Wuhan'],
+  },
+  {
+    label: 'Projects', desc: 'Things I build and experiment with', href: '#/archive/notes', icon: FolderOpen, count: null,
+    color: '#56e4ff',
+    papers: ['Build logs', 'Experiments'],
+  },
+  {
+    label: 'Learning', desc: 'Language, code, and creative practice', href: '#/archive/notes', icon: GraduationCap, count: null,
+    color: '#8c75ff',
+    papers: ['Language', 'Code', 'Design'],
+  },
+  {
+    label: 'Journal', desc: 'Longer thoughts and reflections', href: '#/archive/notes', icon: BookOpen, count: null,
+    color: '#f2b976',
+    papers: ['Reflections', 'Growth'],
+  },
+  {
+    label: 'Collections', desc: 'Curated groupings — by mood, place, and type', href: '#/archive/collections', icon: Layers, count: null,
+    color: '#ed6dff',
+    papers: ['By mood', 'By place', 'By type'],
+  },
 ]
 
 export function ArchivePage() {
@@ -54,21 +84,28 @@ export function ArchivePage() {
 
       <ScrollReveal className="archive-page__nav-section">
         <h2 className="archive-page__section-title">Explore the archive</h2>
-        <div className="archive-nav-grid">
+        <div className="archive-folder-grid">
           {archiveSections.map((section) => {
             const Icon = section.icon
             return (
-              <a key={section.label} href={section.href} className="archive-nav-card">
-                <div className="archive-nav-card__icon">
-                  <Icon aria-hidden="true" size={22} strokeWidth={1.4} />
+              <a key={section.label} href={section.href} className="archive-folder-entry">
+                <Folder
+                  color={section.color}
+                  size={1.6}
+                  items={section.papers.map((p, i) => (
+                    <span key={i} className="archive-folder-paper">{p}</span>
+                  ))}
+                />
+                <div className="archive-folder-entry__info">
+                  <div className="archive-folder-entry__icon">
+                    <Icon aria-hidden="true" size={16} strokeWidth={1.4} />
+                  </div>
+                  <span className="archive-folder-entry__label">{section.label}</span>
+                  {section.count !== null && (
+                    <span className="archive-folder-entry__count">{section.count}</span>
+                  )}
                 </div>
-                <div className="archive-nav-card__body">
-                  <h3>{section.label}</h3>
-                  <p>{section.desc}</p>
-                </div>
-                {section.count !== null && (
-                  <span className="archive-nav-card__count">{section.count}</span>
-                )}
+                <p className="archive-folder-entry__desc">{section.desc}</p>
               </a>
             )
           })}

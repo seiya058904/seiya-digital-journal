@@ -243,6 +243,26 @@ const effectMetadata = [
     where: 'Planned — Journal category page',
     category: 'Navigation',
   },
+  {
+    id: 'folder',
+    name: 'Folder',
+    type: 'card',
+    deps: 'none',
+    status: 'ready',
+    description: 'Interactive folder that opens/closes on click, papers slide out with mouse parallax.',
+    where: 'Archive Home — section navigation',
+    category: 'Cards',
+  },
+  {
+    id: 'glass-icons',
+    name: 'GlassIcons',
+    type: 'card',
+    deps: 'none',
+    status: 'ready',
+    description: 'Glassmorphism icon button grid with 3D hover lift and label reveal.',
+    where: 'Text Vault — category navigation',
+    category: 'Cards',
+  },
 ] satisfies BaseEffectMeta[]
 
 const sourceFileByName: Record<string, string> = {
@@ -268,6 +288,8 @@ const sourceFileByName: Record<string, string> = {
   OrbitImages: 'React bits/20.txt',
   FlowingMenu: 'React bits/21.txt',
   InfiniteMenu: 'React bits/22.txt',
+  Folder: 'React bits/23.txt',
+  GlassIcons: 'React bits/24.txt',
 }
 
 const realDemoNames = new Set([
@@ -290,6 +312,8 @@ const realDemoNames = new Set([
   'CountUp',
   'CardNav',
   'OrbitImages',
+  'Folder',
+  'GlassIcons',
 ])
 
 const homepageNames = new Set([

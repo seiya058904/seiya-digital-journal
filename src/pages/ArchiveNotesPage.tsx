@@ -1,28 +1,30 @@
-import { ArrowLeft, BookOpen, FolderOpen, GraduationCap } from 'lucide-react'
+import { ArrowLeft, Code, GraduationCap, Pen } from 'lucide-react'
 
 import { ScrollReveal } from '../components/motion/ScrollReveal'
+import { GlassIcons } from '../components/effects/react-bits/GlassIcons'
+import '../components/effects/react-bits/GlassIcons.css'
 import './ArchiveNotesPage.css'
+
+const glassIconItems = [
+  { icon: <GraduationCap size={24} />, color: 'purple', label: 'Learning' },
+  { icon: <Pen size={24} />, color: 'orange', label: 'Thoughts' },
+  { icon: <Code size={24} />, color: 'blue', label: 'Projects' },
+]
 
 const noteCategories = [
   {
     label: 'Learning',
-    icon: GraduationCap,
     desc: 'Language study, creative coding, design patterns — what I learn and how I learn it.',
-    count: null,
     status: 'Coming soon',
   },
   {
     label: 'Thoughts',
-    icon: BookOpen,
     desc: 'Longer reflections on identity, growth, curiosity, and the things I keep thinking about.',
-    count: null,
     status: 'Coming soon',
   },
   {
     label: 'Projects',
-    icon: FolderOpen,
     desc: 'Build logs, experiments, and notes on things I make — not portfolios, but process.',
-    count: null,
     status: 'Coming soon',
   },
 ]
@@ -44,22 +46,17 @@ export function ArchiveNotesPage() {
 
       <ScrollReveal className="archive-notes__categories">
         <h2 className="archive-notes__section-title">Categories</h2>
-        <div className="archive-notes__grid">
-          {noteCategories.map((cat) => {
-            const Icon = cat.icon
-            return (
-              <div key={cat.label} className="archive-note-card">
-                <div className="archive-note-card__icon">
-                  <Icon aria-hidden="true" size={22} strokeWidth={1.4} />
-                </div>
-                <div className="archive-note-card__body">
-                  <h3>{cat.label}</h3>
-                  <p>{cat.desc}</p>
-                </div>
-                <span className="archive-note-card__status">{cat.status}</span>
-              </div>
-            )
-          })}
+        <div className="archive-notes__glass-wrap">
+          <GlassIcons items={glassIconItems} className="archive-notes__glass" />
+        </div>
+        <div className="archive-notes__category-list">
+          {noteCategories.map((cat) => (
+            <div key={cat.label} className="archive-note-item">
+              <span className="archive-note-item__label">{cat.label}</span>
+              <span className="archive-note-item__desc">{cat.desc}</span>
+              <span className="archive-note-item__status">{cat.status}</span>
+            </div>
+          ))}
         </div>
       </ScrollReveal>
 

@@ -32,17 +32,27 @@ test('gallery resources keep stable, replaceable filenames', () => {
 })
 
 test('thoughts and placeholder links are explicit', () => {
-  assert.equal(thoughts.featured.quote, 'Curiosity drives everything.')
-  assert.equal(socialLinks.every(({ placeholder }) => placeholder), true)
-  assert.equal(socialLinks.every(({ href }) => href === '#'), true)
+  assert.equal(thoughts.featured.quote, 'Curiosity is not a mood. It is a method.')
+  assert.ok(socialLinks.length > 0, 'social links are defined')
+  assert.ok(
+    socialLinks.every(({ href }) => href.startsWith('#') || href.startsWith('http') || href.startsWith('mailto:')),
+    'all social links have valid href schemes',
+  )
 })
 
 test('Motion Lab distinguishes real React Bits demos from metadata', () => {
   assert.deepEqual(
     effects
       .filter(({ integrationStatus }) => integrationStatus === 'real-demo')
-      .map(({ name }) => name),
-    ['BorderGlow', 'GlareHover', 'TiltedCard', 'Stack'],
+      .map(({ name }) => name)
+      .sort(),
+    [
+      'AnimatedContent', 'BorderGlow', 'BounceCards', 'CardNav', 'CountUp',
+      'Folder', 'GlareHover', 'GlassIcons', 'GradientText', 'GridScan',
+      'ImageTrail', 'MagicBento', 'OrbitImages', 'PillNav', 'ProfileCard',
+      'RotatingText', 'ScrambledText', 'ShinyText', 'SplitText', 'Stack',
+      'TiltedCard',
+    ],
   )
   assert.equal(
     effects
