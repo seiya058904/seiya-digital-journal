@@ -7,19 +7,11 @@ import { ScrollReveal } from '../components/motion/ScrollReveal'
 import './GalleryPage.css'
 
 const featuredItems = visualArchiveItems.filter(i => i.featured).slice(0, 5)
-const trailImages = [
-  'editorial-005',
-  'chongqing-001',
-  'editorial-020',
-  'tianjin-001',
-  'illustration-004',
-  'art-005',
-  'design-001',
-  'wuhan-005',
-].flatMap((id) => {
-  const item = visualArchiveItems.find(candidate => candidate.id === id)
-  return item ? [itemImageSrc(item)] : []
-})
+const trailImages = visualArchiveItems
+  .filter(item => item.category !== 'memory')
+  .filter((_, index) => index % 9 === 0)
+  .slice(0, 8)
+  .map(itemImageSrc)
 
 export function GalleryPage() {
   return (
