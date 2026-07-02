@@ -1,4 +1,4 @@
-import { visualArchiveItems } from '../../data/visualArchive'
+import { visualArchiveItems, type VisualArchiveItem } from '../../data/visualArchive'
 import { BounceCards } from '../effects/react-bits/BounceCards'
 import { ScrollReveal } from '../motion/ScrollReveal'
 import { Chapter } from '../ui/Chapter'
@@ -28,6 +28,13 @@ const CURATED_IDS = [
 const curated = visualArchiveItems.filter((item) =>
   CURATED_IDS.includes(item.id),
 )
+
+function sizeClass(item: VisualArchiveItem): string {
+  if (item.featured && item.aspect === 'landscape') return 'gallery-item--hero'
+  if (item.aspect === 'landscape') return 'gallery-item--wide'
+  if (item.featured) return 'gallery-item--large'
+  return 'gallery-item--standard'
+}
 
 /** Pick 4 featured items for the BounceCards preview */
 const bounceItems = visualArchiveItems.filter((item) => item.featured).slice(0, 4)
@@ -74,7 +81,7 @@ export function Gallery() {
         {curated.map((item, index) => (
           <ScrollReveal
             key={item.id}
-            className={`gallery-item gallery-item--${item.aspect}`}
+            className={`gallery-item ${sizeClass(item)} gallery-item--${item.aspect}`}
             delay={(index % 4) * 0.06}
             amount={0.08}
           >
