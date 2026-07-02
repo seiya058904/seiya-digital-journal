@@ -184,5 +184,4 @@ The following keywords must NEVER appear in source code:
 
 ## Intentionally Skipped Features
 
-- **Lanyard** (3D physics card) — intentionally not integrated
 - **CardNav** (card-based navigation) — intentionally not integrated
