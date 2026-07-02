@@ -785,7 +785,7 @@ export const visualArchiveItems: VisualArchiveItem[] = [
     image: '/visual-archive/memory/wuhan/wuhan-005.webp',
     thumb: '/visual-archive/thumbs/wuhan-005-thumb.webp',
     mediaType: 'image',
-    aspect: 'landscape',
+    aspect: 'portrait',
     tags: ['lake', 'east-lake', 'trees', 'wuhan', 'nature'],
     featured: true,
     alt: 'Lakeside walkway lined with trees beside East Lake.',
