@@ -50,7 +50,7 @@ export function GalleryCard({ item }: GalleryCardProps) {
   )
 
   return (
-    <figure>
+    <figure className="gallery-card">
       <BorderGlow
         className="gallery-card__glow"
         backgroundColor="var(--color-bg-deep)"

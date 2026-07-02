@@ -97,7 +97,7 @@ The first step (creating the component) is the only non-trivial one: convert the
 
 ## Content Priority
 
-Projects must not become a main section. Technical work only appears as a small external link near the end (in Contact).
+Projects must not become a main section (exception: `#/archive/projects` as a vault entry in the Archive is deliberate — the Project Vault exists as a personal record, not a portfolio). Technical work only appears as a small external link near the end (in Contact).
 
 Do not add fake achievements, work experience, photos, contact info, metrics, testimonials, or SaaS-style numbers. Unknown links stay as `#` placeholders until real URLs are provided.
 

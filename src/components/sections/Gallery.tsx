@@ -78,9 +78,7 @@ export function Gallery() {
             delay={(index % 4) * 0.06}
             amount={0.08}
           >
-            <div className="gallery-card">
-              <GalleryCard item={item} />
-            </div>
+            <GalleryCard item={item} />
           </ScrollReveal>
         ))}
       </div>

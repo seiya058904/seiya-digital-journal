@@ -8,9 +8,17 @@ export function ArchiveBackground({ hidden = false }: { hidden?: boolean }) {
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches
   }, [])
 
-  // Keep Silk mounted even when hidden so WebGL context survives navigation
-  // — prevents stutter on home↔archive transitions.
-  if (reducedMotion) return null
+  const isMobile = useMemo(() => {
+    if (typeof window === 'undefined') return true
+    // Touch-only devices (phones, tablets) skip Silk entirely to save GPU/battery.
+    // Desktops keep Silk pre-mounted for smooth background transitions.
+    return window.matchMedia('(hover: none) and (pointer: coarse)').matches
+  }, [])
+
+  // Keep Silk mounted on desktop even when hidden so WebGL context survives
+  // navigation — prevents stutter on home↔archive transitions.
+  // On mobile / reduced-motion: skip entirely.
+  if (reducedMotion || isMobile) return null
 
   return (
     <div className={`archive-bg${hidden ? ' archive-bg--hidden' : ''}`} aria-hidden="true">

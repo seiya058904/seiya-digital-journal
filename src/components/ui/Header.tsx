@@ -139,7 +139,6 @@ export function Header({ activePage = 'home' }: HeaderProps) {
               {item.label}
             </a>
           ))}
-          <a href="#/archive" onClick={() => setOpen(false)}>Archive</a>
           <a href="#/lab" onClick={() => setOpen(false)}>Motion Lab</a>
         </div>
       </nav>
