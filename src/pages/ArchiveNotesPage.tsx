@@ -6,9 +6,9 @@ import '../components/effects/react-bits/GlassIcons.css'
 import './ArchiveNotesPage.css'
 
 const glassIconItems = [
-  { icon: <GraduationCap size={24} />, color: 'purple', label: 'Learning' },
-  { icon: <Pen size={24} />, color: 'orange', label: 'Thoughts' },
-  { icon: <BookOpen size={24} />, color: 'blue', label: 'Journal' },
+  { icon: <GraduationCap size={24} />, color: 'transparent', label: 'Learning' },
+  { icon: <Pen size={24} />, color: 'transparent', label: 'Thoughts' },
+  { icon: <BookOpen size={24} />, color: 'transparent', label: 'Journal' },
 ]
 
 const noteCategories = [

@@ -16,6 +16,7 @@ const headerItems = [
   { label: 'Gallery', href: '#gallery' },
   { label: 'Thoughts', href: '#thoughts' },
   { label: 'Contact', href: '#contact' },
+  { label: 'Archive', href: '#/archive' },
 ]
 
 const exploreItems: CardNavItem[] = [

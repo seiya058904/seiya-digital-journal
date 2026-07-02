@@ -65,11 +65,22 @@
 .archive-notes__glass-wrap {
   display: flex;
   justify-content: center;
+  align-items: center;
+  min-height: 14em;
+  padding: 1em 0;
   margin-bottom: clamp(2rem, 4vw, 3rem);
 }
 
-.archive-notes__glass {
-  max-width: 28rem;
+/* Uniform glass look — override any inline color */
+.archive-notes__glass .rb-glass-icon__back {
+  background: hsla(0, 0%, 100%, 0.04) !important;
+  box-shadow: 0.5em -0.5em 0.75em hsla(223, 10%, 10%, 0.08);
+}
+
+/* 2x scale */
+.archive-notes__glass.rb-glass-icons {
+  transform: scale(2);
+  transform-origin: center center;
 }
 
 .archive-notes__category-list {
@@ -126,6 +137,10 @@
   .archive-note-item__status {
     justify-self: start;
   }
+
+  .archive-notes__glass.rb-glass-icons {
+    transform: scale(1.4);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -163,4 +178,3 @@
   font-size: clamp(0.82rem, 1vw, 0.92rem);
   opacity: 0.85;
 }
-

@@ -1,4 +1,4 @@
-import { ArrowLeft, Camera, FolderOpen, PenTool } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 
 import { visualArchiveItems } from '../data/visualArchive'
 import { ScrollReveal } from '../components/motion/ScrollReveal'
@@ -14,33 +14,18 @@ const cityCount = cities.length
 const vaults = [
   {
     label: 'Image Vault',
-    desc: 'Visual fragments, editorial images, memory pieces, and city records.',
     href: '#/archive/images',
-    icon: Camera,
-    count: visualArchiveItems.length,
-    countLabel: 'images',
     color: '#56e4ff',
-    papers: ['Editorial', 'Memory', 'Cities'],
   },
   {
     label: 'Notes Vault',
-    desc: 'Learning notes, thoughts, reflections, and written records.',
     href: '#/archive/notes',
-    icon: PenTool,
-    count: null,
-    countLabel: null,
     color: '#8c75ff',
-    papers: ['Learning', 'Thoughts', 'Journal'],
   },
   {
     label: 'Project Vault',
-    desc: 'Websites, games, experiments, presentations, and things I build.',
     href: '#/archive/projects',
-    icon: FolderOpen,
-    count: null,
-    countLabel: null,
     color: '#f2b976',
-    papers: ['Websites', 'Games', 'Experiments'],
   },
 ]
 
@@ -81,30 +66,14 @@ export function ArchivePage() {
       <ScrollReveal className="archive-page__nav-section">
         <h2 className="archive-page__section-title">Browse the archive</h2>
         <div className="archive-page__vault-grid">
-          {vaults.map((vault) => {
-            const Icon = vault.icon
-            return (
-              <a key={vault.label} href={vault.href} className="archive-page__vault-card">
-                <Folder
-                  color={vault.color}
-                  size={1.8}
-                  items={vault.papers.map((p, i) => (
-                    <span key={i} className="archive-folder-paper">{p}</span>
-                  ))}
-                />
-                <div className="archive-page__vault-info">
-                  <div className="archive-page__vault-icon">
-                    <Icon aria-hidden="true" size={18} strokeWidth={1.4} />
-                  </div>
-                  <span className="archive-page__vault-label">{vault.label}</span>
-                  {vault.count !== null && (
-                    <span className="archive-page__vault-count">{vault.count}</span>
-                  )}
-                </div>
-                <p className="archive-page__vault-desc">{vault.desc}</p>
-              </a>
-            )
-          })}
+          {vaults.map((vault) => (
+            <a key={vault.label} href={vault.href} className="archive-page__vault-card">
+              <div className="archive-page__vault-folder">
+                <Folder color={vault.color} size={2.2} />
+              </div>
+              <span className="archive-page__vault-label">{vault.label}</span>
+            </a>
+          ))}
         </div>
       </ScrollReveal>
 
