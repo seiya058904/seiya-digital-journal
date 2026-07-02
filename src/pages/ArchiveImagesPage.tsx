@@ -20,7 +20,7 @@ const firstItem = (items: typeof visualArchiveItems) =>
 
 const flowingMenuItems = [
   { link: '#/archive/images/featured', text: 'Featured', image: archiveImageSrc(firstItem(featuredItems).image) },
-  { link: '#/gallery', text: 'Gallery', image: archiveImageSrc((visualArchiveItems.find(i => i.id === 'editorial-006') ?? visualArchiveItems[0]).image) },
+  { link: '#/gallery', text: 'Gallery', image: archiveImageSrc((visualArchiveItems.find(i => i.id === 'illustration-021') ?? visualArchiveItems[0]).image) },
   { link: '#/archive/images/editorial', text: 'Editorial', image: archiveImageSrc(firstItem(editorialItems).image) },
   { link: '#/archive/images/memory', text: 'Memory', image: archiveImageSrc(firstItem(memoryItems).image) },
   { link: '#/archive/images/city', text: 'City', image: archiveImageSrc((cityItems.find(i => i.city === 'Wuhan') ?? firstItem(cityItems)).image) },

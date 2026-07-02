@@ -52,11 +52,6 @@
   position: relative;
 }
 
-/* Gallery menu item rocket image: crop higher and slightly smaller */
-.archive-images__flowing .flowing-menu__item:nth-child(2) .flowing-menu__marquee-img {
-  background-position: 50% 30%;
-  background-size: 92%;
-}
 
 /* ── View all link ────────────────────────────── */
 
