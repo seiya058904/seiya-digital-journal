@@ -22,6 +22,7 @@ const firstItem = (items: typeof visualArchiveItems) =>
 
 const flowingMenuItems = [
   { link: '#/archive/images/featured', text: 'Featured', image: `${base}${firstItem(featuredItems).image.slice(1)}` },
+  { link: '#/gallery', text: 'Gallery', image: `${base}${visualArchiveItems[0].image.slice(1)}` },
   { link: '#/archive/images/editorial', text: 'Editorial', image: `${base}${firstItem(editorialItems).image.slice(1)}` },
   { link: '#/archive/images/memory', text: 'Memory', image: `${base}${firstItem(memoryItems).image.slice(1)}` },
   { link: '#/archive/images/city', text: 'City', image: `${base}${(cityItems.find(i => i.city === 'Wuhan') ?? firstItem(cityItems)).image.slice(1)}` },

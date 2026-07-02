@@ -111,9 +111,7 @@ if (featured) {
   addSite('src/components/sections/Gallery.tsx', 'BounceCards — only if among first 4 featured items', 'line ~40')
 }
 
-// ArchiveImagesPage.tsx
-const imagesPagePath = new URL('../src/pages/ArchiveImagesPage.tsx', import.meta.url)
-const imagesPageContent = readFileSync(imagesPagePath, 'utf-8')
+// ArchiveImagesPage.tsx — loaded for property-based tracing (content not parsed)
 if (featured && category === 'editorial') {
   addSite('src/pages/ArchiveImagesPage.tsx', 'Featured overview & Editorial overview (previews)', 'line ~168-224')
   addSite('src/pages/ArchiveImagesPage.tsx', 'Featured category view & Editorial category view', 'line ~72-133')
@@ -132,9 +130,7 @@ if (category === 'memory') {
   addSite('src/pages/ArchiveImagesPage.tsx', 'Memory category view (full list)', 'line ~72-133')
 }
 
-// ArchiveCollectionsPage.tsx
-const collectionsPath = new URL('../src/pages/ArchiveCollectionsPage.tsx', import.meta.url)
-const collectionsContent = readFileSync(collectionsPath, 'utf-8')
+// ArchiveCollectionsPage.tsx — property-based tracing (content not parsed)
 const collectionsCats = ['editorial', 'memory']
 if (featured) {
   addSite('src/pages/ArchiveCollectionsPage.tsx', 'Featured section (full list)', 'line ~43')
