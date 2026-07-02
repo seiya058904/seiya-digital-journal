@@ -60,7 +60,7 @@ export default function App() {
   return (
     <MotionConfig reducedMotion="user">
       <div className="site-background" aria-hidden="true">
-        {!page.startsWith('archive') && <AuroraBackground />}
+        {page !== 'home' && !(page.startsWith('archive') || page === 'gallery') && <AuroraBackground />}
         {page === 'home' ? (
           <DesktopGridScan
             className="site-gridscan"
@@ -86,7 +86,7 @@ export default function App() {
             snapBackDelay={250}
           />
         ) : null}
-        <ArchiveBackground hidden={!page.startsWith('archive')} />
+        <ArchiveBackground hidden={!page.startsWith('archive') && page !== 'gallery'} />
       </div>
       <div className="site-main">
         <Header activePage={page} />
