@@ -29,12 +29,16 @@ const curated = visualArchiveItems.filter((item) =>
   CURATED_IDS.includes(item.id),
 )
 
-function sizeClass(item: VisualArchiveItem, index: number): string {
-  if (item.featured && item.aspect === 'landscape') return 'gallery-item--hero'
-  if (item.aspect === 'landscape') return 'gallery-item--wide'
-  // First 5 featured get large (span 4), the rest get standard (span 3)
-  // — keeps the top bold and lets the bottom feel more documentary
-  if (item.featured && index < 5) return 'gallery-item--large'
+/** Magazine-style size distribution for the curated grid.
+ *  Hero (span 6) — 3 bold editorial anchors throughout the layout.
+ *  Large (span 4) — most items, comfortably sized.
+ *  Standard (span 3) — a few compact fillers for contrast.
+ */
+function sizeClass(_item: VisualArchiveItem, index: number): string {
+  const HERO = new Set([1, 2, 5])   // editorial-012, editorial-014, chongqing-001
+  const LARGE = new Set([0, 3, 4, 6, 7, 8, 10, 11, 12, 13])
+  if (HERO.has(index)) return 'gallery-item--hero'
+  if (LARGE.has(index)) return 'gallery-item--large'
   return 'gallery-item--standard'
 }
 
