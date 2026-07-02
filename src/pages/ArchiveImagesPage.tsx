@@ -96,21 +96,26 @@ function ImageCategoryView({ category, onBack }: { category: ImageCategory; onBa
         </p>
       </div>
 
-      <ScrollReveal className="archive-images__section" amount={0.08}>
+      <section className="archive-images__section">
         <CategoryTitle category={category} />
         {category !== 'city' && (
           <div className="archive-images__grid">
-            {items.map((item) => (
-              <div key={item.id} className={`archive-images__item${item.id === 'editorial-004' ? ' archive-images__item--zoomed' : item.id === 'illustration-004' ? ' archive-images__item--subtle-zoom' : ''}`}>
+            {items.map((item, i) => (
+              <ScrollReveal
+                key={item.id}
+                className={`archive-images__item${item.id === 'editorial-004' ? ' archive-images__item--zoomed' : item.id === 'illustration-004' ? ' archive-images__item--subtle-zoom' : ''}`}
+                delay={(i % 4) * 0.05}
+                amount={0.08}
+              >
                 <GalleryCard item={item} />
-              </div>
+              </ScrollReveal>
             ))}
           </div>
         )}
-      </ScrollReveal>
+      </section>
 
       {category === 'city' && (
-        <ScrollReveal className="archive-images__section" amount={0.08}>
+        <section className="archive-images__section">
           <div className="archive-images__city-groups">
             {cities.map((city) => {
               const cityItemsFiltered = visualArchiveItems.filter(i => i.city === city)
@@ -118,17 +123,22 @@ function ImageCategoryView({ category, onBack }: { category: ImageCategory; onBa
                 <div key={city} className="archive-images__city-group">
                   <h3 className="archive-images__city-name">{city} — {cityItemsFiltered.length}</h3>
                   <div className="archive-images__grid">
-                    {cityItemsFiltered.map((item) => (
-                      <div key={item.id} className="archive-images__item">
+                    {cityItemsFiltered.map((item, i) => (
+                      <ScrollReveal
+                        key={item.id}
+                        className="archive-images__item"
+                        delay={(i % 4) * 0.05}
+                        amount={0.08}
+                      >
                         <GalleryCard item={item} />
-                      </div>
+                      </ScrollReveal>
                     ))}
                   </div>
                 </div>
               )
             })}
           </div>
-        </ScrollReveal>
+        </section>
       )}
     </main>
   )
@@ -171,10 +181,15 @@ function ImageVaultOverview() {
             The images that stand out — selected for mood, composition, or meaning.
           </p>
           <div className="archive-images__grid">
-            {featuredItems.slice(0, PREVIEW_COUNT).map((item) => (
-              <div key={item.id} className={`archive-images__item${item.id === 'illustration-004' ? ' archive-images__item--subtle-zoom' : ''}`}>
+            {featuredItems.slice(0, PREVIEW_COUNT).map((item, i) => (
+              <ScrollReveal
+                key={item.id}
+                className={`archive-images__item${item.id === 'illustration-004' ? ' archive-images__item--subtle-zoom' : ''}`}
+                delay={i * 0.05}
+                amount={0.08}
+              >
                 <GalleryCard item={item} />
-              </div>
+              </ScrollReveal>
             ))}
           </div>
           {featuredItems.length > PREVIEW_COUNT && (
@@ -191,10 +206,15 @@ function ImageVaultOverview() {
             Constructed visuals — illustration, graphic, abstract. Expression, not documentation.
           </p>
           <div className="archive-images__grid">
-            {editorialItems.slice(0, PREVIEW_COUNT).map((item) => (
-              <div key={item.id} className={`archive-images__item${item.id === 'editorial-004' ? ' archive-images__item--zoomed' : ''}`}>
+            {editorialItems.slice(0, PREVIEW_COUNT).map((item, i) => (
+              <ScrollReveal
+                key={item.id}
+                className={`archive-images__item${item.id === 'editorial-004' ? ' archive-images__item--zoomed' : ''}`}
+                delay={i * 0.05}
+                amount={0.08}
+              >
                 <GalleryCard item={item} />
-              </div>
+              </ScrollReveal>
             ))}
           </div>
           {editorialItems.length > PREVIEW_COUNT && (
@@ -211,10 +231,15 @@ function ImageVaultOverview() {
             Cities and places — what I saw while becoming.
           </p>
           <div className="archive-images__grid">
-            {memoryItems.slice(0, PREVIEW_COUNT).map((item) => (
-              <div key={item.id} className="archive-images__item">
+            {memoryItems.slice(0, PREVIEW_COUNT).map((item, i) => (
+              <ScrollReveal
+                key={item.id}
+                className="archive-images__item"
+                delay={i * 0.05}
+                amount={0.08}
+              >
                 <GalleryCard item={item} />
-              </div>
+              </ScrollReveal>
             ))}
           </div>
           {memoryItems.length > PREVIEW_COUNT && (
@@ -231,10 +256,15 @@ function ImageVaultOverview() {
             Grouped by city — each place leaves a different kind of mark.
           </p>
           <div className="archive-images__grid">
-            {cityItems.slice(0, PREVIEW_COUNT).map((item) => (
-              <div key={item.id} className="archive-images__item">
+            {cityItems.slice(0, PREVIEW_COUNT).map((item, i) => (
+              <ScrollReveal
+                key={item.id}
+                className="archive-images__item"
+                delay={i * 0.05}
+                amount={0.08}
+              >
                 <GalleryCard item={item} />
-              </div>
+              </ScrollReveal>
             ))}
           </div>
           {cityItems.length > PREVIEW_COUNT && (
@@ -261,7 +291,9 @@ export function ArchiveImagesPage() {
 
   useEffect(() => {
     const onHashChange = () => {
-      setCategory(getCategoryFromHash(window.location.hash))
+      const cat = getCategoryFromHash(window.location.hash)
+      if (cat) window.scrollTo(0, 0)
+      setCategory(cat)
     }
     window.addEventListener('hashchange', onHashChange)
     return () => window.removeEventListener('hashchange', onHashChange)
