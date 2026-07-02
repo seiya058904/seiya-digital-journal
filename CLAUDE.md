@@ -46,12 +46,12 @@ src/
     lab/             — EffectCard, HeavyEffectGate, ReactBitsDemo (Motion Lab UI)
   pages/             — HomePage, MotionLabPage, ArchivePage, ArchiveImagesPage,
                        ArchiveNotesPage, ArchiveCollectionsPage, GalleryPage
-  data/              — profile.ts, gallery.ts, thoughts.ts, links.ts, effects.ts
+  data/              — profile.ts, thoughts.ts, links.ts, effects.ts, visualArchive.ts
   styles/            — tokens.css (design tokens), global.css (all page CSS),
                        hero-background.css (animated background effect)
   assets/            — profile-placeholder.svg
 public/
-  gallery/           — 6 WebP artworks (aurora, horizon, motion, reflection, geometry, future)
+  gallery/           — WebP images used by Motion Lab demos
   visual-archive/    — editorial + memory photos (with thumbs/ for previews)
   orbit/             — 6 WebP images for the OrbitImages component
   favicon.svg
@@ -64,7 +64,7 @@ report/              — session completion reports (Markdown, dated filenames)
 
 **Sections** compose layout and content only. They call animation wrappers from `motion/` and `effects/`. Section order: Hero → About → Current Stack → Signals → Interests → Visual Archive → Thoughts → Journey → Contact. Each section is a `<section id="...">` linked from the nav.
 
-**Data files** are the single source of truth. Edit `src/data/profile.ts` for personal text, `gallery.ts` for gallery items, `thoughts.ts` for journal entries, `links.ts` for social links. Never hardcode content in components.
+**Data files** are the single source of truth. Edit `src/data/profile.ts` for personal text, `visualArchive.ts` for archive items, `thoughts.ts` for journal entries, `links.ts` for social links. Never hardcode content in components.
 
 **Design tokens** in `src/styles/tokens.css` define all colors, borders, shadows, radii, typography, and motion durations via CSS custom properties. Components use these variables, never hardcoded values.
 
@@ -124,7 +124,7 @@ Replace `src/assets/profile-placeholder.svg` with a new image (keep the same imp
 
 ### Replacing Gallery images
 
-Drop new WebP files into `public/gallery/` using the same filenames. The layout and animation continue to work without code changes. If using different filenames, update the matching `image` value in `src/data/gallery.ts`.
+Drop new WebP files into `public/gallery/` using the same filenames. The layout and animation continue to work without code changes. Note: `public/gallery/` images are used directly by Motion Lab demos (`ReactBitsDemo.tsx`), not through a data file — update hardcoded paths there if filenames change.
 
 ## Motion Principles
 

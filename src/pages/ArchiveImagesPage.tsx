@@ -17,11 +17,14 @@ const memoryItems = visualArchiveItems.filter(i => i.category === 'memory')
 const cityItems = visualArchiveItems.filter(i => i.city !== null)
 const cities: VisualArchiveCity[] = [...new Set(visualArchiveItems.map(i => i.city).filter(Boolean))] as VisualArchiveCity[]
 
+const firstItem = (items: typeof visualArchiveItems) =>
+  items[0] ?? visualArchiveItems[0]
+
 const flowingMenuItems = [
-  { link: '#/archive/images/featured', text: 'Featured', image: `${base}${featuredItems[0]?.image.slice(1) ?? ''}` },
-  { link: '#/archive/images/editorial', text: 'Editorial', image: `${base}${editorialItems[0]?.image.slice(1) ?? ''}` },
-  { link: '#/archive/images/memory', text: 'Memory', image: `${base}${memoryItems[0]?.image.slice(1) ?? ''}` },
-  { link: '#/archive/images/city', text: 'City', image: `${base}${cityItems[0]?.image.slice(1) ?? ''}` },
+  { link: '#/archive/images/featured', text: 'Featured', image: `${base}${firstItem(featuredItems).image.slice(1)}` },
+  { link: '#/archive/images/editorial', text: 'Editorial', image: `${base}${firstItem(editorialItems).image.slice(1)}` },
+  { link: '#/archive/images/memory', text: 'Memory', image: `${base}${firstItem(memoryItems).image.slice(1)}` },
+  { link: '#/archive/images/city', text: 'City', image: `${base}${firstItem(cityItems).image.slice(1)}` },
 ]
 
 const PREVIEW_COUNT = 4
