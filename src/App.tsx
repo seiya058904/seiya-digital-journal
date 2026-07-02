@@ -6,14 +6,14 @@ import { AuroraBackground } from './components/effects/AuroraBackground'
 import { DesktopGridScan } from './components/effects/react-bits/DesktopGridScan'
 import { Header } from './components/ui/Header'
 import { HomePage } from './pages/HomePage'
+import { ArchivePage } from './pages/ArchivePage'
+import { ArchiveImagesPage } from './pages/ArchiveImagesPage'
+import { ArchiveNotesPage } from './pages/ArchiveNotesPage'
+import { ArchiveProjectsPage } from './pages/ArchiveProjectsPage'
+import { ArchiveNotesCategoryPage } from './pages/ArchiveNotesCategoryPage'
+import { GalleryPage } from './pages/GalleryPage'
 
 const MotionLabPage = lazy(() => import('./pages/MotionLabPage').then(m => ({ default: m.MotionLabPage })))
-const ArchivePage = lazy(() => import('./pages/ArchivePage').then(m => ({ default: m.ArchivePage })))
-const ArchiveImagesPage = lazy(() => import('./pages/ArchiveImagesPage').then(m => ({ default: m.ArchiveImagesPage })))
-const ArchiveNotesPage = lazy(() => import('./pages/ArchiveNotesPage').then(m => ({ default: m.ArchiveNotesPage })))
-const ArchiveProjectsPage = lazy(() => import('./pages/ArchiveProjectsPage').then(m => ({ default: m.ArchiveProjectsPage })))
-const ArchiveNotesCategoryPage = lazy(() => import('./pages/ArchiveNotesCategoryPage').then(m => ({ default: m.ArchiveNotesCategoryPage })))
-const GalleryPage = lazy(() => import('./pages/GalleryPage').then(m => ({ default: m.GalleryPage })))
 
 type Page = 'home' | 'lab' | 'archive' | 'archive-images' | 'archive-notes' | 'archive-notes-category' | 'archive-projects' | 'gallery'
 
@@ -43,7 +43,10 @@ export default function App() {
 
   useEffect(() => {
     function onHashChange() {
-      setPage(getPageFromHash())
+      const p = getPageFromHash()
+      setPage(p)
+      // 切到独立页面时（非 home 锚点）回到顶部
+      if (p !== 'home') window.scrollTo(0, 0)
     }
     window.addEventListener('hashchange', onHashChange)
     return () => window.removeEventListener('hashchange', onHashChange)
@@ -82,12 +85,12 @@ export default function App() {
       <div className="site-main">
         <Header activePage={page} />
         {page === 'lab' && <Suspense fallback={null}><MotionLabPage /></Suspense>}
-        {page === 'archive' && <Suspense fallback={null}><ArchivePage /></Suspense>}
-        {page === 'archive-images' && <Suspense fallback={null}><ArchiveImagesPage /></Suspense>}
-        {page === 'archive-notes' && <Suspense fallback={null}><ArchiveNotesPage /></Suspense>}
-        {page === 'archive-notes-category' && <Suspense fallback={null}><ArchiveNotesCategoryPage /></Suspense>}
-        {page === 'archive-projects' && <Suspense fallback={null}><ArchiveProjectsPage /></Suspense>}
-        {page === 'gallery' && <Suspense fallback={null}><GalleryPage /></Suspense>}
+        {page === 'archive' && <ArchivePage />}
+        {page === 'archive-images' && <ArchiveImagesPage />}
+        {page === 'archive-notes' && <ArchiveNotesPage />}
+        {page === 'archive-notes-category' && <ArchiveNotesCategoryPage />}
+        {page === 'archive-projects' && <ArchiveProjectsPage />}
+        {page === 'gallery' && <GalleryPage />}
         {page === 'home' && <HomePage />}
       </div>
     </MotionConfig>

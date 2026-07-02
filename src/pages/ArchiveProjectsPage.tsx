@@ -1,28 +1,80 @@
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Target, Globe, Gamepad2, Monitor, FlaskConical, Search, Route, Trophy, BookOpen, FileText, Code, Image, Settings } from 'lucide-react'
 
 import { ScrollReveal } from '../components/motion/ScrollReveal'
+import { BorderGlow } from '../components/effects/react-bits/BorderGlow'
+import { GlassIcons } from '../components/effects/react-bits/GlassIcons'
+import '../components/effects/react-bits/BorderGlow.css'
+import '../components/effects/react-bits/GlassIcons.css'
 import './ArchiveProjectsPage.css'
+
+const base = import.meta.env.BASE_URL
+
+const focusDocs = [
+  { icon: <FileText size={18} />, color: 'transparent', label: 'Docs' },
+  { icon: <Code size={18} />, color: 'transparent', label: 'Code' },
+  { icon: <Image size={18} />, color: 'transparent', label: 'Design' },
+  { icon: <Settings size={18} />, color: 'transparent', label: 'Config' },
+]
 
 const projectCategories = [
   {
     label: 'Websites',
     desc: 'Full websites and web apps built from scratch.',
-    status: 'Coming soon — projects are being organized.',
+    icon: <Globe size={18} />,
+    color: '#56e4ff',
+    glowColor: '187 100 67',
+    glowColors: ['#56e4ff', '#3b82f6', '#38bdf8'],
+    url: 'https://seiya058904.github.io/',
   },
   {
     label: 'Games',
     desc: 'Game prototypes, interactive experiments, and playful builds.',
-    status: 'Coming soon — projects are being organized.',
+    icon: <Gamepad2 size={18} />,
+    color: '#8c75ff',
+    glowColor: '260 100 73',
+    glowColors: ['#8c75ff', '#7c3aed', '#a78bfa'],
+    url: 'https://seiya058904.github.io/star-ring-card-battle/',
   },
   {
     label: 'Presentations',
     desc: 'Slides, decks, and visual presentations on various topics.',
-    status: 'Coming soon — projects are being organized.',
+    icon: <Monitor size={18} />,
+    color: '#f2b976',
+    glowColor: '38 90 68',
+    glowColors: ['#f2b976', '#f59e0b', '#fbbf24'],
+    url: `${base}presentations/weather-forecast.html`,
   },
   {
     label: 'Experiments',
     desc: 'Visual experiments, creative coding, and tools I built to learn.',
-    status: 'Coming soon — projects are being organized.',
+    icon: <FlaskConical size={18} />,
+    color: '#ed6dff',
+    glowColor: '310 100 73',
+    glowColors: ['#ed6dff', '#c084fc', '#e879f9'],
+    status: 'Coming soon',
+  },
+]
+
+const recordPhases = [
+  {
+    icon: <Search size={16} />,
+    label: 'Context',
+    desc: 'What prompted this project — the question, the need, the curiosity.',
+  },
+  {
+    icon: <Route size={16} />,
+    label: 'Process',
+    desc: 'How it unfolded — decisions, detours, breakthroughs.',
+  },
+  {
+    icon: <Trophy size={16} />,
+    label: 'Result',
+    desc: 'What shipped — links, screenshots, metrics, outcomes.',
+  },
+  {
+    icon: <BookOpen size={16} />,
+    label: 'What I learned',
+    desc: 'The takeaway — skills gained, mistakes worth remembering.',
   },
 ]
 
@@ -40,32 +92,104 @@ export function ArchiveProjectsPage() {
         </p>
       </div>
 
+      {/* ── Current Focus ───────────────────────── */}
+      <ScrollReveal className="archive-projects__focus-section">
+        <h2 className="archive-projects__section-title">Current Focus</h2>
+        <BorderGlow
+          className="archive-projects__focus-card"
+          glowColor="38 90 68"
+          backgroundColor="#120F17"
+          borderRadius={24}
+          glowRadius={32}
+          colors={['#f2b976', '#f59e0b', '#fbbf24']}
+          glowIntensity={0.6}
+          coneSpread={10}
+          edgeSensitivity={40}
+        >
+          <div className="archive-projects__focus-inner">
+            <span className="archive-projects__focus-icon">
+              <Target size={20} />
+            </span>
+            <div className="archive-projects__focus-body">
+              <h3 className="archive-projects__focus-title">This digital journal</h3>
+              <p className="archive-projects__focus-desc">
+                Building and refining seiya-digital-journal — a personal identity magazine
+                with rich motion, a three-vault archive, and a growing collection of interactive effects.
+                Ongoing work across design, animation, and information architecture.
+              </p>
+              <span className="archive-projects__focus-status">Active — evolving</span>
+            </div>
+            <div className="archive-projects__focus-glass">
+              <GlassIcons items={focusDocs} className="archive-projects__focus-glass-icons" />
+            </div>
+          </div>
+        </BorderGlow>
+      </ScrollReveal>
+
+      {/* ── Categories ──────────────────────────── */}
       <ScrollReveal className="archive-projects__categories">
         <h2 className="archive-projects__section-title">Categories</h2>
         <div className="archive-projects__grid">
           {projectCategories.map((cat) => (
-            <div key={cat.label} className="archive-project-card">
-              <h3 className="archive-project-card__label">{cat.label}</h3>
-              <p className="archive-project-card__desc">{cat.desc}</p>
-              <span className="archive-project-card__status">{cat.status}</span>
-            </div>
+            <BorderGlow
+              key={cat.label}
+              className="archive-project-card"
+              glowColor={cat.glowColor}
+              backgroundColor="#120F17"
+              borderRadius={20}
+              glowRadius={28}
+              colors={cat.glowColors}
+              glowIntensity={0.6}
+              coneSpread={10}
+              edgeSensitivity={40}
+            >
+              <div className="archive-project-card__inner">
+                <div className="archive-project-card__header">
+                  <span className="archive-project-card__icon" style={{ color: cat.color }}>
+                    {cat.icon}
+                  </span>
+                  <h3 className="archive-project-card__label">{cat.label}</h3>
+                </div>
+                <p className="archive-project-card__desc">{cat.desc}</p>
+                {cat.url ? (
+                  <a href={cat.url} target="_blank" rel="noopener noreferrer" className="archive-project-card__link">
+                    Open ↗
+                  </a>
+                ) : (
+                  <span className="archive-project-card__status">{cat.status}</span>
+                )}
+              </div>
+            </BorderGlow>
           ))}
         </div>
       </ScrollReveal>
 
-      <ScrollReveal className="archive-projects__vision">
-        <h2 className="archive-projects__section-title">What this becomes</h2>
-        <div className="archive-projects__vision-card">
-          <p>
-            The Project Vault will grow to hold everything I build — from polished websites
-            to quick experiments. Each project gets a page with context, process notes, and
-            what I learned making it.
-          </p>
-          <p className="archive-projects__vision-card__cn">
-            项目档案馆会装下我做过的所有东西——从完整的网站到快速的实验。
-            每个项目都会有一页记录：背景、过程和学到的东西。
-          </p>
-        </div>
+      {/* ── Record template ─────────────────────── */}
+      <ScrollReveal className="archive-projects__template-section">
+        <h2 className="archive-projects__section-title">Project record</h2>
+        <BorderGlow
+          className="archive-projects__template-card"
+          glowColor="38 90 68"
+          backgroundColor="#120F17"
+          borderRadius={24}
+          glowRadius={32}
+          colors={['#f2b976', '#f59e0b', '#fbbf24']}
+          glowIntensity={0.6}
+          coneSpread={10}
+          edgeSensitivity={40}
+        >
+          <div className="archive-projects__template">
+            {recordPhases.map((phase) => (
+              <div key={phase.label} className="archive-projects__template-phase">
+                <span className="archive-projects__template-icon">{phase.icon}</span>
+                <div className="archive-projects__template-body">
+                  <h3 className="archive-projects__template-label">{phase.label}</h3>
+                  <p className="archive-projects__template-desc">{phase.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </BorderGlow>
       </ScrollReveal>
     </main>
   )

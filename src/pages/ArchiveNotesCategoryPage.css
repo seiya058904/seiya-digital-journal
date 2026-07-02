@@ -1,0 +1,92 @@
+.archive-notes-cat {
+  min-height: 100vh;
+  padding: clamp(6rem, 12vw, 10rem) var(--space-page) clamp(4rem, 8vw, 6rem);
+  max-width: var(--content-max);
+  margin: 0 auto;
+}
+
+.archive-notes-cat__header {
+  margin-bottom: clamp(3rem, 6vw, 5rem);
+}
+
+.archive-notes-cat__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  color: var(--color-muted);
+  text-decoration: none;
+  margin-bottom: 1.5rem;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.archive-notes-cat__back:hover {
+  color: var(--color-text);
+}
+
+.archive-notes-cat__title {
+  font-family: var(--font-editorial);
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  color: var(--color-text);
+  margin: 0 0 1rem;
+}
+
+.archive-notes-cat__subtitle {
+  font-family: var(--font-sans);
+  font-size: clamp(0.9rem, 1.1vw, 1.05rem);
+  line-height: 1.7;
+  color: var(--color-muted);
+  max-width: 42rem;
+  margin: 0;
+}
+
+/* ── GlassIcons wall ──────────────────────────── */
+
+.archive-notes-cat__docs {
+  margin-bottom: 2rem;
+}
+
+.archive-notes-cat__glass.rb-glass-icons {
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4em 5em;
+  padding: 2em 0;
+  justify-items: center;
+}
+
+.archive-notes-cat__footnote {
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: var(--color-faint);
+  max-width: 40ch;
+  margin: 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-border);
+}
+
+/* ── Mobile ───────────────────────────────────── */
+
+@media (max-width: 820px) {
+  .archive-notes-cat__glass.rb-glass-icons {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3em;
+  }
+}
+
+@media (max-width: 560px) {
+  .archive-notes-cat__glass.rb-glass-icons {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.5em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .archive-notes-cat__glass.rb-glass-icons .rb-glass-icon__back,
+  .archive-notes-cat__glass.rb-glass-icons .rb-glass-icon__front,
+  .archive-notes-cat__glass.rb-glass-icons .rb-glass-icon__label {
+    transition: none !important;
+  }
+}

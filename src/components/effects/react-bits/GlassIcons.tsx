@@ -5,6 +5,7 @@ type GlassIconItem = {
   color: string
   label: string
   customClass?: string
+  onClick?: () => void
 }
 
 type GlassIconsProps = {
@@ -37,6 +38,7 @@ export function GlassIcons({ items, className }: GlassIconsProps) {
           className={`rb-glass-icon ${item.customClass || ''}`}
           aria-label={item.label}
           type="button"
+          onClick={item.onClick}
         >
           <span className="rb-glass-icon__back" style={getBackgroundStyle(item.color)} />
           <span className="rb-glass-icon__front">

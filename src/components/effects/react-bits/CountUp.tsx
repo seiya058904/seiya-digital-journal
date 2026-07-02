@@ -10,9 +10,20 @@ type CountUpProps = {
   className?: string
   startWhen?: boolean
   separator?: string
+  onStart?: () => void
+  onEnd?: () => void
 }
 
-const decimalPlaces = (value: number) => value.toString().split('.')[1]?.length ?? 0
+function getDecimalPlaces(num: number) {
+  const str = num.toString()
+  if (str.includes('.')) {
+    const decimals = str.split('.')[1]
+    if (parseInt(decimals) !== 0) {
+      return decimals.length
+    }
+  }
+  return 0
+}
 
 export function CountUp({
   to,
@@ -23,48 +34,70 @@ export function CountUp({
   className = '',
   startWhen = true,
   separator = '',
+  onStart,
+  onEnd,
 }: CountUpProps) {
   const ref = useRef<HTMLSpanElement>(null)
   const motionValue = useMotionValue(direction === 'down' ? to : from)
+
+  const damping = 20 + 40 * (1 / duration)
+  const stiffness = 100 * (1 / duration)
+
   const springValue = useSpring(motionValue, {
-    damping: 20 + 40 / duration,
-    stiffness: 100 / duration,
+    damping,
+    stiffness,
   })
+
   const isInView = useInView(ref, { once: true, margin: '0px' })
-  const decimals = Math.max(decimalPlaces(from), decimalPlaces(to))
+
+  const maxDecimals = Math.max(getDecimalPlaces(from), getDecimalPlaces(to))
 
   const formatValue = useCallback(
-    (value: number) => {
-      const formatted = Intl.NumberFormat('en-US', {
+    (latest: number) => {
+      const hasDecimals = maxDecimals > 0
+      const options: Intl.NumberFormatOptions = {
         useGrouping: Boolean(separator),
-        minimumFractionDigits: decimals,
-        maximumFractionDigits: decimals,
-      }).format(value)
-      return separator ? formatted.replaceAll(',', separator) : formatted
+        minimumFractionDigits: hasDecimals ? maxDecimals : 0,
+        maximumFractionDigits: hasDecimals ? maxDecimals : 0,
+      }
+      const formatted = Intl.NumberFormat('en-US', options).format(latest)
+      return separator ? formatted.replace(/,/g, separator) : formatted
     },
-    [decimals, separator],
+    [maxDecimals, separator],
   )
 
   useEffect(() => {
-    if (ref.current) ref.current.textContent = formatValue(direction === 'down' ? to : from)
-  }, [direction, formatValue, from, to])
+    if (ref.current) {
+      ref.current.textContent = formatValue(direction === 'down' ? to : from)
+    }
+  }, [from, to, direction, formatValue])
 
   useEffect(() => {
     if (!isInView || !startWhen) return
-    const timeout = window.setTimeout(
-      () => motionValue.set(direction === 'down' ? from : to),
-      delay * 1000,
-    )
-    return () => window.clearTimeout(timeout)
-  }, [delay, direction, from, isInView, motionValue, startWhen, to])
+    if (typeof onStart === 'function') onStart()
 
-  useEffect(
-    () =>
-      springValue.on('change', (value) => {
-        if (ref.current) ref.current.textContent = formatValue(value)
-      }),
-    [formatValue, springValue],
-  )
+    const timeoutId = window.setTimeout(() => {
+      motionValue.set(direction === 'down' ? from : to)
+    }, delay * 1000)
+
+    const durationTimeoutId = window.setTimeout(() => {
+      if (typeof onEnd === 'function') onEnd()
+    }, delay * 1000 + duration * 1000)
+
+    return () => {
+      window.clearTimeout(timeoutId)
+      window.clearTimeout(durationTimeoutId)
+    }
+  }, [isInView, startWhen, motionValue, direction, from, to, delay, onStart, onEnd, duration])
+
+  useEffect(() => {
+    const unsubscribe = springValue.on('change', (latest: number) => {
+      if (ref.current) {
+        ref.current.textContent = formatValue(latest)
+      }
+    })
+    return () => unsubscribe()
+  }, [springValue, formatValue])
 
   return <span className={className} ref={ref} />
 }

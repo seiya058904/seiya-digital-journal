@@ -22,11 +22,11 @@ export function About() {
           <BorderGlow
             className="about-main-card"
             glowColor="200 80 70"
-            backgroundColor="rgba(10, 16, 32, 0.65)"
+            backgroundColor="#0a0f1e"
             borderRadius={24}
-            glowRadius={32}
+            glowRadius={40}
             colors={['#38bdf8', '#a78bfa', '#f0abfc']}
-            animated
+            fillOpacity={0}
           >
             <div className="about-main-card-inner">
               <h2 className="about-statement">
