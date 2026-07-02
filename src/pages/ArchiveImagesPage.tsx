@@ -24,7 +24,7 @@ const flowingMenuItems = [
   { link: '#/archive/images/featured', text: 'Featured', image: `${base}${firstItem(featuredItems).image.slice(1)}` },
   { link: '#/archive/images/editorial', text: 'Editorial', image: `${base}${firstItem(editorialItems).image.slice(1)}` },
   { link: '#/archive/images/memory', text: 'Memory', image: `${base}${firstItem(memoryItems).image.slice(1)}` },
-  { link: '#/archive/images/city', text: 'City', image: `${base}${firstItem(cityItems).image.slice(1)}` },
+  { link: '#/archive/images/city', text: 'City', image: `${base}${(cityItems.find(i => i.city === 'Wuhan') ?? firstItem(cityItems)).image.slice(1)}` },
 ]
 
 const PREVIEW_COUNT = 4

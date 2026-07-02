@@ -42,18 +42,24 @@ const vaults = [
     href: '#/archive/images',
     color: '#56e4ff',
     items: imagePapers,
+    glowColor: '187 100 67',
+    glowColors: ['#56e4ff', '#3b82f6', '#38bdf8'],
   },
   {
     label: 'Notes Vault',
     href: '#/archive/notes',
     color: '#8c75ff',
     items: notesPapers,
+    glowColor: '260 100 73',
+    glowColors: ['#8c75ff', '#7c3aed', '#a78bfa'],
   },
   {
     label: 'Project Vault',
     href: '#/archive/projects',
     color: '#f2b976',
     items: projectPapers,
+    glowColor: '38 90 68',
+    glowColors: ['#f2b976', '#f59e0b', '#fbbf24'],
   },
 ]
 
@@ -95,12 +101,25 @@ export function ArchivePage() {
         <h2 className="archive-page__section-title">Browse the archive</h2>
         <div className="archive-page__vault-grid">
           {vaults.map((vault) => (
-            <a key={vault.label} href={vault.href} className="archive-page__vault-card">
-              <div className="archive-page__vault-folder">
-                <Folder color={vault.color} size={2.2} items={vault.items} />
-              </div>
-              <span className="archive-page__vault-label">{vault.label}</span>
-            </a>
+            <BorderGlow
+              key={vault.label}
+              className="archive-page__vault-card"
+              glowColor={vault.glowColor}
+              backgroundColor="#120F17"
+              borderRadius={24}
+              glowRadius={28}
+              colors={vault.glowColors}
+              glowIntensity={0.6}
+              coneSpread={10}
+              edgeSensitivity={40}
+            >
+              <a href={vault.href} className="archive-page__vault-card-inner">
+                <div className="archive-page__vault-folder">
+                  <Folder color={vault.color} size={2.2} items={vault.items} />
+                </div>
+                <span className="archive-page__vault-label">{vault.label}</span>
+              </a>
+            </BorderGlow>
           ))}
         </div>
       </ScrollReveal>

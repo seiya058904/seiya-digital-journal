@@ -1,0 +1,20 @@
+/* ── Archive Silk Background ─────────────────────────── */
+
+.archive-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: #0A0815;
+  transition: opacity 0.4s ease;
+}
+
+.archive-bg--hidden {
+  opacity: 0;
+}
+
+.archive-bg > canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}

@@ -7,7 +7,6 @@ import {
 } from 'postprocessing'
 import { useEffect, useRef } from 'react'
 import type { CSSProperties } from 'react'
-// @ts-expect-error Three.js publishes runtime modules separately from its community type package.
 import * as THREE from 'three'
 
 import './GridScan.css'

@@ -96,10 +96,10 @@ export function Header({ activePage = 'home' }: HeaderProps) {
         logoAlt={`${profile.brand} home`}
         items={headerItems}
         activeHref={getActiveHref()}
-        baseColor="rgba(5, 10, 24, 0.82)"
-        pillColor="rgba(18, 29, 54, 0.72)"
+        baseColor="rgba(18, 12, 35, 0.45)"
+        pillColor="rgba(40, 28, 70, 0.55)"
         hoveredPillTextColor="#f3f6ff"
-        pillTextColor="#9ca6bb"
+        pillTextColor="#d0d8e8"
         onItemClick={(item) => handleNavigation(item.href)}
       />
       <CardNav

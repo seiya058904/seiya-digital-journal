@@ -39,7 +39,7 @@
   font-family: var(--font-sans);
   font-size: clamp(0.9rem, 1.1vw, 1.05rem);
   line-height: 1.7;
-  color: var(--color-muted);
+  color: #c8d0e4;
   max-width: 42rem;
   margin: 0;
 }
@@ -196,7 +196,6 @@
 
 .archive-notes__flow-card {
   border: none;
-  background: transparent;
   border-radius: var(--radius-lg);
 }
 

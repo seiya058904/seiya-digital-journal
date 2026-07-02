@@ -1,6 +1,7 @@
 import { MotionConfig } from 'framer-motion'
 import { lazy, Suspense, useEffect, useState } from 'react'
 
+import { ArchiveBackground } from './components/effects/ArchiveBackground'
 import { AuroraBackground } from './components/effects/AuroraBackground'
 
 import { DesktopGridScan } from './components/effects/react-bits/DesktopGridScan'
@@ -55,7 +56,7 @@ export default function App() {
   return (
     <MotionConfig reducedMotion="user">
       <div className="site-background" aria-hidden="true">
-        <AuroraBackground />
+        {!page.startsWith('archive') && <AuroraBackground />}
         {page === 'home' ? (
           <DesktopGridScan
             className="site-gridscan"
@@ -81,6 +82,7 @@ export default function App() {
             snapBackDelay={250}
           />
         ) : null}
+        <ArchiveBackground hidden={!page.startsWith('archive')} />
       </div>
       <div className="site-main">
         <Header activePage={page} />

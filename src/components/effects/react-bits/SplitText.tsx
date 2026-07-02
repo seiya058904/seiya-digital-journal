@@ -2,7 +2,6 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { SplitText as GsapSplitText } from 'gsap/SplitText'
 import { useEffect, useRef } from 'react'
-import type { ElementType } from 'react'
 
 gsap.registerPlugin(ScrollTrigger, GsapSplitText)
 
@@ -81,7 +80,7 @@ export function SplitText({
     }
   }, [delay, duration, ease, from, splitType, text, threshold, to])
 
-  const Tag = tag as ElementType
+  const Tag = tag as any
   return (
     <Tag ref={ref} className={`split-parent ${className}`.trim()} style={{ textAlign }}>
       {text}
