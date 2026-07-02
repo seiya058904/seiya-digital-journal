@@ -7,7 +7,7 @@ import { CardNav, type CardNavItem } from '../effects/react-bits/CardNav'
 import { PillNav } from '../effects/react-bits/PillNav'
 
 type HeaderProps = {
-  activePage?: 'home' | 'lab' | 'archive' | 'archive-images' | 'archive-notes' | 'archive-collections' | 'gallery'
+  activePage?: 'home' | 'lab' | 'archive' | 'archive-images' | 'archive-notes' | 'archive-projects' | 'gallery'
 }
 
 const headerItems = [
@@ -44,9 +44,9 @@ const exploreItems: CardNavItem[] = [
     bgColor: '#1A1B2E',
     textColor: '#fff',
     links: [
-      { label: 'Archive Home', href: '#/archive', ariaLabel: 'Archive home' },
       { label: 'Image Vault', href: '#/archive/images', ariaLabel: 'Image Vault' },
-      { label: 'Text Vault', href: '#/archive/notes', ariaLabel: 'Text Vault' },
+      { label: 'Notes Vault', href: '#/archive/notes', ariaLabel: 'Notes Vault' },
+      { label: 'Project Vault', href: '#/archive/projects', ariaLabel: 'Project Vault' },
     ],
   },
 ]
@@ -75,6 +75,17 @@ export function Header({ activePage = 'home' }: HeaderProps) {
     })
   }
 
+  const getActiveHref = () => {
+    if (!isHashPage) return '#home'
+    switch (activePage) {
+      case 'lab': return '#/motion-lab'
+      case 'archive-images': return '#/archive/images'
+      case 'archive-notes': return '#/archive/notes'
+      case 'archive-projects': return '#/archive/projects'
+      default: return `#/${activePage}`
+    }
+  }
+
   return (
     <header className="site-header">
       <PillNav
@@ -82,7 +93,7 @@ export function Header({ activePage = 'home' }: HeaderProps) {
         logo={profileLogo}
         logoAlt={`${profile.brand} home`}
         items={headerItems}
-        activeHref={isHashPage ? `#/${activePage === 'lab' ? 'motion-lab' : activePage === 'archive-images' ? 'archive/images' : activePage === 'archive-notes' ? 'archive/notes' : activePage === 'archive-collections' ? 'archive/collections' : activePage}` : '#home'}
+        activeHref={getActiveHref()}
         baseColor="rgba(5, 10, 24, 0.82)"
         pillColor="rgba(18, 29, 54, 0.72)"
         hoveredPillTextColor="#f3f6ff"

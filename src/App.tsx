@@ -11,18 +11,24 @@ const MotionLabPage = lazy(() => import('./pages/MotionLabPage').then(m => ({ de
 const ArchivePage = lazy(() => import('./pages/ArchivePage').then(m => ({ default: m.ArchivePage })))
 const ArchiveImagesPage = lazy(() => import('./pages/ArchiveImagesPage').then(m => ({ default: m.ArchiveImagesPage })))
 const ArchiveNotesPage = lazy(() => import('./pages/ArchiveNotesPage').then(m => ({ default: m.ArchiveNotesPage })))
-const ArchiveCollectionsPage = lazy(() => import('./pages/ArchiveCollectionsPage').then(m => ({ default: m.ArchiveCollectionsPage })))
+const ArchiveProjectsPage = lazy(() => import('./pages/ArchiveProjectsPage').then(m => ({ default: m.ArchiveProjectsPage })))
 const GalleryPage = lazy(() => import('./pages/GalleryPage').then(m => ({ default: m.GalleryPage })))
 
-type Page = 'home' | 'lab' | 'archive' | 'archive-images' | 'archive-notes' | 'archive-collections' | 'gallery'
+type Page = 'home' | 'lab' | 'archive' | 'archive-images' | 'archive-notes' | 'archive-projects' | 'gallery'
 
 function getPageFromHash(): Page {
   if (typeof window === 'undefined') return 'home'
   const hash = window.location.hash
   if (hash === '#/lab' || hash === '#/motion-lab') return 'lab'
-  if (hash === '#/archive/images') return 'archive-images'
+  // Image vault sub-routes all render the same page component
+  if (hash === '#/archive/images' || hash.startsWith('#/archive/images/')) return 'archive-images'
   if (hash === '#/archive/notes') return 'archive-notes'
-  if (hash === '#/archive/collections') return 'archive-collections'
+  if (hash === '#/archive/projects') return 'archive-projects'
+  // Redirect legacy collections route
+  if (hash === '#/archive/collections') {
+    window.location.hash = '#/archive/images'
+    return 'archive-images'
+  }
   if (hash === '#/archive') return 'archive'
   if (hash === '#/gallery') return 'gallery'
   return 'home'
@@ -75,7 +81,7 @@ export default function App() {
         {page === 'archive' && <Suspense fallback={null}><ArchivePage /></Suspense>}
         {page === 'archive-images' && <Suspense fallback={null}><ArchiveImagesPage /></Suspense>}
         {page === 'archive-notes' && <Suspense fallback={null}><ArchiveNotesPage /></Suspense>}
-        {page === 'archive-collections' && <Suspense fallback={null}><ArchiveCollectionsPage /></Suspense>}
+        {page === 'archive-projects' && <Suspense fallback={null}><ArchiveProjectsPage /></Suspense>}
         {page === 'gallery' && <Suspense fallback={null}><GalleryPage /></Suspense>}
         {page === 'home' && <HomePage />}
       </div>

@@ -260,7 +260,7 @@ const effectMetadata = [
     deps: 'none',
     status: 'ready',
     description: 'Glassmorphism icon button grid with 3D hover lift and label reveal.',
-    where: 'Text Vault — category navigation',
+    where: 'Notes Vault — category navigation',
     category: 'Cards',
   },
 ] satisfies BaseEffectMeta[]
