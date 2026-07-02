@@ -5,8 +5,10 @@ import { ScrollReveal } from '../components/motion/ScrollReveal'
 import { Folder } from '../components/effects/react-bits/Folder'
 import { BorderGlow } from '../components/effects/react-bits/BorderGlow'
 import { CountUp } from '../components/effects/react-bits/CountUp'
+import { DesktopLanyard } from '../components/effects/react-bits/DesktopLanyard'
 import '../components/effects/react-bits/Folder.css'
 import '../components/effects/react-bits/BorderGlow.css'
+import '../components/effects/react-bits/Lanyard.css'
 import './ArchivePage.css'
 
 const editorialCount = visualArchiveItems.filter(i => i.category === 'editorial').length
@@ -67,15 +69,20 @@ export function ArchivePage() {
   return (
     <main className="archive-page">
       <div className="archive-page__header">
-        <a href="#/" className="archive-page__back">
-          <ArrowLeft aria-hidden="true" size={16} strokeWidth={1.5} />
-          <span>Back to Journal</span>
-        </a>
-        <h1 className="archive-page__title">The Archive</h1>
-        <p className="archive-page__subtitle">
-          Three vaults — images, notes, and projects.
-          A place for everything that deserves more room than a homepage section.
-        </p>
+        <div className="archive-page__header-text">
+          <a href="#/" className="archive-page__back">
+            <ArrowLeft aria-hidden="true" size={16} strokeWidth={1.5} />
+            <span>Back to Journal</span>
+          </a>
+          <h1 className="archive-page__title">The Archive</h1>
+          <p className="archive-page__subtitle">
+            Three vaults — images, notes, and projects.
+            A place for everything that deserves more room than a homepage section.
+          </p>
+        </div>
+        <div className="archive-page__header-lanyard">
+          <DesktopLanyard />
+        </div>
       </div>
 
       <div className="archive-page__stats">
