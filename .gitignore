@@ -30,6 +30,8 @@ dist-ssr
 # Raw image assets (source material, not in-repo)
 art picture/
 picture/
+picture add/
+picture use/
 
 # React Bits reference source files
 React bits/
