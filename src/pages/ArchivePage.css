@@ -112,6 +112,9 @@
   border-radius: var(--radius-lg);
   background: var(--color-surface);
   min-height: 300px;
+  position: relative;
+  overflow: visible;
+  z-index: 1;
   transition:
     border-color var(--duration-fast) ease,
     background var(--duration-fast) ease,
@@ -130,6 +133,12 @@
   align-items: center;
   justify-content: center;
   width: 100%;
+  z-index: 2;
+}
+
+/* Papers fly out above everything */
+.archive-page__vault-folder .rb-folder__paper {
+  z-index: 10;
 }
 
 .archive-page__vault-label {
@@ -140,6 +149,237 @@
   color: var(--color-text);
   margin-top: auto;
   padding-top: 1.2rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Folder internal hints ────────────────────── */
+
+/* Image Vault — photo frame */
+.folder-hint-photo {
+  width: 80%;
+  height: 75%;
+  margin: 12% auto 0;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+  position: relative;
+}
+
+.folder-hint-photo::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 1px;
+}
+
+.rb-folder__paper:hover .folder-hint-photo {
+  transform: scale(1.04);
+}
+
+.rb-folder__paper .folder-hint-photo {
+  transition: transform 0.4s var(--ease-out);
+}
+
+/* Notes Vault — text lines */
+.folder-hint-note {
+  width: 75%;
+  height: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+}
+
+.folder-hint-note::before {
+  content: '';
+  display: block;
+  height: 3px;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 2px;
+}
+
+.folder-hint-note::after {
+  content: '';
+  display: block;
+  height: 3px;
+  width: 65%;
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 2px;
+}
+
+.rb-folder__paper--1 .folder-hint-note::before { width: 90%; }
+.rb-folder__paper--1 .folder-hint-note::after { width: 55%; }
+.rb-folder__paper--2 .folder-hint-note::before { width: 80%; }
+.rb-folder__paper--2 .folder-hint-note::after { width: 70%; }
+.rb-folder__paper--3 .folder-hint-note::before { width: 85%; }
+.rb-folder__paper--3 .folder-hint-note::after { width: 60%; }
+
+/* Project Vault — window frame */
+.folder-hint-window {
+  width: 80%;
+  height: 75%;
+  margin: 12% auto 0;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  position: relative;
+  overflow: hidden;
+}
+
+.folder-hint-window::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 3px 3px 0 0;
+}
+
+.folder-hint-window::after {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 6px;
+  right: 6px;
+  bottom: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 2px;
+}
+
+/* ── Bottom section (Recent + Map) ────────────── */
+
+.archive-page__bottom {
+  margin-bottom: 3rem;
+}
+
+.archive-page__bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.archive-page__recent,
+.archive-page__map {
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-lg);
+}
+
+.archive-page__recent-inner,
+.archive-page__map-inner {
+  padding: clamp(1.5rem, 2.5vw, 2.5rem);
+}
+
+.archive-page__recent-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.archive-page__recent-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--color-border);
+  text-decoration: none;
+  color: inherit;
+  transition: opacity var(--duration-fast) ease;
+}
+
+.archive-page__recent-item:last-of-type {
+  border-bottom: none;
+}
+
+.archive-page__recent-item:hover {
+  opacity: 0.7;
+}
+
+.archive-page__recent-id {
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  font-family: var(--font-sans);
+  min-width: 5rem;
+}
+
+.archive-page__recent-title {
+  font-size: 0.85rem;
+  color: var(--color-text);
+  font-weight: 460;
+}
+
+.archive-page__recent-empty {
+  font-size: 0.78rem;
+  color: var(--color-faint);
+  margin-top: 0.6rem;
+  display: block;
+}
+
+/* ── Map ───────────────────────────────────────── */
+
+.archive-page__map-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.archive-page__map-node {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--color-border);
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  padding-left: 1.2rem;
+  transition: opacity var(--duration-fast) ease;
+}
+
+.archive-page__map-node:last-of-type {
+  border-bottom: none;
+}
+
+.archive-page__map-node:hover {
+  opacity: 0.7;
+}
+
+.archive-page__map-node::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--node-color, var(--color-faint));
+}
+
+.archive-page__map-node-label {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--color-text);
+  font-family: var(--font-sans);
+}
+
+.archive-page__map-node-count {
+  font-size: 0.72rem;
+  color: var(--color-faint);
+}
+
+.archive-page__map-footnote {
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: var(--color-faint);
+  margin: 1rem 0 0;
+  max-width: 40ch;
 }
 
 /* ── Mobile ───────────────────────────────────── */
@@ -156,7 +396,16 @@
   }
 
   .archive-page__vault-folder .rb-folder {
-    transform: scale(1.2);
+    transform: scale(1.2) !important;
+  }
+
+  .archive-page__vault-folder .rb-folder:not(.rb-folder--open):hover {
+    transform: scale(1.2) translateY(-8px) !important;
+  }
+
+  .archive-page__bottom-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
   }
 }
 
@@ -174,32 +423,10 @@
   .archive-page__vault-card:hover {
     transform: none;
   }
-}
 
-/* ── Vision card ──────────────────────────────── */
-
-.archive-page__vision {
-  margin-bottom: 3rem;
-}
-
-.archive-vision-card {
-  padding: clamp(1.5rem, 3vw, 2.5rem);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  background: var(--color-surface);
-}
-
-.archive-vision-card p {
-  font-size: clamp(0.9rem, 1.1vw, 1rem);
-  line-height: 1.75;
-  color: var(--color-muted);
-  max-width: 52ch;
-  margin: 0;
-}
-
-.archive-vision-card__cn {
-  margin-top: 1rem;
-  color: var(--color-gold);
-  font-size: clamp(0.82rem, 1vw, 0.92rem);
-  opacity: 0.85;
+  .rb-folder__paper .folder-hint-photo,
+  .rb-folder__paper:hover .folder-hint-photo {
+    transition: none !important;
+    transform: none;
+  }
 }

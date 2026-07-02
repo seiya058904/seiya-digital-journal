@@ -12,9 +12,10 @@ const ArchivePage = lazy(() => import('./pages/ArchivePage').then(m => ({ defaul
 const ArchiveImagesPage = lazy(() => import('./pages/ArchiveImagesPage').then(m => ({ default: m.ArchiveImagesPage })))
 const ArchiveNotesPage = lazy(() => import('./pages/ArchiveNotesPage').then(m => ({ default: m.ArchiveNotesPage })))
 const ArchiveProjectsPage = lazy(() => import('./pages/ArchiveProjectsPage').then(m => ({ default: m.ArchiveProjectsPage })))
+const ArchiveNotesCategoryPage = lazy(() => import('./pages/ArchiveNotesCategoryPage').then(m => ({ default: m.ArchiveNotesCategoryPage })))
 const GalleryPage = lazy(() => import('./pages/GalleryPage').then(m => ({ default: m.GalleryPage })))
 
-type Page = 'home' | 'lab' | 'archive' | 'archive-images' | 'archive-notes' | 'archive-projects' | 'gallery'
+type Page = 'home' | 'lab' | 'archive' | 'archive-images' | 'archive-notes' | 'archive-notes-category' | 'archive-projects' | 'gallery'
 
 function getPageFromHash(): Page {
   if (typeof window === 'undefined') return 'home'
@@ -22,7 +23,10 @@ function getPageFromHash(): Page {
   if (hash === '#/lab' || hash === '#/motion-lab') return 'lab'
   // Image vault sub-routes all render the same page component
   if (hash === '#/archive/images' || hash.startsWith('#/archive/images/')) return 'archive-images'
-  if (hash === '#/archive/notes') return 'archive-notes'
+  // Notes root — handle both with and without trailing slash
+  if (hash === '#/archive/notes' || hash === '#/archive/notes/') return 'archive-notes'
+  // Notes sub-routes (learning, thoughts, journal, etc.) all render ArchiveNotesCategoryPage
+  if (hash.startsWith('#/archive/notes/')) return 'archive-notes-category'
   if (hash === '#/archive/projects') return 'archive-projects'
   // Redirect legacy collections route
   if (hash === '#/archive/collections') {
@@ -81,6 +85,7 @@ export default function App() {
         {page === 'archive' && <Suspense fallback={null}><ArchivePage /></Suspense>}
         {page === 'archive-images' && <Suspense fallback={null}><ArchiveImagesPage /></Suspense>}
         {page === 'archive-notes' && <Suspense fallback={null}><ArchiveNotesPage /></Suspense>}
+        {page === 'archive-notes-category' && <Suspense fallback={null}><ArchiveNotesCategoryPage /></Suspense>}
         {page === 'archive-projects' && <Suspense fallback={null}><ArchiveProjectsPage /></Suspense>}
         {page === 'gallery' && <Suspense fallback={null}><GalleryPage /></Suspense>}
         {page === 'home' && <HomePage />}

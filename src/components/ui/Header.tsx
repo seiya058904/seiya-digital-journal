@@ -7,7 +7,7 @@ import { CardNav, type CardNavItem } from '../effects/react-bits/CardNav'
 import { PillNav } from '../effects/react-bits/PillNav'
 
 type HeaderProps = {
-  activePage?: 'home' | 'lab' | 'archive' | 'archive-images' | 'archive-notes' | 'archive-projects' | 'gallery'
+  activePage?: 'home' | 'lab' | 'archive' | 'archive-images' | 'archive-notes' | 'archive-notes-category' | 'archive-projects' | 'gallery'
 }
 
 const headerItems = [
@@ -81,7 +81,8 @@ export function Header({ activePage = 'home' }: HeaderProps) {
     switch (activePage) {
       case 'lab': return '#/motion-lab'
       case 'archive-images': return '#/archive/images'
-      case 'archive-notes': return '#/archive/notes'
+      case 'archive-notes':
+      case 'archive-notes-category': return '#/archive/notes'
       case 'archive-projects': return '#/archive/projects'
       default: return `#/${activePage}`
     }
