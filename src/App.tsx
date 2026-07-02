@@ -47,12 +47,11 @@ export default function App() {
     function onHashChange() {
       const p = getPageFromHash()
       const prev = prevPage.current
-      const prevMain = prev ? prev.split('-')[0] : null
-      const curMain = p.split('-')[0]
       prevPage.current = p
       setPage(p)
-      // Only scroll to top when switching between top-level pages, not sub-navigation
-      if (curMain !== prevMain && p !== 'home') window.scrollTo(0, 0)
+      // Scroll to top on page switch — sub-routes that return the same page name (e.g.
+      // #/archive/images and #/archive/images/featured both → 'archive-images') skip.
+      if (p !== prev && p !== 'home') window.scrollTo(0, 0)
     }
     window.addEventListener('hashchange', onHashChange)
     return () => window.removeEventListener('hashchange', onHashChange)
