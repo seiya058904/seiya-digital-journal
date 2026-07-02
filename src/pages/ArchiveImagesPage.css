@@ -122,6 +122,12 @@
   transition: transform 0.4s ease;
 }
 
+/* illustration-004: a gentler zoom */
+.archive-images__item--subtle-zoom .glare-hover img {
+  transform: scale(1.04);
+  transition: transform 0.4s ease;
+}
+
 /* ── Footnote ─────────────────────────────────── */
 
 .archive-images__footnote {

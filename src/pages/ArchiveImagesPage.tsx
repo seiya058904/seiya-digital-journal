@@ -101,7 +101,7 @@ function ImageCategoryView({ category, onBack }: { category: ImageCategory; onBa
         <CategoryTitle category={category} />
         <div className="archive-images__grid">
           {items.map((item) => (
-            <div key={item.id} className={`archive-images__item${item.id === 'editorial-004' ? ' archive-images__item--zoomed' : ''}`}>
+            <div key={item.id} className={`archive-images__item${item.id === 'editorial-004' ? ' archive-images__item--zoomed' : item.id === 'illustration-004' ? ' archive-images__item--subtle-zoom' : ''}`}>
               <GalleryCard item={item} />
             </div>
           ))}
@@ -171,7 +171,7 @@ function ImageVaultOverview() {
           </p>
           <div className="archive-images__grid">
             {featuredItems.slice(0, PREVIEW_COUNT).map((item) => (
-              <div key={item.id} className="archive-images__item">
+              <div key={item.id} className={`archive-images__item${item.id === 'illustration-004' ? ' archive-images__item--subtle-zoom' : ''}`}>
                 <GalleryCard item={item} />
               </div>
             ))}
