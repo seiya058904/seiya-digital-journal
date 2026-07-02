@@ -4,15 +4,15 @@ import { visualArchiveItems, itemImageSrc } from '../data/visualArchive'
 import { ScrollReveal } from '../components/motion/ScrollReveal'
 import './GalleryPage.css'
 
-const featuredItems = visualArchiveItems.filter(i => i.featured)
+const featuredItems = visualArchiveItems.filter(i => i.featured).slice(0, 5)
 
 export function GalleryPage() {
   return (
     <main className="gallery-page">
       <div className="gallery-page__header">
-        <a href="#/" className="gallery-page__back">
+        <a href="#/archive/images" className="gallery-page__back">
           <ArrowLeft aria-hidden="true" size={16} strokeWidth={1.5} />
-          <span>Back to Journal</span>
+          <span>Back to Image Vault</span>
         </a>
         <h1 className="gallery-page__title">Gallery</h1>
         <p className="gallery-page__subtitle">
@@ -47,7 +47,7 @@ export function GalleryPage() {
         </div>
       )}
 
-      <ScrollReveal className="gallery-page__all-section" amount={0.05}>
+      <ScrollReveal className="gallery-page__all-section" amount={0}>
         <h2 className="gallery-page__section-title">All images</h2>
         <div className="gallery-masonry">
           {visualArchiveItems.map((item) => (
