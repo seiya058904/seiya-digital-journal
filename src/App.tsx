@@ -60,7 +60,7 @@ export default function App() {
   return (
     <MotionConfig reducedMotion="user">
       <div className="site-background" aria-hidden="true">
-        {page !== 'home' && !(page.startsWith('archive') || page === 'gallery') && <AuroraBackground />}
+        {!(page.startsWith('archive') || page === 'gallery') && <AuroraBackground />}
         {page === 'home' ? (
           <DesktopGridScan
             className="site-gridscan"
