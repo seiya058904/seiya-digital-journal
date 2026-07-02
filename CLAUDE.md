@@ -130,7 +130,7 @@ Drop new WebP files into `public/gallery/` using the same filenames. The layout 
 
 - Framer Motion is the primary animation runtime
 - GSAP is used only for a few React Bits ports (AnimatedContent, ScrambledText, SplitText, MagicBento etc.) — loaded lazily via HeavyEffectGate where possible
-- Three.js is used for GridScan only
+- Three.js is used for GridScan and Silk (archive background)
 - Animate only `transform` and `opacity` — never layout properties or large-area filters
 - Respect `prefers-reduced-motion`: disable tilt, parallax, and continuous animation
 - Touch devices should not depend on hover effects

@@ -1,7 +1,6 @@
 import { BorderGlow } from '../effects/react-bits/BorderGlow'
 import { GlareHover } from '../effects/react-bits/GlareHover'
-
-const base = import.meta.env.BASE_URL
+import { archiveImageSrc } from '../../data/visualArchive'
 
 type GalleryCardItem = {
   image: string
@@ -39,7 +38,7 @@ export function GalleryCard({ item }: GalleryCardProps) {
       transitionDuration={750}
     >
       <img
-        src={`${base}${item.image.slice(1)}`}
+        src={archiveImageSrc(item.image)}
         alt={altText}
         width={aspect === 'portrait' ? 1122 : aspect === 'square' ? 1254 : 1536}
         height={aspect === 'portrait' ? 1402 : aspect === 'square' ? 1254 : 1024}

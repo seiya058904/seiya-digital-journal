@@ -66,6 +66,13 @@ export function CountUp({
     [maxDecimals, separator],
   )
 
+  // Store callbacks in refs to avoid re-triggering effects
+  const onStartRef = useRef(onStart)
+  onStartRef.current = onStart
+  const onEndRef = useRef(onEnd)
+  onEndRef.current = onEnd
+  const onEndFired = useRef(false)
+
   useEffect(() => {
     if (ref.current) {
       ref.current.textContent = formatValue(direction === 'down' ? to : from)
@@ -74,30 +81,34 @@ export function CountUp({
 
   useEffect(() => {
     if (!isInView || !startWhen) return
-    if (typeof onStart === 'function') onStart()
+    if (typeof onStartRef.current === 'function') onStartRef.current()
+    onEndFired.current = false
 
     const timeoutId = window.setTimeout(() => {
       motionValue.set(direction === 'down' ? from : to)
     }, delay * 1000)
 
-    const durationTimeoutId = window.setTimeout(() => {
-      if (typeof onEnd === 'function') onEnd()
-    }, delay * 1000 + duration * 1000)
-
     return () => {
       window.clearTimeout(timeoutId)
-      window.clearTimeout(durationTimeoutId)
     }
-  }, [isInView, startWhen, motionValue, direction, from, to, delay, onStart, onEnd, duration])
+    // Only depends on the trigger conditions, not on callback identities
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isInView, startWhen, motionValue, direction, from, to, delay])
 
+  // Detect spring settling to fire onEnd
   useEffect(() => {
     const unsubscribe = springValue.on('change', (latest: number) => {
       if (ref.current) {
         ref.current.textContent = formatValue(latest)
       }
+      const target = direction === 'down' ? from : to
+      if (Math.abs(latest - target) < 0.01 && !onEndFired.current) {
+        onEndFired.current = true
+        if (typeof onEndRef.current === 'function') onEndRef.current()
+      }
     })
     return () => unsubscribe()
-  }, [springValue, formatValue])
+  }, [springValue, formatValue, direction, from, to])
 
   return <span className={className} ref={ref} />
 }

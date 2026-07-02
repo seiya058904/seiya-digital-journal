@@ -1,15 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
 import { ArrowLeft } from 'lucide-react'
 
-import { visualArchiveItems } from '../data/visualArchive'
+import { visualArchiveItems, archiveImageSrc } from '../data/visualArchive'
 import type { VisualArchiveCity } from '../data/visualArchive'
 import { GalleryCard } from '../components/sections/GalleryCard'
 import { FlowingMenu } from '../components/effects/react-bits/FlowingMenu'
 import { ScrollReveal } from '../components/motion/ScrollReveal'
 import '../components/effects/react-bits/FlowingMenu.css'
 import './ArchiveImagesPage.css'
-
-const base = import.meta.env.BASE_URL
 
 const featuredItems = visualArchiveItems.filter(i => i.featured)
 const editorialItems = visualArchiveItems.filter(i => i.category === 'editorial')
@@ -21,11 +19,11 @@ const firstItem = (items: typeof visualArchiveItems) =>
   items[0] ?? visualArchiveItems[0]
 
 const flowingMenuItems = [
-  { link: '#/archive/images/featured', text: 'Featured', image: `${base}${firstItem(featuredItems).image.slice(1)}` },
-  { link: '#/gallery', text: 'Gallery', image: `${base}${visualArchiveItems[0].image.slice(1)}` },
-  { link: '#/archive/images/editorial', text: 'Editorial', image: `${base}${firstItem(editorialItems).image.slice(1)}` },
-  { link: '#/archive/images/memory', text: 'Memory', image: `${base}${firstItem(memoryItems).image.slice(1)}` },
-  { link: '#/archive/images/city', text: 'City', image: `${base}${(cityItems.find(i => i.city === 'Wuhan') ?? firstItem(cityItems)).image.slice(1)}` },
+  { link: '#/archive/images/featured', text: 'Featured', image: archiveImageSrc(firstItem(featuredItems).image) },
+  { link: '#/gallery', text: 'Gallery', image: archiveImageSrc((visualArchiveItems.find(i => i.id === 'editorial-006') ?? visualArchiveItems[0]).image) },
+  { link: '#/archive/images/editorial', text: 'Editorial', image: archiveImageSrc(firstItem(editorialItems).image) },
+  { link: '#/archive/images/memory', text: 'Memory', image: archiveImageSrc(firstItem(memoryItems).image) },
+  { link: '#/archive/images/city', text: 'City', image: archiveImageSrc((cityItems.find(i => i.city === 'Wuhan') ?? firstItem(cityItems)).image) },
 ]
 
 const PREVIEW_COUNT = 4
@@ -100,13 +98,15 @@ function ImageCategoryView({ category, onBack }: { category: ImageCategory; onBa
 
       <ScrollReveal className="archive-images__section" amount={0.08}>
         <CategoryTitle category={category} />
-        <div className="archive-images__grid">
-          {items.map((item) => (
-            <div key={item.id} className={`archive-images__item${item.id === 'editorial-004' ? ' archive-images__item--zoomed' : item.id === 'illustration-004' ? ' archive-images__item--subtle-zoom' : ''}`}>
-              <GalleryCard item={item} />
-            </div>
-          ))}
-        </div>
+        {category !== 'city' && (
+          <div className="archive-images__grid">
+            {items.map((item) => (
+              <div key={item.id} className={`archive-images__item${item.id === 'editorial-004' ? ' archive-images__item--zoomed' : item.id === 'illustration-004' ? ' archive-images__item--subtle-zoom' : ''}`}>
+                <GalleryCard item={item} />
+              </div>
+            ))}
+          </div>
+        )}
       </ScrollReveal>
 
       {category === 'city' && (

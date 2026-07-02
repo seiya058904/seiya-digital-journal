@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { ArrowLeft, FileText, Book, Code, GraduationCap, Library, Pen, Quote, MessageSquare, Sparkles, Lightbulb, Heart, BookOpen, Calendar, Clock, Camera, Map, Star } from 'lucide-react'
 
 import { GlassIcons } from '../components/effects/react-bits/GlassIcons'
@@ -70,7 +71,14 @@ function getCategoryFromHash(): string {
 }
 
 export function ArchiveNotesCategoryPage() {
-  const catKey = getCategoryFromHash()
+  const [catKey, setCatKey] = useState(() => getCategoryFromHash())
+
+  useEffect(() => {
+    const onHashChange = () => setCatKey(getCategoryFromHash())
+    window.addEventListener('hashchange', onHashChange)
+    return () => window.removeEventListener('hashchange', onHashChange)
+  }, [])
+
   const cat = categoryMap[catKey] || categoryMap.learning
 
   return (

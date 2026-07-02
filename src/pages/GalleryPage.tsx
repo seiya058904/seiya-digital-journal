@@ -1,10 +1,8 @@
 import { ArrowLeft } from 'lucide-react'
 
-import { visualArchiveItems } from '../data/visualArchive'
+import { visualArchiveItems, itemImageSrc } from '../data/visualArchive'
 import { ScrollReveal } from '../components/motion/ScrollReveal'
 import './GalleryPage.css'
-
-const base = import.meta.env.BASE_URL
 
 const featuredItems = visualArchiveItems.filter(i => i.featured)
 
@@ -24,7 +22,7 @@ export function GalleryPage() {
       </div>
 
       {featuredItems.length > 0 && (
-        <ScrollReveal className="gallery-page__hero-section">
+        <div className="gallery-page__hero-section">
           <h2 className="gallery-page__section-title">Selected</h2>
           <div className="gallery-hero-grid">
             {featuredItems.map((item, i) => (
@@ -33,7 +31,7 @@ export function GalleryPage() {
                 className={`gallery-hero-item gallery-hero-item--${i === 0 ? 'large' : i < 3 ? 'medium' : 'small'}`}
               >
                 <img
-                  src={`${base}${item.image.slice(1)}`}
+                  src={itemImageSrc(item)}
                   alt={item.alt}
                   loading={i < 2 ? 'eager' : 'lazy'}
                   decoding="async"
@@ -46,16 +44,16 @@ export function GalleryPage() {
               </div>
             ))}
           </div>
-        </ScrollReveal>
+        </div>
       )}
 
-      <ScrollReveal className="gallery-page__all-section">
+      <ScrollReveal className="gallery-page__all-section" amount={0.05}>
         <h2 className="gallery-page__section-title">All images</h2>
         <div className="gallery-masonry">
           {visualArchiveItems.map((item) => (
             <div key={item.id} className={`gallery-masonry-item gallery-masonry-item--${item.aspect}`}>
               <img
-                src={`${base}${item.image.slice(1)}`}
+                src={itemImageSrc(item)}
                 alt={item.alt}
                 loading="lazy"
                 decoding="async"

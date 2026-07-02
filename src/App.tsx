@@ -1,5 +1,5 @@
 import { MotionConfig } from 'framer-motion'
-import { lazy, Suspense, useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 
 import { ArchiveBackground } from './components/effects/ArchiveBackground'
 import { AuroraBackground } from './components/effects/AuroraBackground'
@@ -41,13 +41,18 @@ function getPageFromHash(): Page {
 
 export default function App() {
   const [page, setPage] = useState<Page>(getPageFromHash)
+  const prevPage = useRef(page)
 
   useEffect(() => {
     function onHashChange() {
       const p = getPageFromHash()
+      const prev = prevPage.current
+      const prevMain = prev ? prev.split('-')[0] : null
+      const curMain = p.split('-')[0]
+      prevPage.current = p
       setPage(p)
-      // 切到独立页面时（非 home 锚点）回到顶部
-      if (p !== 'home') window.scrollTo(0, 0)
+      // Only scroll to top when switching between top-level pages, not sub-navigation
+      if (curMain !== prevMain && p !== 'home') window.scrollTo(0, 0)
     }
     window.addEventListener('hashchange', onHashChange)
     return () => window.removeEventListener('hashchange', onHashChange)
