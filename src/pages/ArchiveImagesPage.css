@@ -52,8 +52,8 @@
   position: relative;
 }
 
-/* Gallery menu Red Moon Bridge: shift image down slightly */
-.archive-images__flowing .flowing-menu__item:nth-child(2) .flowing-menu__marquee-img {
+/* Editorial menu: shift image down slightly */
+.archive-images__flowing .flowing-menu__item:nth-child(3) .flowing-menu__marquee-img {
   background-position: 50% 55%;
 }
 
