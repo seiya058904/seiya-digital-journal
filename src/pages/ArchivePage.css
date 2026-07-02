@@ -126,6 +126,15 @@
 .archive-page__vault-card {
   border: none;
   border-radius: var(--radius-lg);
+  --edge-proximity: 100;
+}
+
+/* Default: show vault-card glow at full intensity without hover */
+.archive-page__vault-card.border-glow-card::before,
+.archive-page__vault-card.border-glow-card::after,
+.archive-page__vault-card.border-glow-card > .edge-light {
+  opacity: 1;
+  transition: opacity 0.4s ease;
 }
 
 .archive-page__vault-card-inner {
