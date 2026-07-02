@@ -29,10 +29,12 @@ const curated = visualArchiveItems.filter((item) =>
   CURATED_IDS.includes(item.id),
 )
 
-function sizeClass(item: VisualArchiveItem): string {
+function sizeClass(item: VisualArchiveItem, index: number): string {
   if (item.featured && item.aspect === 'landscape') return 'gallery-item--hero'
   if (item.aspect === 'landscape') return 'gallery-item--wide'
-  if (item.featured) return 'gallery-item--large'
+  // First 5 featured get large (span 4), the rest get standard (span 3)
+  // — keeps the top bold and lets the bottom feel more documentary
+  if (item.featured && index < 5) return 'gallery-item--large'
   return 'gallery-item--standard'
 }
 
@@ -81,7 +83,7 @@ export function Gallery() {
         {curated.map((item, index) => (
           <ScrollReveal
             key={item.id}
-            className={`gallery-item ${sizeClass(item)} gallery-item--${item.aspect}`}
+            className={`gallery-item ${sizeClass(item, index)} gallery-item--${item.aspect}`}
             delay={(index % 4) * 0.06}
             amount={0.08}
           >
