@@ -18,7 +18,7 @@ export type VisualArchiveItem = {
   alt: string
 }
 
-const base = typeof import.meta !== 'undefined' ? import.meta.env.BASE_URL : '/'
+const base = import.meta.env?.BASE_URL ?? '/'
 
 /** Resolve an archive image path for use in src attributes — handles BASE_URL on GitHub Pages */
 export function archiveImageSrc(image: string): string {
@@ -541,7 +541,7 @@ export const visualArchiveItems: VisualArchiveItem[] = [
     image: '/visual-archive/editorial/editorial-017.webp',
     thumb: '/visual-archive/thumbs/editorial-017-thumb.webp',
     mediaType: 'image',
-    aspect: 'portrait',
+    aspect: 'square',
     tags: ['cat', 'illustration', 'expression', 'editorial'],
     featured: false,
     alt: 'Expressive illustration of a cat with an exaggerated open mouth.',
@@ -586,7 +586,7 @@ export const visualArchiveItems: VisualArchiveItem[] = [
     image: '/visual-archive/editorial/editorial-020.webp',
     thumb: '/visual-archive/thumbs/editorial-020-thumb.webp',
     mediaType: 'image',
-    aspect: 'portrait',
+    aspect: 'square',
     tags: ['poster', 'mountain', 'design', 'typography', 'editorial'],
     featured: true,
     alt: 'Modern poster design featuring Mount Fuji with bold typography.',
@@ -755,7 +755,7 @@ export const visualArchiveItems: VisualArchiveItem[] = [
     image: '/visual-archive/memory/wuhan/wuhan-003.webp',
     thumb: '/visual-archive/thumbs/wuhan-003-thumb.webp',
     mediaType: 'image',
-    aspect: 'portrait',
+    aspect: 'square',
     tags: ['church', 'architecture', 'wuhan', 'faith'],
     featured: false,
     alt: 'White Orthodox church beneath a cloudy sky.',
@@ -1198,7 +1198,7 @@ export const visualArchiveItems: VisualArchiveItem[] = [
     image: '/visual-archive/illustration/illustration-013.webp',
     thumb: '/visual-archive/thumbs/illustration-013-thumb.webp',
     mediaType: 'image',
-    aspect: 'portrait',
+    aspect: 'square',
     tags: ['pixel-art', 'mercedes', 'retro', 'car', 'night', 'illustration'],
     featured: false,
     alt: 'Pixel art of a classic Mercedes viewed from the rear at night.',
@@ -1487,7 +1487,7 @@ export const visualArchiveItems: VisualArchiveItem[] = [
     image: '/visual-archive/art/art-007.webp',
     thumb: '/visual-archive/thumbs/art-007-thumb.webp',
     mediaType: 'image',
-    aspect: 'portrait',
+    aspect: 'square',
     tags: ['angel', 'statue', 'marble', 'sculpture', 'art'],
     featured: true,
     alt: 'Marble angel statue holding a sword.',

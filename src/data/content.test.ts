@@ -5,6 +5,7 @@ import { effects } from './effects.ts'
 import { navigation, socialLinks } from './links.ts'
 import { profile } from './profile.ts'
 import { thoughts } from './thoughts.ts'
+import { visualArchiveItems } from './visualArchive.ts'
 
 test('the journal content keeps the approved identity and chapter order', () => {
   assert.equal(profile.brand, 'Seiya')
@@ -47,5 +48,22 @@ test('Motion Lab distinguishes real React Bits demos from metadata', () => {
   assert.equal(
     effects.find(({ name }) => name === 'GlareHover')?.homepageUsage,
     true,
+  )
+})
+
+test('square archive images keep square aspect metadata', () => {
+  const squareIds = [
+    'editorial-017',
+    'editorial-020',
+    'wuhan-003',
+    'illustration-013',
+    'art-007',
+  ]
+
+  assert.deepEqual(
+    visualArchiveItems
+      .filter(({ id }) => squareIds.includes(id))
+      .map(({ id, aspect }) => [id, aspect]),
+    squareIds.map((id) => [id, 'square']),
   )
 })

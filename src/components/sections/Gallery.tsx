@@ -1,4 +1,4 @@
-import { visualArchiveItems, type VisualArchiveItem } from '../../data/visualArchive'
+import { visualArchiveItems } from '../../data/visualArchive'
 import { BounceCards } from '../effects/react-bits/BounceCards'
 import { ScrollReveal } from '../motion/ScrollReveal'
 import { Chapter } from '../ui/Chapter'
@@ -28,19 +28,6 @@ const CURATED_IDS = [
 const curated = visualArchiveItems.filter((item) =>
   CURATED_IDS.includes(item.id),
 )
-
-/** Magazine-style size distribution for the curated grid.
- *  Hero (span 6) — 3 bold editorial anchors throughout the layout.
- *  Large (span 4) — most items, comfortably sized.
- *  Standard (span 3) — a few compact fillers for contrast.
- */
-function sizeClass(_item: VisualArchiveItem, index: number): string {
-  const HERO = new Set([1, 2, 5])   // editorial-012, editorial-014, chongqing-001
-  const LARGE = new Set([0, 3, 4, 6, 7, 8, 10, 11, 12, 13])
-  if (HERO.has(index)) return 'gallery-item--hero'
-  if (LARGE.has(index)) return 'gallery-item--large'
-  return 'gallery-item--standard'
-}
 
 /** Pick 4 featured items for the BounceCards preview */
 const bounceItems = visualArchiveItems.filter((item) => item.featured).slice(0, 4)
@@ -87,7 +74,7 @@ export function Gallery() {
         {curated.map((item, index) => (
           <ScrollReveal
             key={item.id}
-            className={`gallery-item ${sizeClass(item, index)} gallery-item--${item.aspect}`}
+            className={`gallery-item gallery-item--${item.id}`}
             delay={(index % 4) * 0.06}
             amount={0.08}
           >

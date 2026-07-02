@@ -28,7 +28,7 @@ export function GalleryCard({ item }: GalleryCardProps) {
     <GlareHover
       className="gallery-card__image"
       width="100%"
-      height="100%"
+      height="auto"
       background="var(--color-surface)"
       borderColor="transparent"
       borderRadius="var(--radius-lg)"
