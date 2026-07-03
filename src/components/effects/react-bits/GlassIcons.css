@@ -75,9 +75,8 @@
   opacity: 0;
   position: absolute;
   top: 100%;
-  right: 0;
-  left: 0;
-  transform: translateY(0);
+  left: 60%;
+  transform: translateX(-50%) translateY(0);
 }
 
 .rb-glass-icon:focus-visible .rb-glass-icon__back,
@@ -93,7 +92,7 @@
 .rb-glass-icon:focus-visible .rb-glass-icon__label,
 .rb-glass-icon:hover .rb-glass-icon__label {
   opacity: 1;
-  transform: translateY(20%);
+  transform: translateX(-50%) translateY(20%);
 }
 
 @media (min-width: 768px) {
@@ -124,6 +123,6 @@
   .rb-glass-icon:hover .rb-glass-icon__label,
   .rb-glass-icon:focus-visible .rb-glass-icon__label {
     opacity: 1;
-    transform: translateY(20%);
+    transform: translateX(-50%) translateY(20%);
   }
 }

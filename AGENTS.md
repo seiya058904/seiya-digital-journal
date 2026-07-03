@@ -51,6 +51,25 @@ npm run preview # 本地预览生产构建
 
 修改前读取相关文件并给出简短计划；优先最小、可审查的改动。不得顺手修改无关内容、覆盖用户未提交修改，或擅自改变功能、规则、数值、路由及兼容行为。不要编造命令、目录、接口或部署流程；不确定时停止并说明风险。未经授权，不安装依赖、不运行自动修复或全仓库格式化，不 commit、push、deploy、publish、创建 Release 或操作数据库。涉及生产、权限、secrets、数据完整性、签名或计费必须先获授权。测试失败或未运行时如实报告。
 
+### Notes Vault Content Guidelines
+
+When working on Archive Notes content:
+- Follow length-based formatting rules:
+  - **Short notes (150–500 words)**: Use chapter card layout
+  - **Medium notes (500–1200 words)**: Can use chapter cards with a mini table of contents
+  - **Long notes (1200+ words)**: Switch to article reading layout - avoid wrapping each paragraph in large cards
+- Keep notes focused on identity, growth, thoughts, interests, and visual storytelling
+- Match the existing glass tile UI pattern for folder display
+- When adding new notes to `src/data/notes.ts`, ensure consistency with existing metadata structure
+
+### Glass Tile UI Styling
+
+For glass tile components in the Archive Notes:
+- **Label positioning**: Set `left: 60%` with `transform: translateX(-50%)` for perfect center alignment
+- **Hover effect**: Labels should float up from the centered position with smooth animation
+- **Glass effect**: Maintain the 3D rotation and blur effects from GlassIcons.css
+- **Color gradients**: Use the predefined gradient mapping (blue, purple, orange) for different categories
+
 ## Pre-Commit Checklist
 
 - 检查 `git status --short`、`git diff` 和 `git diff --stat`。

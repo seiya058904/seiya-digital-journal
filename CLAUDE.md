@@ -101,6 +101,29 @@ Projects must not become a main section (exception: `#/archive/projects` as a va
 
 Do not add fake achievements, work experience, photos, contact info, metrics, testimonials, or SaaS-style numbers. Unknown links stay as `#` placeholders until real URLs are provided.
 
+### Notes Vault Content Guidelines
+
+The Archive Notes section follows specific length-based formatting rules for optimal reading experience:
+
+- **Short notes (150–500 words)**: Use chapter card layout
+- **Medium notes (500–1200 words)**: Can use chapter cards with a mini table of contents
+- **Long notes (1200+ words)**: Switch to article reading layout - avoid wrapping each paragraph in large cards
+
+When adding new notes to `src/data/notes.ts`:
+1. Keep notes focused on identity, growth, thoughts, interests, and visual storytelling
+2. Match the existing glass tile UI pattern for folder display
+3. Use appropriate layout based on word count
+4. Ensure consistency with existing note metadata structure
+
+### Glass Tile UI Styling
+
+For glass tile components in the Archive Notes:
+
+- **Label positioning**: Set `left: 60%` with `transform: translateX(-50%)` for perfect center alignment
+- **Hover effect**: Labels should float up from the centered position with smooth animation
+- **Glass effect**: Maintain the 3D rotation and blur effects from GlassIcons.css
+- **Color gradients**: Use the predefined gradient mapping (blue, purple, orange) for different categories
+
 ## Critical: Asset Paths and GitHub Pages Base
 
 Deployed at: `https://seiya058904.github.io/seiya-digital-journal/`
