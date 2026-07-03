@@ -1,86 +1,42 @@
-import { ArrowLeft, GraduationCap, Pen, BookOpen, ArrowRight, Sparkles } from 'lucide-react'
+import { ArrowLeft, ArrowRight, BookOpen, GraduationCap, Pen, Sparkles } from 'lucide-react'
 import { Fragment } from 'react'
 
 import { ScrollReveal } from '../components/motion/ScrollReveal'
 import { BorderGlow } from '../components/effects/react-bits/BorderGlow'
+import { getNotesByCategory, categoryInfo } from '../data/notes'
+import type { NoteCategory } from '../data/notes'
 import '../components/effects/react-bits/BorderGlow.css'
 import './ArchiveNotesPage.css'
 
 const archiveNotesCardBackground = 'oklch(21% 0.028 292 / 98%)'
 
-const categoryCards = [
-  {
-    label: 'Learning',
-    href: '#/archive/notes/learning',
-    desc: 'Language study, creative coding, design patterns — what I learn and how I learn it.',
+const categoryMeta: Record<
+  NoteCategory,
+  { icon: React.ReactNode; color: string; glowColor: string; glowColors: string[] }
+> = {
+  learning: {
     icon: <GraduationCap size={20} />,
     color: '#56e4ff',
     glowColor: '187 100 67',
     glowColors: ['#56e4ff', '#3b82f6', '#38bdf8'],
-    backgroundColor: archiveNotesCardBackground,
-    status: 'Coming soon',
   },
-  {
-    label: 'Thoughts',
-    href: '#/archive/notes/thoughts',
-    desc: 'Longer reflections on identity, growth, curiosity, and the things I keep thinking about.',
+  thoughts: {
     icon: <Pen size={20} />,
     color: '#8c75ff',
     glowColor: '260 100 73',
     glowColors: ['#8c75ff', '#7c3aed', '#a78bfa'],
-    backgroundColor: archiveNotesCardBackground,
-    status: 'Coming soon',
   },
-  {
-    label: 'Journal',
-    href: '#/archive/notes/journal',
-    desc: 'Personal entries, drafts, and observations — a quiet space for things worth writing down.',
+  journal: {
     icon: <BookOpen size={20} />,
     color: '#f2b976',
     glowColor: '38 90 68',
     glowColors: ['#f2b976', '#f59e0b', '#fbbf24'],
-    backgroundColor: archiveNotesCardBackground,
-    status: 'Coming soon',
   },
-]
-
-const placeholderNotes = [
-  {
-    category: 'Learning',
-    title: 'Notes will appear here',
-    preview: 'Each note shows a preview of the content, making it easy to browse at a glance.',
-    color: '#56e4ff',
-    glowColor: '187 100 67',
-    glowColors: ['#56e4ff', '#3b82f6', '#38bdf8'],
-    backgroundColor: archiveNotesCardBackground,
-  },
-  {
-    category: 'Thoughts',
-    title: 'A place for longer reflections',
-    preview: 'Thoughts that need more than a paragraph — drafted, revisited, and kept.',
-    color: '#8c75ff',
-    glowColor: '260 100 73',
-    glowColors: ['#8c75ff', '#7c3aed', '#a78bfa'],
-    backgroundColor: archiveNotesCardBackground,
-  },
-  {
-    category: 'Journal',
-    title: 'Entries and observations',
-    preview: 'Quiet documentation of moments, ideas, and the shape of ordinary days.',
-    color: '#f2b976',
-    glowColor: '38 90 68',
-    glowColors: ['#f2b976', '#f59e0b', '#fbbf24'],
-    backgroundColor: archiveNotesCardBackground,
-  },
-]
-
-const flowSteps = [
-  { icon: <Pen size={16} />, label: 'Capture', desc: 'Write down the raw thought' },
-  { icon: <Sparkles size={16} />, label: 'Reflect', desc: 'Let it sit, revisit, refine' },
-  { icon: <BookOpen size={16} />, label: 'Archive', desc: 'Save with context and care' },
-]
+}
 
 export function ArchiveNotesPage() {
+  const allCategories: NoteCategory[] = ['learning', 'thoughts', 'journal']
+
   return (
     <main className="archive-notes">
       <div className="archive-notes__header">
@@ -90,68 +46,62 @@ export function ArchiveNotesPage() {
         </a>
         <h1 className="archive-notes__title">Notes Vault</h1>
         <p className="archive-notes__subtitle">
-          A place for longer writing — learning logs, reflections, and journal entries.
-          Not a blog engine, but a quiet space for things worth writing down.
+          A writing drawer for learning notes, reflections, and journal fragments.
+        </p>
+        <p className="archive-notes__subtitle--chinese">
+          这里存放学习笔记、想法记录和阶段性的个人日志。
         </p>
       </div>
 
-      {/* ── Category cards with BorderGlow ────────── */}
+      {/* ── Category cards ────────────────────────── */}
       <ScrollReveal className="archive-notes__categories">
         <h2 className="archive-notes__section-title">Categories</h2>
         <div className="archive-notes__category-grid">
-          {categoryCards.map((cat) => (
-            <a key={cat.label} href={cat.href} className="archive-notes__cat-link">
-              <BorderGlow
-                className="archive-notes__cat-card"
-                glowColor={cat.glowColor}
-                backgroundColor={cat.backgroundColor}
-                borderRadius={20}
-                glowRadius={28}
-                colors={cat.glowColors}
-              >
-                <div className="archive-notes__cat-inner">
-                  <div className="archive-notes__cat-header">
-                    <span className="archive-notes__cat-icon" style={{ color: cat.color }}>
-                      {cat.icon}
-                    </span>
-                    <h3 className="archive-notes__cat-label">{cat.label}</h3>
+          {allCategories.map((key) => {
+            const info = categoryInfo[key]
+            const meta = categoryMeta[key]
+            const count = getNotesByCategory(key).length
+            const tags = getNotesByCategory(key)
+              .flatMap((n) => n.tags)
+              .filter((t, i, a) => a.indexOf(t) === i)
+              .slice(0, 4)
+            return (
+              <a key={key} href={`#/archive/notes/${key}`} className="archive-notes__cat-link">
+                <BorderGlow
+                  className="archive-notes__cat-card"
+                  glowColor={meta.glowColor}
+                  backgroundColor={archiveNotesCardBackground}
+                  borderRadius={20}
+                  glowRadius={28}
+                  colors={meta.glowColors}
+                >
+                  <div className="archive-notes__cat-inner">
+                    <div className="archive-notes__cat-header">
+                      <span className="archive-notes__cat-icon" style={{ color: meta.color }}>
+                        {meta.icon}
+                      </span>
+                      <h3 className="archive-notes__cat-label">{info.label}</h3>
+                    </div>
+                    <p className="archive-notes__cat-desc">{info.description}</p>
+                    <div className="archive-notes__cat-footer">
+                      <span className="archive-notes__cat-count">{count} notes</span>
+                      {tags.length > 0 && (
+                        <div className="archive-notes__cat-tags">
+                          {tags.map((t) => (
+                            <span key={t} className="archive-notes__cat-tag">{t}</span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <p className="archive-notes__cat-desc">{cat.desc}</p>
-                  <span className="archive-notes__cat-status">{cat.status}</span>
-                </div>
-              </BorderGlow>
-            </a>
-          ))}
+                </BorderGlow>
+              </a>
+            )
+          })}
         </div>
       </ScrollReveal>
 
-      {/* ── Note placeholders with BorderGlow ─────── */}
-      <ScrollReveal className="archive-notes__preview">
-        <h2 className="archive-notes__section-title">Recent notes</h2>
-        <div className="archive-notes__preview-grid">
-          {placeholderNotes.map((note) => (
-            <BorderGlow
-              key={note.title}
-              className="archive-notes__note-card"
-              glowColor={note.glowColor}
-              backgroundColor={note.backgroundColor}
-              borderRadius={20}
-              glowRadius={28}
-              colors={note.glowColors}
-            >
-              <div className="archive-notes__note-inner">
-                <span className="archive-notes__note-tag" style={{ color: note.color }}>
-                  {note.category}
-                </span>
-                <h3 className="archive-notes__note-title">{note.title}</h3>
-                <p className="archive-notes__note-preview">{note.preview}</p>
-              </div>
-            </BorderGlow>
-          ))}
-        </div>
-      </ScrollReveal>
-
-      {/* ── Flow with BorderGlow ──────────────────── */}
+      {/* ── How it works ─────────────────────────── */}
       <ScrollReveal className="archive-notes__flow-section">
         <h2 className="archive-notes__section-title">How it works</h2>
         <BorderGlow
@@ -163,7 +113,11 @@ export function ArchiveNotesPage() {
           colors={['#ff6b93', '#ff3366', '#ffb3c7']}
         >
           <div className="archive-notes__flow">
-            {flowSteps.map((step, i) => (
+            {[
+              { icon: <Pen size={16} />, label: 'Capture', desc: 'Write down the raw thought' },
+              { icon: <Sparkles size={16} />, label: 'Reflect', desc: 'Let it sit, revisit, refine' },
+              { icon: <BookOpen size={16} />, label: 'Archive', desc: 'Save with context and care' },
+            ].map((step, i) => (
               <Fragment key={step.label}>
                 {i > 0 && (
                   <div className="archive-notes__flow-arrow" aria-hidden>

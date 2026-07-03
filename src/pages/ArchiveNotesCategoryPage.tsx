@@ -1,66 +1,36 @@
 import { useEffect, useState } from 'react'
-import { ArrowLeft, FileText, Book, Code, GraduationCap, Library, Pen, Quote, MessageSquare, Sparkles, Lightbulb, Heart, BookOpen, Calendar, Clock, Camera, Map, Star } from 'lucide-react'
+import { ArrowLeft, Plus, Calendar } from 'lucide-react'
 
+import { ScrollReveal } from '../components/motion/ScrollReveal'
 import { GlassIcons } from '../components/effects/react-bits/GlassIcons'
+import { BorderGlow } from '../components/effects/react-bits/BorderGlow'
+import { getNotesByCategory } from '../data/notes'
+import type { NoteCategory } from '../data/notes'
 import '../components/effects/react-bits/GlassIcons.css'
+import '../components/effects/react-bits/BorderGlow.css'
 import './ArchiveNotesCategoryPage.css'
 
-type CategoryInfo = {
-  title: string
-  subtitle: string
-  backHref: string
-  items: { icon: React.ReactElement; color: string; label: string; onClick?: () => void }[]
-}
+const cardBg = 'oklch(21% 0.028 292 / 98%)'
 
-const categoryMap: Record<string, CategoryInfo> = {
+const categoryMeta: Record<NoteCategory, { color: string; description: string; chineseDescription: string }> = {
   learning: {
-    title: 'Learning',
-    subtitle: 'Language study, creative coding, design patterns — what I learn and how I learn it.',
-    backHref: '#/archive/notes',
-    items: [
-      { icon: <FileText size={24} />, color: 'blue', label: 'Study Notes' },
-      { icon: <Book size={24} />, color: 'blue', label: 'Book Notes' },
-      { icon: <Code size={24} />, color: 'blue', label: 'Code Snippets' },
-      { icon: <GraduationCap size={24} />, color: 'blue', label: 'Courses' },
-      { icon: <Library size={24} />, color: 'blue', label: 'Reference' },
-      { icon: <FileText size={24} />, color: 'blue', label: 'Cheatsheets' },
-      { icon: <Book size={24} />, color: 'blue', label: 'Reading List' },
-      { icon: <Code size={24} />, color: 'blue', label: 'Patterns' },
-    ],
+    color: '#56e4ff',
+    description: 'Language study, creative coding, design patterns — what I learn and how I learn it.',
+    chineseDescription: '学习方法、编程、英语、系统化学习笔记',
   },
   thoughts: {
-    title: 'Thoughts',
-    subtitle: 'Longer reflections on identity, growth, curiosity, and the things I keep thinking about.',
-    backHref: '#/archive/notes',
-    items: [
-      { icon: <Pen size={24} />, color: 'purple', label: 'Personal Essays' },
-      { icon: <Quote size={24} />, color: 'purple', label: 'Quotes' },
-      { icon: <MessageSquare size={24} />, color: 'purple', label: 'Conversations' },
-      { icon: <Sparkles size={24} />, color: 'purple', label: 'Ideas' },
-      { icon: <Lightbulb size={24} />, color: 'purple', label: 'Insights' },
-      { icon: <Heart size={24} />, color: 'purple', label: 'Reflections' },
-      { icon: <Pen size={24} />, color: 'purple', label: 'Drafts' },
-      { icon: <FileText size={24} />, color: 'purple', label: 'Notes' },
-    ],
+    color: '#8c75ff',
+    description: 'Longer reflections on identity, growth, curiosity, and the things I keep thinking about.',
+    chineseDescription: '反思、自我表达、成长、观察',
   },
   journal: {
-    title: 'Journal',
-    subtitle: 'Personal entries, drafts, and observations — a quiet space for things worth writing down.',
-    backHref: '#/archive/notes',
-    items: [
-      { icon: <BookOpen size={24} />, color: 'orange', label: 'Journal Entries' },
-      { icon: <Calendar size={24} />, color: 'orange', label: 'Daily Log' },
-      { icon: <Clock size={24} />, color: 'orange', label: 'Moments' },
-      { icon: <FileText size={24} />, color: 'orange', label: 'Drafts' },
-      { icon: <Camera size={24} />, color: 'orange', label: 'Visual Journal' },
-      { icon: <Map size={24} />, color: 'orange', label: 'Places' },
-      { icon: <Heart size={24} />, color: 'orange', label: 'Gratitude' },
-      { icon: <Star size={24} />, color: 'orange', label: 'Highlights' },
-    ],
+    color: '#f2b976',
+    description: 'Personal entries, drafts, and observations — a quiet space for things worth writing down.',
+    chineseDescription: '阶段记录、网站搭建、长期成长日志',
   },
 }
 
-function getCategoryFromHash(): string {
+function getCategoryFromHash(): NoteCategory {
   if (typeof window === 'undefined') return 'learning'
   const segments = window.location.hash.split('/').filter(Boolean)
   const last = segments[segments.length - 1]
@@ -71,7 +41,7 @@ function getCategoryFromHash(): string {
 }
 
 export function ArchiveNotesCategoryPage() {
-  const [catKey, setCatKey] = useState(() => getCategoryFromHash())
+  const [catKey, setCatKey] = useState<NoteCategory>(() => getCategoryFromHash())
 
   useEffect(() => {
     const onHashChange = () => setCatKey(getCategoryFromHash())
@@ -79,26 +49,65 @@ export function ArchiveNotesCategoryPage() {
     return () => window.removeEventListener('hashchange', onHashChange)
   }, [])
 
-  const cat = categoryMap[catKey] || categoryMap.learning
+  const meta = categoryMeta[catKey] || categoryMeta.learning
+  const notes = getNotesByCategory(catKey)
+
+  // 只为真实笔记创建玻璃图标（前3个有真实内容的）
+  const glassItems = notes.map((note) => ({
+    icon: <Calendar size={24} />,
+    color: catKey === 'learning' ? 'blue' : catKey === 'thoughts' ? 'purple' : 'orange',
+    label: note.title,
+    onClick: () => {
+      window.location.hash = `#/archive/notes/${note.id}`
+    },
+  }))
 
   return (
     <main className="archive-notes-cat">
-      <div className="archive-notes-cat__header">
-        <a href={cat.backHref} className="archive-notes-cat__back">
+      {/* Header with animation */}
+      <ScrollReveal className="archive-notes-cat__header">
+        <a href="#/archive/notes" className="archive-notes-cat__back">
           <ArrowLeft aria-hidden="true" size={16} strokeWidth={1.5} />
           <span>Back to Notes Vault</span>
         </a>
-        <h1 className="archive-notes-cat__title">{cat.title}</h1>
-        <p className="archive-notes-cat__subtitle">{cat.subtitle}</p>
-      </div>
+        <h1 className="archive-notes-cat__title">{catKey.charAt(0).toUpperCase() + catKey.slice(1)}</h1>
+        <p className="archive-notes-cat__subtitle">{meta.description}</p>
+        <p className="archive-notes-cat__subtitle--chinese">{meta.chineseDescription}</p>
+      </ScrollReveal>
 
+      {/* Glass icons without animation (preserves glass effect) */}
       <div className="archive-notes-cat__docs">
-        <GlassIcons items={cat.items} className="archive-notes-cat__glass" />
+        <GlassIcons items={glassItems} className="archive-notes-cat__glass" />
       </div>
 
-      <p className="archive-notes-cat__footnote">
-        Each icon represents a document. Click to open — more documents will appear as the vault grows.
-      </p>
+      {/* Future shelves section */}
+      <ScrollReveal className="archive-notes-cat__future">
+        <BorderGlow
+          className="archive-notes-cat__future-card"
+          glowColor="260 30 30"
+          backgroundColor={cardBg}
+          borderRadius={20}
+          glowRadius={24}
+          colors={['#5A6A82', '#4a5568', '#6b7c93']}
+        >
+          <div className="archive-notes-cat__future-inner">
+            <span className="archive-notes-cat__future-icon">
+              <Plus size={20} strokeWidth={1.5} />
+            </span>
+            <div>
+              <h2 className="archive-notes-cat__future-title">Future shelves</h2>
+              <p className="archive-notes-cat__future-desc">More documents will appear here as the vault grows.</p>
+            </div>
+          </div>
+        </BorderGlow>
+      </ScrollReveal>
+
+      {/* Footnote with animation */}
+      <ScrollReveal>
+        <p className="archive-notes-cat__footnote">
+          {notes.length} note{notes.length !== 1 ? 's' : ''} available in this folder. Each glass tile opens one document.
+        </p>
+      </ScrollReveal>
     </main>
   )
 }

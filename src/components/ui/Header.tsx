@@ -7,7 +7,7 @@ import { CardNav, type CardNavItem } from '../effects/react-bits/CardNav'
 import { PillNav } from '../effects/react-bits/PillNav'
 
 type HeaderProps = {
-  activePage?: 'home' | 'lab' | 'archive' | 'archive-images' | 'archive-notes' | 'archive-notes-category' | 'archive-projects' | 'gallery'
+  activePage?: 'home' | 'lab' | 'archive' | 'archive-images' | 'archive-notes' | 'archive-notes-category' | 'archive-note-detail' | 'archive-projects' | 'gallery'
 }
 
 const headerItems = [

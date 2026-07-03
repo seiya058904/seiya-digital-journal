@@ -44,10 +44,66 @@
   margin: 0;
 }
 
+.archive-notes-cat__subtitle--chinese {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--color-faint);
+  max-width: 42rem;
+  margin: 0.25rem 0 0;
+}
+
 /* ── GlassIcons wall ──────────────────────────── */
 
 .archive-notes-cat__docs {
-  margin-bottom: 2rem;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+}
+
+/* ── Future shelves card ─────────────────────── */
+
+.archive-notes-cat__future {
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+}
+
+.archive-notes-cat__future-card {
+  border: none;
+}
+
+.archive-notes-cat__future-inner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: clamp(1rem, 1.5vw, 1.25rem);
+}
+
+.archive-notes-cat__future-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: rgb(90 106 130 / 12%);
+  color: #6b7c93;
+  flex-shrink: 0;
+}
+
+.archive-notes-cat__future-title {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 520;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #6b7c93;
+  margin: 0 0 0.25rem;
+}
+
+.archive-notes-cat__future-desc {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: var(--color-faint);
+  margin: 0;
 }
 
 .archive-notes-cat__glass.rb-glass-icons {

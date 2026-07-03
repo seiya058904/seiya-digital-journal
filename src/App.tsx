@@ -10,6 +10,7 @@ import { PhoneOnly } from './components/ui/DesktopOnly'
 import { HomePage } from './pages/HomePage'
 import { ArchivePage } from './pages/ArchivePage'
 import { ArchiveImagesPage } from './pages/ArchiveImagesPage'
+import { ArchiveNoteDetailPage } from './pages/ArchiveNoteDetailPage'
 import { ArchiveNotesPage } from './pages/ArchiveNotesPage'
 import { ArchiveProjectsPage } from './pages/ArchiveProjectsPage'
 import { ArchiveNotesCategoryPage } from './pages/ArchiveNotesCategoryPage'
@@ -17,7 +18,7 @@ import { GalleryPage } from './pages/GalleryPage'
 
 const MotionLabPage = lazy(() => import('./pages/MotionLabPage').then(m => ({ default: m.MotionLabPage })))
 
-type Page = 'home' | 'lab' | 'archive' | 'archive-images' | 'archive-notes' | 'archive-notes-category' | 'archive-projects' | 'gallery'
+type Page = 'home' | 'lab' | 'archive' | 'archive-images' | 'archive-notes' | 'archive-notes-category' | 'archive-note-detail' | 'archive-projects' | 'gallery'
 
 function getPageFromHash(): Page {
   if (typeof window === 'undefined') return 'home'
@@ -27,8 +28,14 @@ function getPageFromHash(): Page {
   if (hash === '#/archive/images' || hash.startsWith('#/archive/images/')) return 'archive-images'
   // Notes root — handle both with and without trailing slash
   if (hash === '#/archive/notes' || hash === '#/archive/notes/') return 'archive-notes'
-  // Notes sub-routes (learning, thoughts, journal, etc.) all render ArchiveNotesCategoryPage
-  if (hash.startsWith('#/archive/notes/')) return 'archive-notes-category'
+  // Note detail — #/archive/notes/:id (any segment after notes/ that isn't a known category)
+  if (hash.startsWith('#/archive/notes/')) {
+    const noteSegment = hash.replace('#/archive/notes/', '').split('/')[0]
+    if (noteSegment && noteSegment !== 'learning' && noteSegment !== 'thoughts' && noteSegment !== 'journal') {
+      return 'archive-note-detail'
+    }
+    return 'archive-notes-category'
+  }
   if (hash === '#/archive/projects') return 'archive-projects'
   // Redirect legacy collections route
   if (hash === '#/archive/collections') {
@@ -99,6 +106,7 @@ export default function App() {
         {page === 'archive' && <ArchivePage />}
         {page === 'archive-images' && <ArchiveImagesPage />}
         {page === 'archive-notes' && <ArchiveNotesPage />}
+        {page === 'archive-note-detail' && <ArchiveNoteDetailPage />}
         {page === 'archive-notes-category' && <ArchiveNotesCategoryPage />}
         {page === 'archive-projects' && <ArchiveProjectsPage />}
         {page === 'gallery' && <GalleryPage />}
