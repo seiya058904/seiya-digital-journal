@@ -1,8 +1,9 @@
+import { useState } from 'react'
 import { ArrowLeft, Target, Globe, Gamepad2, Monitor, FlaskConical, Search, Route, Trophy, BookOpen, FileText, Code, Image, Settings } from 'lucide-react'
 
 import { ScrollReveal } from '../components/motion/ScrollReveal'
+import { ProjectCarousel } from '../components/projects/ProjectCarousel'
 import { BorderGlow } from '../components/effects/react-bits/BorderGlow'
-import { GlassIcons } from '../components/effects/react-bits/GlassIcons'
 import '../components/effects/react-bits/BorderGlow.css'
 import '../components/effects/react-bits/GlassIcons.css'
 import './ArchiveProjectsPage.css'
@@ -10,11 +11,35 @@ import './ArchiveProjectsPage.css'
 const base = import.meta.env.BASE_URL
 const archiveProjectsCardBackground = 'oklch(21% 0.028 292 / 98%)'
 
-const focusDocs = [
-  { icon: <FileText size={18} />, color: 'transparent', label: 'Docs' },
-  { icon: <Code size={18} />, color: 'transparent', label: 'Code' },
-  { icon: <Image size={18} />, color: 'transparent', label: 'Design' },
-  { icon: <Settings size={18} />, color: 'transparent', label: 'Config' },
+const focusTabs = [
+  {
+    id: 'docs',
+    icon: <FileText size={18} />,
+    label: 'Docs',
+    title: 'Archive documentation',
+    description: 'Content rules, vault structure, writing system, and how this digital journal is organized.',
+  },
+  {
+    id: 'code',
+    icon: <Code size={18} />,
+    label: 'Code',
+    title: 'Frontend architecture',
+    description: 'React, TypeScript, Vite, hash routes, reusable components, and GitHub Pages deployment.',
+  },
+  {
+    id: 'design',
+    icon: <Image size={18} />,
+    label: 'Design',
+    title: 'Visual language',
+    description: 'Dark editorial layout, visual archive, glass cards, motion details, and personal-brand atmosphere.',
+  },
+  {
+    id: 'config',
+    icon: <Settings size={18} />,
+    label: 'Config',
+    title: 'System setup',
+    description: 'Asset paths, routing constraints, performance decisions, deployment setup, and maintenance notes.',
+  },
 ]
 
 const projectCategories = [
@@ -84,6 +109,8 @@ const recordPhases = [
 ]
 
 export function ArchiveProjectsPage() {
+  const [activeFocus, setActiveFocus] = useState(focusTabs[0])
+
   return (
     <main className="archive-projects">
       <div className="archive-projects__header">
@@ -121,8 +148,41 @@ export function ArchiveProjectsPage() {
               </p>
               <span className="archive-projects__focus-status">Active — evolving</span>
             </div>
-            <div className="archive-projects__focus-glass">
-              <GlassIcons items={focusDocs} className="archive-projects__focus-glass-icons" />
+            <div className="archive-projects__focus-console">
+              <div
+                className="archive-projects__focus-tabs rb-glass-icons"
+                role="tablist"
+                aria-label="Current focus details"
+              >
+                {focusTabs.map((tab) => (
+                  <button
+                    key={tab.id}
+                    id={`focus-tab-${tab.id}`}
+                    type="button"
+                    role="tab"
+                    aria-selected={activeFocus.id === tab.id}
+                    aria-controls="current-focus-panel"
+                    className={`rb-glass-icon${activeFocus.id === tab.id ? ' is-active' : ''}`}
+                    onClick={() => setActiveFocus(tab)}
+                  >
+                    <span className="rb-glass-icon__back" />
+                    <span className="rb-glass-icon__front">
+                      <span className="rb-glass-icon__icon" aria-hidden="true">{tab.icon}</span>
+                    </span>
+                    <span className="rb-glass-icon__label">{tab.label}</span>
+                  </button>
+                ))}
+              </div>
+              <div
+                id="current-focus-panel"
+                className="archive-projects__focus-panel"
+                role="tabpanel"
+                aria-labelledby={`focus-tab-${activeFocus.id}`}
+                aria-live="polite"
+              >
+                <h3>{activeFocus.title}</h3>
+                <p>{activeFocus.description}</p>
+              </div>
             </div>
           </div>
         </BorderGlow>
@@ -161,6 +221,15 @@ export function ArchiveProjectsPage() {
             </BorderGlow>
           ))}
         </div>
+      </ScrollReveal>
+
+      {/* ── Project Showcase ───────────────────── */}
+      <ScrollReveal className="archive-projects__showcase">
+        <div className="archive-projects__showcase-heading">
+          <h2 className="archive-projects__section-title">Project Showcase</h2>
+          <p>Selected builds and systems from this digital journal.</p>
+        </div>
+        <ProjectCarousel />
       </ScrollReveal>
 
       {/* ── Record template ─────────────────────── */}

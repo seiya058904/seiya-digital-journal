@@ -70,7 +70,7 @@
   display: flex;
   gap: clamp(1rem, 2vw, 1.5rem);
   padding: clamp(1.5rem, 2.5vw, 2.5rem);
-  align-items: center;
+  align-items: flex-start;
 }
 
 .archive-projects__focus-icon {
@@ -121,47 +121,74 @@
   margin-top: 0.2rem;
 }
 
-/* ── Focus GlassIcons ─────────────────────────── */
+/* ── Focus console ────────────────────────────── */
 
-.archive-projects__focus-glass {
+.archive-projects__focus-console {
   display: flex;
-  align-items: center;
-  flex-shrink: 0;
+  width: min(100%, 31rem);
+  flex: 0 1 31rem;
+  flex-direction: column;
+  gap: 1.35rem;
+  min-width: 0;
 }
 
-.archive-projects__focus-glass-icons.rb-glass-icons {
-  display: flex !important;
-  flex-direction: row !important;
-  gap: 2rem;
+.archive-projects__focus-tabs.rb-glass-icons {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(3.7rem, 1fr));
+  gap: 1rem;
   padding: 0;
   margin: 0;
-  grid-template-columns: none !important;
 }
 
-.archive-projects__focus-glass-icons .rb-glass-icon {
+.archive-projects__focus-tabs .rb-glass-icon {
   width: 4em;
   height: 4em;
+  margin-inline: auto;
 }
 
-.archive-projects__focus-glass-icons .rb-glass-icon__icon svg {
+.archive-projects__focus-tabs .rb-glass-icon__icon svg {
   width: 1.5em;
   height: 1.5em;
 }
 
-/* Uniform glass look — no colors */
-.archive-projects__focus-glass-icons .rb-glass-icon__back {
+.archive-projects__focus-tabs .rb-glass-icon__back {
   background: hsla(0, 0%, 100%, 0.04) !important;
 }
 
-.archive-projects__focus-glass-icons .rb-glass-icon__label {
+.archive-projects__focus-tabs .rb-glass-icon__label {
   font-size: 0.65em;
-  opacity: 0;
+  opacity: 1;
+  transform: translateX(-50%) translateY(20%);
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.archive-projects__focus-glass-icons .rb-glass-icon:hover .rb-glass-icon__label {
-  opacity: 1;
-  transform: translateY(20%);
+.archive-projects__focus-tabs .rb-glass-icon.is-active .rb-glass-icon__front {
+  box-shadow:
+    0 0 0 0.1em rgb(242 185 118 / 58%) inset,
+    0 0 0 0.08em rgb(242 185 118 / 30%);
+  color: var(--color-gold);
+}
+
+.archive-projects__focus-panel {
+  min-height: 6.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgb(255 255 255 / 10%);
+}
+
+.archive-projects__focus-panel h3 {
+  margin: 0 0 0.45rem;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 540;
+  color: var(--color-text);
+}
+
+.archive-projects__focus-panel p {
+  max-width: 48ch;
+  margin: 0;
+  font-size: 0.74rem;
+  line-height: 1.6;
+  color: #c8d0e4;
 }
 
 /* ── Categories grid ──────────────────────────── */
@@ -256,6 +283,27 @@
 .archive-project-card__link:hover {
   background: rgba(242, 185, 118, 0.08);
   border-color: rgba(242, 185, 118, 0.45);
+}
+
+/* ── Project showcase ─────────────────────────── */
+
+.archive-projects__showcase {
+  margin-bottom: clamp(3rem, 6vw, 5rem);
+}
+
+.archive-projects__showcase-heading {
+  margin-bottom: 1.5rem;
+}
+
+.archive-projects__showcase-heading .archive-projects__section-title {
+  margin-bottom: 0.55rem;
+}
+
+.archive-projects__showcase-heading p {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: #c8d0e4;
 }
 
 /* ── Record template ──────────────────────────── */
@@ -389,15 +437,20 @@
     margin-top: 0;
   }
 
-  .archive-projects__focus-glass {
-    align-self: center;
+  .archive-projects__focus-body,
+  .archive-projects__focus-console {
+    width: 100%;
   }
 
-  .archive-projects__focus-glass-icons.rb-glass-icons {
-    gap: 1rem;
+  .archive-projects__focus-console {
+    flex-basis: auto;
   }
 
-  .archive-projects__focus-glass-icons .rb-glass-icon {
+  .archive-projects__focus-tabs.rb-glass-icons {
+    gap: 0.75rem;
+  }
+
+  .archive-projects__focus-tabs .rb-glass-icon {
     width: 3.5em;
     height: 3.5em;
   }
@@ -431,6 +484,10 @@
   }
 
   .archive-projects__template-icon {
+    transition: none !important;
+  }
+
+  .archive-projects__focus-tabs .rb-glass-icon__label {
     transition: none !important;
   }
 }
