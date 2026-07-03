@@ -24,6 +24,7 @@ const projectCategories = [
     color: '#56e4ff',
     glowColor: '187 100 67',
     glowColors: ['#56e4ff', '#3b82f6', '#38bdf8'],
+    backgroundColor: 'oklch(25% 0.025 285 / 98%)',
     url: 'https://seiya058904.github.io/',
   },
   {
@@ -33,6 +34,7 @@ const projectCategories = [
     color: '#8c75ff',
     glowColor: '260 100 73',
     glowColors: ['#8c75ff', '#7c3aed', '#a78bfa'],
+    backgroundColor: 'oklch(25% 0.025 285 / 98%)',
     url: 'https://seiya058904.github.io/star-ring-card-battle/',
   },
   {
@@ -42,6 +44,7 @@ const projectCategories = [
     color: '#f2b976',
     glowColor: '38 90 68',
     glowColors: ['#f2b976', '#f59e0b', '#fbbf24'],
+    backgroundColor: 'oklch(25% 0.025 285 / 98%)',
     url: `${base}presentations/weather-forecast.html`,
   },
   {
@@ -51,6 +54,7 @@ const projectCategories = [
     color: '#ed6dff',
     glowColor: '310 100 73',
     glowColors: ['#ed6dff', '#c084fc', '#e879f9'],
+    backgroundColor: 'oklch(25% 0.025 285 / 98%)',
     status: 'Coming soon',
   },
 ]
@@ -98,13 +102,10 @@ export function ArchiveProjectsPage() {
         <BorderGlow
           className="archive-projects__focus-card"
           glowColor="38 90 68"
-          backgroundColor="#120F17"
+          backgroundColor="oklch(25% 0.025 285 / 98%)"
           borderRadius={24}
           glowRadius={32}
           colors={['#f2b976', '#f59e0b', '#fbbf24']}
-          glowIntensity={0.6}
-          coneSpread={10}
-          edgeSensitivity={40}
         >
           <div className="archive-projects__focus-inner">
             <span className="archive-projects__focus-icon">
@@ -135,13 +136,10 @@ export function ArchiveProjectsPage() {
               key={cat.label}
               className="archive-project-card"
               glowColor={cat.glowColor}
-              backgroundColor="#120F17"
+              backgroundColor={cat.backgroundColor}
               borderRadius={20}
               glowRadius={28}
               colors={cat.glowColors}
-              glowIntensity={0.6}
-              coneSpread={10}
-              edgeSensitivity={40}
             >
               <div className="archive-project-card__inner">
                 <div className="archive-project-card__header">
@@ -170,13 +168,10 @@ export function ArchiveProjectsPage() {
         <BorderGlow
           className="archive-projects__template-card"
           glowColor="38 90 68"
-          backgroundColor="#120F17"
+          backgroundColor="oklch(25% 0.025 285 / 98%)"
           borderRadius={24}
           glowRadius={32}
           colors={['#f2b976', '#f59e0b', '#fbbf24']}
-          glowIntensity={0.6}
-          coneSpread={10}
-          edgeSensitivity={40}
         >
           <div className="archive-projects__template">
             {recordPhases.map((phase) => (

@@ -144,6 +144,16 @@ const effectMetadata = [
     category: 'Navigation',
   },
   {
+    id: 'stepper',
+    name: 'Stepper',
+    type: 'navigation',
+    deps: 'motion',
+    status: 'ready',
+    description: 'Animated multi-step flow with progress indicators and directional transitions.',
+    where: 'Archive Home, Motion Lab',
+    category: 'Navigation',
+  },
+  {
     id: 'scrambled-text',
     name: 'ScrambledText',
     type: 'text',
@@ -224,6 +234,16 @@ const effectMetadata = [
     category: 'Experimental',
   },
   {
+    id: 'multi-step-loader',
+    name: 'MultiStepLoader',
+    type: 'experimental',
+    deps: 'motion',
+    status: 'ready',
+    description: 'Full-screen progress sequence with animated step completion.',
+    where: 'Motion Lab',
+    category: 'Experimental',
+  },
+  {
     id: 'flowing-menu',
     name: 'FlowingMenu',
     type: 'navigation',
@@ -290,6 +310,8 @@ const sourceFileByName: Record<string, string> = {
   InfiniteMenu: 'React bits/22.txt',
   Folder: 'React bits/23.txt',
   GlassIcons: 'React bits/24.txt',
+  MultiStepLoader: '@aceternity/multi-step-loader',
+  Stepper: 'React bits/29.txt',
 }
 
 const realDemoNames = new Set([
@@ -314,6 +336,8 @@ const realDemoNames = new Set([
   'OrbitImages',
   'Folder',
   'GlassIcons',
+  'MultiStepLoader',
+  'Stepper',
 ])
 
 const homepageNames = new Set([

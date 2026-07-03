@@ -6,6 +6,7 @@ import { Folder } from '../components/effects/react-bits/Folder'
 import { BorderGlow } from '../components/effects/react-bits/BorderGlow'
 import { CountUp } from '../components/effects/react-bits/CountUp'
 import { DesktopLanyard } from '../components/effects/react-bits/DesktopLanyard'
+import { JournalStepperDemo } from '../components/effects/react-bits/JournalStepperDemo'
 import '../components/effects/react-bits/Folder.css'
 import '../components/effects/react-bits/BorderGlow.css'
 import '../components/effects/react-bits/Lanyard.css'
@@ -46,6 +47,7 @@ const vaults = [
     items: imagePapers,
     glowColor: '187 100 67',
     glowColors: ['#56e4ff', '#3b82f6', '#38bdf8'],
+    backgroundColor: 'oklch(25% 0.025 285 / 98%)',
   },
   {
     label: 'Notes Vault',
@@ -54,6 +56,7 @@ const vaults = [
     items: notesPapers,
     glowColor: '260 100 73',
     glowColors: ['#8c75ff', '#7c3aed', '#a78bfa'],
+    backgroundColor: 'oklch(25% 0.025 285 / 98%)',
   },
   {
     label: 'Project Vault',
@@ -62,6 +65,7 @@ const vaults = [
     items: projectPapers,
     glowColor: '38 90 68',
     glowColors: ['#f2b976', '#f59e0b', '#fbbf24'],
+    backgroundColor: 'oklch(25% 0.025 285 / 98%)',
   },
 ]
 
@@ -79,7 +83,10 @@ export function ArchivePage() {
             Three vaults — images, notes, and projects.
             A place for everything that deserves more room than a homepage section.
           </p>
-        </div>
+          <section className="archive-page__stepper" aria-label="Journal stepper">
+            <JournalStepperDemo />
+        </section>
+      </div>
         <div className="archive-page__header-lanyard">
           <DesktopLanyard />
         </div>
@@ -112,13 +119,10 @@ export function ArchivePage() {
               key={vault.label}
               className="archive-page__vault-card"
               glowColor={vault.glowColor}
-              backgroundColor="#120F17"
+              backgroundColor={vault.backgroundColor}
               borderRadius={24}
               glowRadius={28}
               colors={vault.glowColors}
-              glowIntensity={0.6}
-              coneSpread={10}
-              edgeSensitivity={40}
             >
               <a href={vault.href} className="archive-page__vault-card-inner">
                 <div className="archive-page__vault-folder">
@@ -137,13 +141,10 @@ export function ArchivePage() {
           <BorderGlow
             className="archive-page__recent"
             glowColor="187 100 67"
-            backgroundColor="#120F17"
+            backgroundColor="oklch(25% 0.025 285 / 98%)"
             borderRadius={24}
             glowRadius={32}
             colors={['#56e4ff', '#3b82f6', '#38bdf8']}
-            glowIntensity={0.6}
-            coneSpread={10}
-            edgeSensitivity={40}
           >
             <div className="archive-page__recent-inner">
               <h2 className="archive-page__section-title">Recent Additions</h2>
@@ -161,13 +162,10 @@ export function ArchivePage() {
           <BorderGlow
             className="archive-page__map"
             glowColor="260 100 73"
-            backgroundColor="#120F17"
+            backgroundColor="oklch(25% 0.025 285 / 98%)"
             borderRadius={24}
             glowRadius={32}
             colors={['#8c75ff', '#7c3aed', '#a78bfa']}
-            glowIntensity={0.6}
-            coneSpread={10}
-            edgeSensitivity={40}
           >
             <div className="archive-page__map-inner">
               <h2 className="archive-page__section-title">Archive Map</h2>

@@ -2,6 +2,7 @@ import { ArrowUp, BriefcaseBusiness, Copy, GitBranch, Mail } from 'lucide-react'
 import { useCallback, useState } from 'react'
 
 import { socialLinks } from '../../data/links'
+import { MultiStepLoader } from '../effects/MultiStepLoader'
 import { ScrollReveal } from '../motion/ScrollReveal'
 import { Chapter } from '../ui/Chapter'
 
@@ -15,8 +16,18 @@ const EMAIL_ADDRESS = 'sunmengsaiyi@gmail.com'
 
 const externalKinds = new Set(['github', 'work'])
 
+const supportLoadingStates = [
+  { text: 'Detecting suspiciously generous clicks...' },
+  { text: 'Stealing one imaginary click-coin...' },
+  { text: 'Converting it into author motivation...' },
+  { text: 'Depositing dopamine into Seiya\'s brain...' },
+  { text: 'Author happiness increased by 1%.' },
+  { text: 'Done. No real money was harmed.' },
+]
+
 export function Contact() {
   const [copied, setCopied] = useState(false)
+  const [supporting, setSupporting] = useState(false)
 
   const handleCopyEmail = useCallback(() => {
     navigator.clipboard.writeText(EMAIL_ADDRESS).then(() => {
@@ -25,6 +36,8 @@ export function Contact() {
     })
   }, [])
 
+  const handleSupportClose = useCallback(() => setSupporting(false), [])
+
   return (
     <section id="contact" className="section section--contact">
       <Chapter number="07" title="Contact" />
@@ -32,6 +45,22 @@ export function Contact() {
         <ScrollReveal>
           <p className="contact-kicker">This journal is still growing.</p>
           <h2>Let&rsquo;s connect.</h2>
+          <button
+            type="button"
+            className="contact-support-btn"
+            onClick={() => setSupporting(true)}
+            aria-haspopup="dialog"
+            aria-expanded={supporting}
+          >
+            Support me
+          </button>
+          <MultiStepLoader
+            loadingStates={supportLoadingStates}
+            loading={supporting}
+            duration={1200}
+            loop={false}
+            onClose={handleSupportClose}
+          />
         </ScrollReveal>
         <ScrollReveal className="contact-links" delay={0.12}>
           {socialLinks.map((link) => {

@@ -1,4 +1,7 @@
+import { useState } from 'react'
+
 import profileLogo from '../../assets/profile-placeholder.svg'
+import { MultiStepLoader } from '../effects/MultiStepLoader'
 import { AnimatedContent } from '../effects/react-bits/AnimatedContent'
 import { BorderGlow } from '../effects/react-bits/BorderGlow'
 import { BounceCards } from '../effects/react-bits/BounceCards'
@@ -7,6 +10,7 @@ import { DesktopGridScan } from '../effects/react-bits/DesktopGridScan'
 import { GlareHover } from '../effects/react-bits/GlareHover'
 import { GradientText } from '../effects/text/GradientText'
 import { ImageTrail } from '../effects/react-bits/ImageTrail'
+import { JournalStepperDemo } from '../effects/react-bits/JournalStepperDemo'
 import { MagicBento } from '../effects/react-bits/MagicBento'
 import { PillNav } from '../effects/react-bits/PillNav'
 import { ProfileCard } from '../effects/react-bits/ProfileCard'
@@ -41,6 +45,13 @@ const magicDemoItems = [
   { title: 'Make', description: 'Give the thought a form.', label: '03' },
 ]
 
+const loaderStates = [
+  { text: 'Observe the signal' },
+  { text: 'Organize the fragments' },
+  { text: 'Connect the ideas' },
+  { text: 'Archive the moment' },
+]
+
 const stackCards = [
   <img
     key="aurora"
@@ -58,6 +69,29 @@ const stackCards = [
     alt="Geometry journal artwork"
   />,
 ]
+
+function MultiStepLoaderDemo() {
+  const [loading, setLoading] = useState(false)
+
+  return (
+    <div className="rb-demo-loader">
+      <button
+        type="button"
+        className="rb-demo-loader__button"
+        onClick={() => setLoading(true)}
+        aria-haspopup="dialog"
+      >
+        Start loader
+      </button>
+      <MultiStepLoader
+        loadingStates={loaderStates}
+        loading={loading}
+        loop={false}
+        onClose={() => setLoading(false)}
+      />
+    </div>
+  )
+}
 
 type ReactBitsDemoProps = {
   effectId: string
@@ -275,6 +309,12 @@ export function ReactBitsDemo({ effectId }: ReactBitsDemoProps) {
           />
         </div>
       )
+
+    case 'multi-step-loader':
+      return <MultiStepLoaderDemo />
+
+    case 'stepper':
+      return <JournalStepperDemo />
 
     default:
       return null

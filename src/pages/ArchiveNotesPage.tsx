@@ -15,6 +15,7 @@ const categoryCards = [
     color: '#56e4ff',
     glowColor: '187 100 67',
     glowColors: ['#56e4ff', '#3b82f6', '#38bdf8'],
+    backgroundColor: 'oklch(25% 0.025 285 / 98%)',
     status: 'Coming soon',
   },
   {
@@ -25,6 +26,7 @@ const categoryCards = [
     color: '#8c75ff',
     glowColor: '260 100 73',
     glowColors: ['#8c75ff', '#7c3aed', '#a78bfa'],
+    backgroundColor: 'oklch(25% 0.025 285 / 98%)',
     status: 'Coming soon',
   },
   {
@@ -35,6 +37,7 @@ const categoryCards = [
     color: '#f2b976',
     glowColor: '38 90 68',
     glowColors: ['#f2b976', '#f59e0b', '#fbbf24'],
+    backgroundColor: 'oklch(25% 0.025 285 / 98%)',
     status: 'Coming soon',
   },
 ]
@@ -47,6 +50,7 @@ const placeholderNotes = [
     color: '#56e4ff',
     glowColor: '187 100 67',
     glowColors: ['#56e4ff', '#3b82f6', '#38bdf8'],
+    backgroundColor: 'oklch(25% 0.025 285 / 98%)',
   },
   {
     category: 'Thoughts',
@@ -55,6 +59,7 @@ const placeholderNotes = [
     color: '#8c75ff',
     glowColor: '260 100 73',
     glowColors: ['#8c75ff', '#7c3aed', '#a78bfa'],
+    backgroundColor: 'oklch(25% 0.025 285 / 98%)',
   },
   {
     category: 'Journal',
@@ -63,6 +68,7 @@ const placeholderNotes = [
     color: '#f2b976',
     glowColor: '38 90 68',
     glowColors: ['#f2b976', '#f59e0b', '#fbbf24'],
+    backgroundColor: 'oklch(25% 0.025 285 / 98%)',
   },
 ]
 
@@ -96,13 +102,10 @@ export function ArchiveNotesPage() {
               <BorderGlow
                 className="archive-notes__cat-card"
                 glowColor={cat.glowColor}
-                backgroundColor="#120F17"
+                backgroundColor={cat.backgroundColor}
                 borderRadius={20}
                 glowRadius={28}
                 colors={cat.glowColors}
-                glowIntensity={0.6}
-                coneSpread={10}
-                edgeSensitivity={40}
               >
                 <div className="archive-notes__cat-inner">
                   <div className="archive-notes__cat-header">
@@ -129,13 +132,10 @@ export function ArchiveNotesPage() {
               key={note.title}
               className="archive-notes__note-card"
               glowColor={note.glowColor}
-              backgroundColor="#120F17"
+              backgroundColor={note.backgroundColor}
               borderRadius={20}
               glowRadius={28}
               colors={note.glowColors}
-              glowIntensity={0.6}
-              coneSpread={10}
-              edgeSensitivity={40}
             >
               <div className="archive-notes__note-inner">
                 <span className="archive-notes__note-tag" style={{ color: note.color }}>
@@ -155,13 +155,10 @@ export function ArchiveNotesPage() {
         <BorderGlow
           className="archive-notes__flow-card"
           glowColor="38 90 68"
-          backgroundColor="#120F17"
+          backgroundColor="oklch(25% 0.025 285 / 98%)"
           borderRadius={24}
           glowRadius={32}
           colors={['#f2b976', '#f59e0b', '#fbbf24']}
-          glowIntensity={0.5}
-          coneSpread={10}
-          edgeSensitivity={40}
         >
           <div className="archive-notes__flow">
             {flowSteps.map((step, i) => (

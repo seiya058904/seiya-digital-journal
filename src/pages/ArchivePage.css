@@ -111,6 +111,24 @@
   transform: translateX(21px);
 }
 
+.archive-page__stepper {
+  width: 100%;
+  margin: 1.5rem 0 0;
+}
+
+.archive-page__stepper .stepper-outer {
+  aspect-ratio: unset;
+  padding: 1rem 1rem 1rem 0;
+}
+
+.archive-page__stepper .stepper-circle-container {
+  max-width: 24rem;
+  margin-left: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
 /* ── Navigation section (3 vault cards) ───────── */
 
 .archive-page__nav-section {

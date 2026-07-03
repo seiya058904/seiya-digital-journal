@@ -34,16 +34,27 @@ test('Motion Lab distinguishes real React Bits demos from metadata', () => {
     [
       'AnimatedContent', 'BorderGlow', 'BounceCards', 'CardNav', 'CountUp',
       'Folder', 'GlareHover', 'GlassIcons', 'GradientText', 'GridScan',
-      'ImageTrail', 'MagicBento', 'OrbitImages', 'PillNav', 'ProfileCard',
-      'RotatingText', 'ScrambledText', 'ShinyText', 'SplitText', 'Stack',
-      'TiltedCard',
+      'ImageTrail', 'MagicBento', 'MultiStepLoader', 'OrbitImages', 'PillNav',
+      'ProfileCard', 'RotatingText', 'ScrambledText', 'ShinyText', 'SplitText',
+      'Stack', 'Stepper', 'TiltedCard',
     ],
   )
   assert.equal(
     effects
       .filter(({ integrationStatus }) => integrationStatus === 'real-demo')
-      .every(({ sourceFile }) => sourceFile.startsWith('React bits/')),
+      .every(({ sourceFile }) =>
+        sourceFile.startsWith('React bits/') ||
+        sourceFile === '@aceternity/multi-step-loader'
+      ),
     true,
+  )
+  assert.equal(
+    effects.find(({ name }) => name === 'MultiStepLoader')?.sourceFile,
+    '@aceternity/multi-step-loader',
+  )
+  assert.equal(
+    effects.find(({ name }) => name === 'Stepper')?.sourceFile,
+    'React bits/29.txt',
   )
   assert.equal(
     effects.find(({ name }) => name === 'GlareHover')?.homepageUsage,
