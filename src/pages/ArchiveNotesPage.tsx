@@ -6,6 +6,8 @@ import { BorderGlow } from '../components/effects/react-bits/BorderGlow'
 import '../components/effects/react-bits/BorderGlow.css'
 import './ArchiveNotesPage.css'
 
+const archiveNotesCardBackground = 'oklch(21% 0.028 292 / 98%)'
+
 const categoryCards = [
   {
     label: 'Learning',
@@ -15,7 +17,7 @@ const categoryCards = [
     color: '#56e4ff',
     glowColor: '187 100 67',
     glowColors: ['#56e4ff', '#3b82f6', '#38bdf8'],
-    backgroundColor: 'oklch(25% 0.025 285 / 98%)',
+    backgroundColor: archiveNotesCardBackground,
     status: 'Coming soon',
   },
   {
@@ -26,7 +28,7 @@ const categoryCards = [
     color: '#8c75ff',
     glowColor: '260 100 73',
     glowColors: ['#8c75ff', '#7c3aed', '#a78bfa'],
-    backgroundColor: 'oklch(25% 0.025 285 / 98%)',
+    backgroundColor: archiveNotesCardBackground,
     status: 'Coming soon',
   },
   {
@@ -37,7 +39,7 @@ const categoryCards = [
     color: '#f2b976',
     glowColor: '38 90 68',
     glowColors: ['#f2b976', '#f59e0b', '#fbbf24'],
-    backgroundColor: 'oklch(25% 0.025 285 / 98%)',
+    backgroundColor: archiveNotesCardBackground,
     status: 'Coming soon',
   },
 ]
@@ -50,7 +52,7 @@ const placeholderNotes = [
     color: '#56e4ff',
     glowColor: '187 100 67',
     glowColors: ['#56e4ff', '#3b82f6', '#38bdf8'],
-    backgroundColor: 'oklch(25% 0.025 285 / 98%)',
+    backgroundColor: archiveNotesCardBackground,
   },
   {
     category: 'Thoughts',
@@ -59,7 +61,7 @@ const placeholderNotes = [
     color: '#8c75ff',
     glowColor: '260 100 73',
     glowColors: ['#8c75ff', '#7c3aed', '#a78bfa'],
-    backgroundColor: 'oklch(25% 0.025 285 / 98%)',
+    backgroundColor: archiveNotesCardBackground,
   },
   {
     category: 'Journal',
@@ -68,7 +70,7 @@ const placeholderNotes = [
     color: '#f2b976',
     glowColor: '38 90 68',
     glowColors: ['#f2b976', '#f59e0b', '#fbbf24'],
-    backgroundColor: 'oklch(25% 0.025 285 / 98%)',
+    backgroundColor: archiveNotesCardBackground,
   },
 ]
 
@@ -154,11 +156,11 @@ export function ArchiveNotesPage() {
         <h2 className="archive-notes__section-title">How it works</h2>
         <BorderGlow
           className="archive-notes__flow-card"
-          glowColor="38 90 68"
-          backgroundColor="oklch(25% 0.025 285 / 98%)"
+          glowColor="350 92 64"
+          backgroundColor={archiveNotesCardBackground}
           borderRadius={24}
           glowRadius={32}
-          colors={['#f2b976', '#f59e0b', '#fbbf24']}
+          colors={['#ff6b93', '#ff3366', '#ffb3c7']}
         >
           <div className="archive-notes__flow">
             {flowSteps.map((step, i) => (

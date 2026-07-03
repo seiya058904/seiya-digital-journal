@@ -12,6 +12,8 @@ import '../components/effects/react-bits/BorderGlow.css'
 import '../components/effects/react-bits/Lanyard.css'
 import './ArchivePage.css'
 
+const archiveCardBackground = 'oklch(21% 0.028 292 / 98%)'
+
 const editorialCount = visualArchiveItems.filter(i => i.category === 'editorial').length
 const memoryCount = visualArchiveItems.filter(i => i.category === 'memory').length
 const cities = [...new Set(visualArchiveItems.map(i => i.city).filter(Boolean))]
@@ -47,7 +49,7 @@ const vaults = [
     items: imagePapers,
     glowColor: '187 100 67',
     glowColors: ['#56e4ff', '#3b82f6', '#38bdf8'],
-    backgroundColor: 'oklch(25% 0.025 285 / 98%)',
+    backgroundColor: archiveCardBackground,
   },
   {
     label: 'Notes Vault',
@@ -56,7 +58,7 @@ const vaults = [
     items: notesPapers,
     glowColor: '260 100 73',
     glowColors: ['#8c75ff', '#7c3aed', '#a78bfa'],
-    backgroundColor: 'oklch(25% 0.025 285 / 98%)',
+    backgroundColor: archiveCardBackground,
   },
   {
     label: 'Project Vault',
@@ -65,7 +67,7 @@ const vaults = [
     items: projectPapers,
     glowColor: '38 90 68',
     glowColors: ['#f2b976', '#f59e0b', '#fbbf24'],
-    backgroundColor: 'oklch(25% 0.025 285 / 98%)',
+    backgroundColor: archiveCardBackground,
   },
 ]
 
@@ -141,7 +143,7 @@ export function ArchivePage() {
           <BorderGlow
             className="archive-page__recent"
             glowColor="187 100 67"
-            backgroundColor="oklch(25% 0.025 285 / 98%)"
+            backgroundColor={archiveCardBackground}
             borderRadius={24}
             glowRadius={32}
             colors={['#56e4ff', '#3b82f6', '#38bdf8']}
@@ -162,7 +164,7 @@ export function ArchivePage() {
           <BorderGlow
             className="archive-page__map"
             glowColor="260 100 73"
-            backgroundColor="oklch(25% 0.025 285 / 98%)"
+            backgroundColor={archiveCardBackground}
             borderRadius={24}
             glowRadius={32}
             colors={['#8c75ff', '#7c3aed', '#a78bfa']}
