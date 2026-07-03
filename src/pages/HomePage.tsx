@@ -8,6 +8,7 @@ import { Thoughts } from '../components/sections/Thoughts'
 import { OrbitImages } from '../components/effects/react-bits/OrbitImages'
 import { Stack } from '../components/effects/react-bits/Stack'
 import { ScrollReveal } from '../components/motion/ScrollReveal'
+import { DesktopOnly } from '../components/ui/DesktopOnly'
 
 const base = import.meta.env.BASE_URL
 
@@ -48,18 +49,20 @@ export function HomePage() {
               )}
             </div>
           </ScrollReveal>
-          <ScrollReveal className="stack-visual" delay={0.15}>
-            <Stack
-              cards={stackImages.map((src, i) => (
-                <img key={i} src={src} alt={`Stack preview ${i + 1}`} loading="lazy" />
-              ))}
-              randomRotation
-              sensitivity={150}
-              autoplay
-              autoplayDelay={3500}
-              pauseOnHover
-            />
-          </ScrollReveal>
+          <DesktopOnly>
+            <ScrollReveal className="stack-visual" delay={0.15}>
+              <Stack
+                cards={stackImages.map((src, i) => (
+                  <img key={i} src={src} alt={`Stack preview ${i + 1}`} loading="lazy" />
+                ))}
+                randomRotation
+                sensitivity={150}
+                autoplay
+                autoplayDelay={3500}
+                pauseOnHover
+              />
+            </ScrollReveal>
+          </DesktopOnly>
         </div>
       </section>
 
@@ -71,19 +74,21 @@ export function HomePage() {
             <h2>Technology / Language / Making / Exploration</h2>
             <p>These are the directions I keep returning to. Not fixed paths, but orbits I choose to stay in.</p>
           </ScrollReveal>
-          <ScrollReveal className="signals-visual" delay={0.12}>
-            <OrbitImages
-              images={orbitImages}
-              shape="ellipse"
-              baseWidth={2200}
-              radiusX={1582}
-              radiusY={475}
-              rotation={-6}
-              duration={50}
-              itemSize={480}
-              responsive
-            />
-          </ScrollReveal>
+          <DesktopOnly>
+            <ScrollReveal className="signals-visual" delay={0.12}>
+              <OrbitImages
+                images={orbitImages}
+                shape="ellipse"
+                baseWidth={2200}
+                radiusX={1582}
+                radiusY={475}
+                rotation={-6}
+                duration={50}
+                itemSize={480}
+                responsive
+              />
+            </ScrollReveal>
+          </DesktopOnly>
         </div>
       </section>
 

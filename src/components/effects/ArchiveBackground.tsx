@@ -1,6 +1,7 @@
-import { useMemo } from 'react'
-import Silk from './react-bits/Silk'
+import { lazy, Suspense, useMemo } from 'react'
 import './ArchiveBackground.css'
+
+const Silk = lazy(() => import('./react-bits/Silk'))
 
 export function ArchiveBackground({ hidden = false }: { hidden?: boolean }) {
   const reducedMotion = useMemo(() => {
@@ -22,13 +23,15 @@ export function ArchiveBackground({ hidden = false }: { hidden?: boolean }) {
 
   return (
     <div className={`archive-bg${hidden ? ' archive-bg--hidden' : ''}`} aria-hidden="true">
-      <Silk
-        speed={4}
-        scale={2}
-        color="#524499"
-        noiseIntensity={1.5}
-        rotation={0.5}
-      />
+      <Suspense fallback={null}>
+        <Silk
+          speed={4}
+          scale={2}
+          color="#524499"
+          noiseIntensity={1.5}
+          rotation={0.5}
+        />
+      </Suspense>
     </div>
   )
 }

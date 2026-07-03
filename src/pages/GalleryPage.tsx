@@ -4,6 +4,7 @@ import { visualArchiveItems, itemImageSrc } from '../data/visualArchive'
 import { ImageTrail } from '../components/effects/react-bits/ImageTrail'
 import { GalleryCard } from '../components/sections/GalleryCard'
 import { ScrollReveal } from '../components/motion/ScrollReveal'
+import { DesktopOnly } from '../components/ui/DesktopOnly'
 import './GalleryPage.css'
 
 const featuredItems = visualArchiveItems.filter(i => i.featured).slice(0, 5)
@@ -46,9 +47,11 @@ export function GalleryPage() {
         </div>
       )}
 
-      <ScrollReveal className="gallery-page__trail" amount={0.12}>
-        <ImageTrail items={trailImages} threshold={70} />
-      </ScrollReveal>
+      <DesktopOnly>
+        <ScrollReveal className="gallery-page__trail" amount={0.12}>
+          <ImageTrail items={trailImages} threshold={70} />
+        </ScrollReveal>
+      </DesktopOnly>
 
       <section className="gallery-page__all-section">
         <h2 className="gallery-page__section-title">

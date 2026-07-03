@@ -6,6 +6,7 @@ import { AuroraBackground } from './components/effects/AuroraBackground'
 
 import { DesktopGridScan } from './components/effects/react-bits/DesktopGridScan'
 import { Header } from './components/ui/Header'
+import { PhoneOnly } from './components/ui/DesktopOnly'
 import { HomePage } from './pages/HomePage'
 import { ArchivePage } from './pages/ArchivePage'
 import { ArchiveImagesPage } from './pages/ArchiveImagesPage'
@@ -60,7 +61,11 @@ export default function App() {
   return (
     <MotionConfig reducedMotion="user">
       <div className="site-background" aria-hidden="true">
-        {!(page.startsWith('archive') || page === 'gallery') && <AuroraBackground />}
+        {page.startsWith('archive') || page === 'gallery' ? (
+          <PhoneOnly><AuroraBackground /></PhoneOnly>
+        ) : (
+          <AuroraBackground />
+        )}
         {page === 'home' ? (
           <DesktopGridScan
             className="site-gridscan"

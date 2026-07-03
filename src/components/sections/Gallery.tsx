@@ -2,6 +2,7 @@ import { visualArchiveItems } from '../../data/visualArchive'
 import { BounceCards } from '../effects/react-bits/BounceCards'
 import { ScrollReveal } from '../motion/ScrollReveal'
 import { Chapter } from '../ui/Chapter'
+import { DesktopOnly } from '../ui/DesktopOnly'
 import { GalleryCard } from './GalleryCard'
 
 const base = import.meta.env.BASE_URL
@@ -45,21 +46,23 @@ export function Gallery() {
       {/* BounceCards — Selected fragments preview */}
       <ScrollReveal className="gallery-bounce-wrapper" delay={0.08}>
         <span className="gallery-bounce-label">Selected fragments</span>
-        <BounceCards
-          className="gallery-bounce"
-          images={bounceImages}
-          containerWidth={480}
-          containerHeight={280}
-          animationDelay={0.3}
-          animationStagger={0.05}
-          transformStyles={[
-            'rotate(12deg) translate(-140px)',
-            'rotate(6deg) translate(-70px)',
-            'rotate(-4deg)',
-            'rotate(-12deg) translate(70px)',
-          ]}
-          enableHover
-        />
+        <DesktopOnly>
+          <BounceCards
+            className="gallery-bounce"
+            images={bounceImages}
+            containerWidth={480}
+            containerHeight={280}
+            animationDelay={0.3}
+            animationStagger={0.05}
+            transformStyles={[
+              'rotate(12deg) translate(-140px)',
+              'rotate(6deg) translate(-70px)',
+              'rotate(-4deg)',
+              'rotate(-12deg) translate(70px)',
+            ]}
+            enableHover
+          />
+        </DesktopOnly>
       </ScrollReveal>
 
       <p className="gallery-subtitle">

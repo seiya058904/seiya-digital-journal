@@ -8,6 +8,7 @@ import { GradientText } from '../effects/text/GradientText'
 import { RotatingText } from '../effects/text/RotatingText'
 import { TextReveal } from '../motion/TextReveal'
 import { ActionLink } from '../ui/ActionLink'
+import { DesktopOnly } from '../ui/DesktopOnly'
 
 const identityWords = ['Learning', 'Creating', 'Remembering', 'Becoming']
 
@@ -81,22 +82,24 @@ export function Hero() {
         </motion.div>
       </div>
 
-      <motion.div
-        className="hero__portrait-wrap"
-        initial={{ opacity: 0, scale: 0.96, y: 18 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 0.9, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <ProfileCard
-          avatarUrl={avatarSeiya}
-          name={profile.brand}
-          title="Personal Journal"
-          showUserInfo={false}
-          enableTilt={true}
-          behindGlowEnabled={false}
-          className="hero-profile-card"
-        />
-      </motion.div>
+      <DesktopOnly>
+        <motion.div
+          className="hero__portrait-wrap"
+          initial={{ opacity: 0, scale: 0.96, y: 18 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.9, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <ProfileCard
+            avatarUrl={avatarSeiya}
+            name={profile.brand}
+            title="Personal Journal"
+            showUserInfo={false}
+            enableTilt={true}
+            behindGlowEnabled={false}
+            className="hero-profile-card"
+          />
+        </motion.div>
+      </DesktopOnly>
 
       <motion.a
         className="scroll-cue"
