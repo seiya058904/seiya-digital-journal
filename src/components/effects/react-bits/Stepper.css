@@ -1,0 +1,246 @@
+.stepper-outer {
+  display: flex;
+  min-height: 100%;
+  flex: 1 1 0%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.stepper-circle-container {
+  width: 100%;
+  max-width: 28rem;
+  margin: 0 auto;
+  overflow: hidden;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-strong);
+  box-shadow: var(--shadow-soft);
+}
+
+.stepper-indicator-row {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  padding: 2rem;
+}
+
+.stepper-indicator-group {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  align-items: center;
+}
+
+.stepper-indicator-group:last-child {
+  flex: 0 0 auto;
+}
+
+.stepper-content-default {
+  position: relative;
+  overflow: hidden;
+}
+
+.stepper-slide {
+  position: absolute;
+  inset: 0 0 auto;
+}
+
+.stepper-step {
+  padding: 0 2rem;
+}
+
+.stepper-step h2 {
+  color: var(--color-text);
+  font-family: var(--font-editorial);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+}
+
+.stepper-step p {
+  margin-top: 0.75rem;
+  color: var(--color-muted);
+  font-size: 0.86rem;
+  line-height: 1.65;
+}
+
+.stepper-footer {
+  padding: 0 2rem 2rem;
+}
+
+.stepper-footer-nav {
+  display: flex;
+  margin-top: 2.5rem;
+}
+
+.stepper-footer-nav--spread {
+  justify-content: space-between;
+}
+
+.stepper-footer-nav--end {
+  justify-content: flex-end;
+}
+
+.stepper-back-button,
+.stepper-next-button {
+  min-height: 2.25rem;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+}
+
+.stepper-back-button {
+  padding: 0.25rem 0.5rem;
+  background: transparent;
+  color: var(--color-muted);
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.stepper-back-button:hover {
+  color: var(--color-text);
+}
+
+.stepper-next-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.375rem 0.875rem;
+  border-radius: 999px;
+  background: var(--color-violet);
+  color: var(--color-text);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  transition: filter var(--duration-fast) var(--ease-out);
+}
+
+.stepper-next-button:hover {
+  filter: brightness(1.12);
+}
+
+.stepper-back-button:focus-visible,
+.stepper-next-button:focus-visible,
+.stepper-indicator:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+.stepper-indicator {
+  position: relative;
+  display: inline-flex;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.stepper-indicator:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.stepper-indicator-inner {
+  display: flex;
+  width: 2rem;
+  height: 2rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.stepper-active-dot {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 999px;
+  background: var(--color-text);
+}
+
+.stepper-step-number {
+  font-size: 0.875rem;
+}
+
+.stepper-connector {
+  position: relative;
+  height: 0.125rem;
+  min-width: 1rem;
+  flex: 1;
+  margin: 0 0.5rem;
+  overflow: hidden;
+  border-radius: 0.25rem;
+  background: var(--color-faint);
+}
+
+.stepper-connector-inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+}
+
+.stepper-check-icon {
+  width: 1rem;
+  height: 1rem;
+  color: var(--color-text);
+}
+
+.stepper-demo__field {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-bottom: 0.25rem;
+}
+
+.stepper-demo__label {
+  color: var(--color-faint);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+}
+
+.stepper-demo__input {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-deep);
+  color: var(--color-text);
+  font: inherit;
+}
+
+.stepper-demo__input::placeholder {
+  color: var(--color-faint);
+}
+
+.stepper-demo__input:focus-visible {
+  border-color: var(--color-text);
+  outline: none;
+}
+
+@media (min-width: 640px) {
+  .stepper-outer {
+    aspect-ratio: 4 / 3;
+  }
+}
+
+@media (min-width: 768px) {
+  .stepper-outer {
+    aspect-ratio: 2 / 1;
+  }
+}
+
+@media (max-width: 639px) {
+  .stepper-indicator-row {
+    padding: 1.5rem;
+  }
+
+  .stepper-step {
+    padding: 0 1.5rem;
+  }
+
+  .stepper-footer {
+    padding: 0 1.5rem 1.5rem;
+  }
+}
