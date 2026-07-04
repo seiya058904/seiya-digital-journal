@@ -26,5 +26,5 @@ export function getSupabaseClient(): SupabaseClient | null {
 }
 
 export function getAuthRedirectUrl(): string {
-  return `${buildBrowserSiteUrl()}#/auth`
+  return buildBrowserSiteUrl()
 }
