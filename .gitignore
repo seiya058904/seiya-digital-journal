@@ -27,6 +27,9 @@ dist-ssr
 # Design review cache
 .impeccable/
 
+# Reasonix state cache
+.reasonix/
+
 # Raw image assets (source material, not in-repo)
 art picture/
 picture/
