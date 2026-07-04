@@ -16,6 +16,7 @@ dist-ssr
 .dev.vars
 .dev.vars.*
 !worker/.dev.vars.example
+supabase/.temp/
 *.local
 .local/
 
