@@ -1,180 +1,469 @@
-import { useState } from 'react'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { ArrowLeft, Eye, EyeOff, LoaderCircle } from 'lucide-react'
+import { useCallback, useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from 'react'
 
 import { useAuth } from '../auth/AuthContext'
+import {
+  createEmptyAuthFormValues,
+  hasAuthFieldErrors,
+  validateAuthField,
+  validateAuthForm,
+  type AuthFieldErrors,
+  type AuthFieldName,
+  type AuthMode,
+} from '../lib/authForm'
+import { resolveAuthSuccessOutcome } from '../lib/authFlow'
+import {
+  consumeAuthReturnTarget,
+} from '../lib/authRoutes'
 import './AuthPage.css'
 
-type AuthMode = 'signin' | 'signup'
-
-const MAX_DISPLAY_NAME_LENGTH = 40
-const MIN_PASSWORD_LENGTH = 8
+type AuthView = 'signin' | 'signup' | 'check-email'
+type FeedbackTone = 'error' | 'success' | 'info'
+type AuthFeedback = {
+  tone: FeedbackTone
+  message: string
+} | null
+type TouchedFields = Partial<Record<AuthFieldName, boolean>>
 
 export function AuthPage() {
-  const { backendMessage, isConfigured, loading, signIn, signUp } = useAuth()
+  const { backendMessage, isAuthenticated, isConfigured, loading, signIn, signUp } = useAuth()
+  const reduceMotion = useReducedMotion()
 
-  const [mode, setMode] = useState<AuthMode>('signin')
-  const [displayName, setDisplayName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [status, setStatus] = useState<string | null>(backendMessage)
-  const [error, setError] = useState<string | null>(null)
-  const [submitting, setSubmitting] = useState(false)
+  const [view, setView] = useState<AuthView>('signin')
+  const [values, setValues] = useState(createEmptyAuthFormValues)
+  const [fieldErrors, setFieldErrors] = useState<AuthFieldErrors>({})
+  const [touchedFields, setTouchedFields] = useState<TouchedFields>({})
+  const [submittingMode, setSubmittingMode] = useState<AuthMode | null>(null)
+  const [feedback, setFeedback] = useState<AuthFeedback>(
+    backendMessage ? { tone: 'info', message: backendMessage } : null,
+  )
+  const [maskedEmail, setMaskedEmail] = useState('your email')
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
-  const isSignUp = mode === 'signup'
-  const disabled = loading || submitting || !isConfigured
+  const emailInputId = useId()
+  const passwordInputId = useId()
+  const displayNameInputId = useId()
+  const confirmPasswordInputId = useId()
+  const feedbackId = useId()
+  const navigationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const switchMode = (nextMode: AuthMode) => {
-    setMode(nextMode)
-    setStatus(backendMessage)
-    setError(null)
-  }
-
-  const validateForm = (): string | null => {
-    if (isSignUp) {
-      const trimmedName = displayName.trim()
-      if (!trimmedName) return 'Display name is required.'
-      if (trimmedName.length > MAX_DISPLAY_NAME_LENGTH) return 'Display name is too long.'
-      if (confirmPassword !== password) return 'Passwords do not match.'
+  const isSignUp = view === 'signup'
+  const disabled = loading || Boolean(submittingMode) || !isConfigured
+  const clearNavigationTimer = () => {
+    if (navigationTimeoutRef.current) {
+      clearTimeout(navigationTimeoutRef.current)
+      navigationTimeoutRef.current = null
     }
-
-    if (!email.trim()) return 'Email is required.'
-    if (password.length < MIN_PASSWORD_LENGTH) return 'Password must be at least 8 characters.'
-    return null
   }
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    setStatus(null)
-    setError(null)
+  useEffect(() => () => {
+    clearNavigationTimer()
+  }, [])
 
-    const validationError = validateForm()
-    if (validationError) {
-      setError(validationError)
+  useEffect(() => {
+    if (backendMessage) {
+      setFeedback({ tone: 'info', message: backendMessage })
+    }
+  }, [backendMessage])
+
+  const scheduleReturnNavigation = useCallback((target: string) => {
+    clearNavigationTimer()
+    navigationTimeoutRef.current = setTimeout(() => {
+      window.location.hash = target
+    }, reduceMotion ? 200 : 320)
+  }, [reduceMotion])
+
+  useEffect(() => {
+    if (loading || !isAuthenticated || view === 'check-email' || submittingMode) return
+    setFeedback({ tone: 'success', message: 'Signed in successfully.' })
+    scheduleReturnNavigation(consumeAuthReturnTarget())
+  }, [isAuthenticated, loading, scheduleReturnNavigation, submittingMode, view])
+
+  const switchView = (nextView: AuthView) => {
+    clearNavigationTimer()
+    setView(nextView)
+    setFieldErrors({})
+    setTouchedFields({})
+    setSubmittingMode(null)
+    setFeedback(backendMessage ? { tone: 'info', message: backendMessage } : null)
+    if (nextView !== 'signup') {
+      setShowConfirmPassword(false)
+    }
+  }
+
+  const updateFieldError = (mode: AuthMode, field: AuthFieldName, nextValues = values) => {
+    if (!touchedFields[field]) return
+    const nextError = validateAuthField(mode, field, nextValues)
+    setFieldErrors((current) => {
+      if (!nextError) {
+        const { [field]: _omitted, ...rest } = current
+        return rest
+      }
+      return {
+        ...current,
+        [field]: nextError,
+      }
+    })
+  }
+
+  const handleFieldChange = (field: AuthFieldName, value: string) => {
+    const nextValues = {
+      ...values,
+      [field]: value,
+    }
+    setValues(nextValues)
+    if (feedback?.tone === 'error') setFeedback(null)
+    const mode: AuthMode = isSignUp ? 'signup' : 'signin'
+    updateFieldError(mode, field, nextValues)
+    if (field === 'password' && isSignUp) {
+      updateFieldError('signup', 'confirmPassword', nextValues)
+    }
+  }
+
+  const handleFieldBlur = (field: AuthFieldName) => {
+    setTouchedFields((current) => ({
+      ...current,
+      [field]: true,
+    }))
+    const mode: AuthMode = isSignUp ? 'signup' : 'signin'
+    const nextError = validateAuthField(mode, field, values)
+    setFieldErrors((current) => {
+      if (!nextError) {
+        const { [field]: _omitted, ...rest } = current
+        return rest
+      }
+      return {
+        ...current,
+        [field]: nextError,
+      }
+    })
+  }
+
+  const handleBack = () => {
+    clearNavigationTimer()
+    window.location.hash = consumeAuthReturnTarget()
+  }
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    clearNavigationTimer()
+    setFeedback(null)
+
+    const mode: AuthMode = isSignUp ? 'signup' : 'signin'
+    const nextErrors = validateAuthForm(mode, values)
+    setFieldErrors(nextErrors)
+    setTouchedFields(mode === 'signup'
+      ? {
+          displayName: true,
+          email: true,
+          password: true,
+          confirmPassword: true,
+        }
+      : {
+          email: true,
+          password: true,
+        })
+
+    if (hasAuthFieldErrors(nextErrors)) {
       return
     }
 
-    setSubmitting(true)
+    setSubmittingMode(mode)
     const result = isSignUp
       ? await signUp({
-          displayName: displayName.trim(),
-          email: email.trim(),
-          password,
+          displayName: values.displayName.trim(),
+          email: values.email.trim(),
+          password: values.password,
         })
       : await signIn({
-          email: email.trim(),
-          password,
+          email: values.email.trim(),
+          password: values.password,
         })
-    setSubmitting(false)
+    setSubmittingMode(null)
 
     if (!result.ok) {
-      setError(result.message)
+      setFeedback({ tone: 'error', message: result.message })
+      if (!isSignUp) {
+        setValues((current) => ({
+          ...current,
+          password: '',
+        }))
+      }
       return
     }
 
-    setStatus(result.message ?? null)
-    setError(null)
-    if (result.requiresEmailConfirmation) {
-      setPassword('')
-      setConfirmPassword('')
+    const successOutcome = resolveAuthSuccessOutcome(mode, values.email, Boolean(result.requiresEmailConfirmation))
+
+    if (successOutcome.kind === 'check-email') {
+      setMaskedEmail(successOutcome.maskedEmail)
+      setValues((current) => ({
+        ...current,
+        password: '',
+        confirmPassword: '',
+      }))
+      setShowPassword(false)
+      setShowConfirmPassword(false)
+      setFieldErrors({})
+      setTouchedFields({})
+      setFeedback(null)
+      setView('check-email')
       return
     }
 
-    if (isSignUp) {
-      setConfirmPassword('')
-    }
+    setFeedback({
+      tone: 'success',
+      message: successOutcome.message,
+    })
   }
 
   return (
     <main className="auth-page">
       <section className="auth-shell" aria-labelledby="auth-title">
         <div className="auth-panel">
+          <button type="button" className="auth-back" onClick={handleBack}>
+            <ArrowLeft aria-hidden="true" size={16} />
+            <span>Back</span>
+          </button>
           <p className="auth-kicker">Seiya Digital Journal</p>
-          <h1 id="auth-title" className="auth-title">
-            {isSignUp ? 'Create your account' : 'Welcome back'}
-          </h1>
-          <p className="auth-copy">
-            {isSignUp
-              ? 'A small identity for leaving thoughtful traces.'
-              : 'Sign in to continue your journey.'}
-          </p>
+          <AnimatePresence mode="wait" initial={false}>
+            {view === 'check-email' ? (
+              <motion.div
+                key="check-email"
+                initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={reduceMotion ? undefined : { opacity: 0, y: -6 }}
+                transition={{ duration: reduceMotion ? 0 : 0.2 }}
+                className="auth-view"
+              >
+                <h1 id="auth-title" className="auth-title">Check your email</h1>
+                <p className="auth-copy">
+                  We sent a confirmation link to:
+                </p>
+                <p className="auth-email">{maskedEmail}</p>
+                <p className="auth-copy">
+                  Confirm your email to finish creating your account.
+                </p>
+                <p className="auth-note">
+                  Check your spam folder if you do not see the email.
+                </p>
+                <button
+                  type="button"
+                  className="auth-submit auth-submit--secondary"
+                  onClick={() => switchView('signin')}
+                >
+                  Back to sign in
+                </button>
+              </motion.div>
+            ) : (
+              <motion.div
+                key={view}
+                initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={reduceMotion ? undefined : { opacity: 0, y: -6 }}
+                transition={{ duration: reduceMotion ? 0 : 0.2 }}
+                className="auth-view"
+              >
+                <h1 id="auth-title" className="auth-title">
+                  {isSignUp ? 'Create your account' : 'Welcome back'}
+                </h1>
+                <p className="auth-copy">
+                  {isSignUp
+                    ? 'Join the journal with a simple identity.'
+                    : 'Sign in to continue.'}
+                </p>
 
-          <div className="auth-mode-switch" role="tablist" aria-label="Authentication mode">
-            <button
-              type="button"
-              className={`auth-mode-button ${!isSignUp ? 'is-active' : ''}`}
-              onClick={() => switchMode('signin')}
-              aria-selected={!isSignUp}
-            >
-              Sign in
-            </button>
-            <button
-              type="button"
-              className={`auth-mode-button ${isSignUp ? 'is-active' : ''}`}
-              onClick={() => switchMode('signup')}
-              aria-selected={isSignUp}
-            >
-              Sign up
-            </button>
-          </div>
+                <div className="auth-feedback-slot" aria-live="polite">
+                  {feedback ? (
+                    <p
+                      id={feedbackId}
+                      className={`auth-feedback auth-feedback--${feedback.tone}`}
+                      role={feedback.tone === 'error' ? 'alert' : 'status'}
+                    >
+                      {feedback.message}
+                    </p>
+                  ) : null}
+                </div>
 
-          <form className="auth-form" onSubmit={handleSubmit}>
-            {isSignUp ? (
-              <label className="auth-field">
-                <span>Display name</span>
-                <input
-                  value={displayName}
-                  onChange={(event) => setDisplayName(event.target.value)}
-                  autoComplete="nickname"
-                  maxLength={MAX_DISPLAY_NAME_LENGTH}
-                  disabled={disabled}
-                />
-              </label>
-            ) : null}
+                <form className="auth-form" onSubmit={handleSubmit} aria-busy={Boolean(submittingMode)}>
+                  {isSignUp ? (
+                    <AuthField
+                      id={displayNameInputId}
+                      label="Display name"
+                      value={values.displayName}
+                      onChange={(value) => handleFieldChange('displayName', value)}
+                      onBlur={() => handleFieldBlur('displayName')}
+                      autoComplete="name"
+                      disabled={disabled}
+                      error={fieldErrors.displayName}
+                    />
+                  ) : null}
 
-            <label className="auth-field">
-              <span>Email</span>
-              <input
-                type="email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                autoComplete="email"
-                disabled={disabled}
-              />
-            </label>
+                  <AuthField
+                    id={emailInputId}
+                    label="Email"
+                    type="email"
+                    value={values.email}
+                    onChange={(value) => handleFieldChange('email', value)}
+                    onBlur={() => handleFieldBlur('email')}
+                    autoComplete="email"
+                    disabled={disabled}
+                    error={fieldErrors.email}
+                    describedBy={feedback?.tone === 'error' ? feedbackId : undefined}
+                  />
 
-            <label className="auth-field">
-              <span>Password</span>
-              <input
-                type="password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                autoComplete={isSignUp ? 'new-password' : 'current-password'}
-                disabled={disabled}
-              />
-            </label>
+                  <AuthField
+                    id={passwordInputId}
+                    label="Password"
+                    type={showPassword ? 'text' : 'password'}
+                    value={values.password}
+                    onChange={(value) => handleFieldChange('password', value)}
+                    onBlur={() => handleFieldBlur('password')}
+                    autoComplete={isSignUp ? 'new-password' : 'current-password'}
+                    disabled={disabled}
+                    error={fieldErrors.password}
+                    describedBy={feedback?.tone === 'error' ? feedbackId : undefined}
+                    trailingButton={
+                      <PasswordToggle
+                        visible={showPassword}
+                        onToggle={() => setShowPassword((current) => !current)}
+                        disabled={disabled}
+                        label={showPassword ? 'Hide password' : 'Show password'}
+                      />
+                    }
+                  />
 
-            {isSignUp ? (
-              <label className="auth-field">
-                <span>Confirm password</span>
-                <input
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(event) => setConfirmPassword(event.target.value)}
-                  autoComplete="new-password"
-                  disabled={disabled}
-                />
-              </label>
-            ) : null}
+                  {isSignUp ? (
+                    <AuthField
+                      id={confirmPasswordInputId}
+                      label="Confirm password"
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      value={values.confirmPassword}
+                      onChange={(value) => handleFieldChange('confirmPassword', value)}
+                      onBlur={() => handleFieldBlur('confirmPassword')}
+                      autoComplete="new-password"
+                      disabled={disabled}
+                      error={fieldErrors.confirmPassword}
+                      trailingButton={
+                        <PasswordToggle
+                          visible={showConfirmPassword}
+                          onToggle={() => setShowConfirmPassword((current) => !current)}
+                          disabled={disabled}
+                          label={showConfirmPassword ? 'Hide confirmation password' : 'Show confirmation password'}
+                        />
+                      }
+                    />
+                  ) : null}
 
-            {status ? <p className="auth-status">{status}</p> : null}
-            {error ? <p className="auth-error">{error}</p> : null}
+                  <button className="auth-submit" type="submit" disabled={disabled}>
+                    {submittingMode ? (
+                      <>
+                        <LoaderCircle className="auth-spinner" size={16} aria-hidden="true" />
+                        <span>{submittingMode === 'signup' ? 'Creating account...' : 'Signing in...'}</span>
+                      </>
+                    ) : (
+                      isSignUp ? 'Create account' : 'Sign in'
+                    )}
+                  </button>
+                </form>
 
-            <button className="auth-submit" type="submit" disabled={disabled}>
-              {submitting ? 'Please wait...' : isSignUp ? 'Create account' : 'Sign in'}
-            </button>
-          </form>
+                <p className="auth-switch-copy">
+                  {isSignUp ? 'Already have an account?' : 'New here?'}
+                  {' '}
+                  <button
+                    type="button"
+                    className="auth-switch-button"
+                    onClick={() => switchView(isSignUp ? 'signin' : 'signup')}
+                  >
+                    {isSignUp ? 'Sign in' : 'Create an account'}
+                  </button>
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </section>
     </main>
+  )
+}
+
+type AuthFieldProps = {
+  id: string
+  label: string
+  value: string
+  onChange: (value: string) => void
+  onBlur: () => void
+  disabled: boolean
+  error?: string
+  type?: string
+  autoComplete?: string
+  trailingButton?: ReactNode
+  describedBy?: string
+}
+
+function AuthField({
+  id,
+  label,
+  value,
+  onChange,
+  onBlur,
+  disabled,
+  error,
+  type = 'text',
+  autoComplete,
+  trailingButton,
+  describedBy,
+}: AuthFieldProps) {
+  const errorId = `${id}-error`
+  const ariaDescribedBy = [error ? errorId : null, describedBy].filter(Boolean).join(' ') || undefined
+
+  return (
+    <label className="auth-field" htmlFor={id}>
+      <span>{label}</span>
+      <span className={`auth-input-shell ${error ? 'is-error' : ''}`}>
+        <input
+          id={id}
+          type={type}
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          onBlur={onBlur}
+          autoComplete={autoComplete}
+          disabled={disabled}
+          aria-invalid={error ? 'true' : undefined}
+          aria-describedby={ariaDescribedBy}
+        />
+        {trailingButton}
+      </span>
+      {error ? (
+        <span id={errorId} className="auth-field-error">
+          {error}
+        </span>
+      ) : null}
+    </label>
+  )
+}
+
+function PasswordToggle({
+  visible,
+  onToggle,
+  disabled,
+  label,
+}: {
+  visible: boolean
+  onToggle: () => void
+  disabled: boolean
+  label: string
+}) {
+  return (
+    <button
+      type="button"
+      className="auth-password-toggle"
+      onClick={onToggle}
+      disabled={disabled}
+      aria-label={label}
+    >
+      {visible ? <EyeOff aria-hidden="true" size={16} /> : <Eye aria-hidden="true" size={16} />}
+    </button>
   )
 }

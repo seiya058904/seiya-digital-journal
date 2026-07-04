@@ -1,9 +1,10 @@
 import { Menu, X } from 'lucide-react'
-import { useState } from 'react'
+import { useState, type MouseEvent } from 'react'
 
 import { useAuth } from '../../auth/AuthContext'
 import profileLogo from '../../assets/brand-icon.webp'
 import { profile } from '../../data/profile'
+import { navigateToAuth } from '../../lib/authRoutes'
 import { CardNav, type CardNavItem } from '../effects/react-bits/CardNav'
 import { PillNav } from '../effects/react-bits/PillNav'
 
@@ -103,6 +104,12 @@ export function Header({ activePage = 'home' }: HeaderProps) {
     }
   }
 
+  const handleSignIn = (event: MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault()
+    setOpen(false)
+    navigateToAuth()
+  }
+
   return (
     <header className="site-header">
       <PillNav
@@ -126,7 +133,7 @@ export function Header({ activePage = 'home' }: HeaderProps) {
             </button>
           </>
         ) : (
-          <a className="header-auth__button" href="#/auth" aria-disabled={loading}>
+          <a className="header-auth__button" href="#/auth" aria-disabled={loading} onClick={handleSignIn}>
             Sign in
           </a>
         )}
@@ -176,7 +183,7 @@ export function Header({ activePage = 'home' }: HeaderProps) {
               </button>
             </>
           ) : (
-            <a href="#/auth" onClick={() => setOpen(false)}>Sign in</a>
+            <a href="#/auth" onClick={handleSignIn}>Sign in</a>
           )}
           <a href="#/lab" onClick={() => setOpen(false)}>Motion Lab</a>
         </div>
