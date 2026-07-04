@@ -10,6 +10,7 @@ import {
 } from 'react'
 
 import './Stepper.css'
+import { runFinalStepCompletion } from './stepperState'
 
 type StepIndicatorRenderProps = {
   step: number
@@ -89,7 +90,7 @@ export default function Stepper({
   const handleComplete = async () => {
     setDirection(1)
     setIsCompleting(true)
-    const result = await onFinalStepCompleted()
+    const result = await runFinalStepCompletion(onFinalStepCompleted)
     setIsCompleting(false)
     if (result === false) return
     onStepChange(totalSteps + 1)

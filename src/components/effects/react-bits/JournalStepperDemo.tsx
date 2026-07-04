@@ -87,21 +87,27 @@ export function JournalStepperDemo() {
     setIsStatusVisible(true)
     save(THOUGHT_KEY, '')
     save(STEP_KEY, 1)
-    cleanupRef.current = scheduleCommentSuccessLifecycle(
-      {
-        setTimeout,
-        clearTimeout,
-      },
-      {
-        onFadeStart: () => {
-          setIsStatusVisible(false)
+
+    try {
+      cleanupRef.current = scheduleCommentSuccessLifecycle(
+        {
+          setTimeout,
+          clearTimeout,
         },
-        onReset: () => {
-          setStatus(null)
-          setStepperKey((current) => current + 1)
+        {
+          onFadeStart: () => {
+            setIsStatusVisible(false)
+          },
+          onReset: () => {
+            setStatus(null)
+            setStepperKey((current) => current + 1)
+          },
         },
-      },
-    )
+      )
+    } catch {
+      cleanupRef.current = null
+    }
+
     return true
   }
 
