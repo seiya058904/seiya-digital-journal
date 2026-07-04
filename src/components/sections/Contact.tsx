@@ -29,11 +29,15 @@ export function Contact() {
   const [copied, setCopied] = useState(false)
   const [supporting, setSupporting] = useState(false)
 
-  const handleCopyEmail = useCallback(() => {
-    navigator.clipboard.writeText(EMAIL_ADDRESS).then(() => {
+  const handleCopyEmail = useCallback(async () => {
+    try {
+      if (!navigator.clipboard?.writeText) return
+      await navigator.clipboard.writeText(EMAIL_ADDRESS)
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
-    })
+    } catch {
+      // clipboard unavailable or permission denied — fail silently
+    }
   }, [])
 
   const handleSupportClose = useCallback(() => setSupporting(false), [])
