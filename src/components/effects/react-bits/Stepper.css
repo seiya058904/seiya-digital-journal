@@ -219,6 +219,30 @@
   outline: none;
 }
 
+.stepper-demo__hint,
+.stepper-demo__status,
+.stepper-demo__error {
+  margin-top: 0.85rem;
+  font-size: 0.76rem;
+  line-height: 1.6;
+}
+
+.stepper-demo__hint {
+  color: var(--color-faint);
+}
+
+.stepper-demo__hint a {
+  color: var(--color-cyan);
+}
+
+.stepper-demo__status {
+  color: var(--color-cyan);
+}
+
+.stepper-demo__error {
+  color: #ffb4b4;
+}
+
 @media (min-width: 640px) {
   .stepper-outer {
     aspect-ratio: 4 / 3;

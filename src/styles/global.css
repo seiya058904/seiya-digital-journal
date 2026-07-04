@@ -146,6 +146,9 @@ button {
   top: 0;
   left: 0;
   z-index: 50;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
   width: 100%;
   padding: 1rem var(--space-page);
 }
@@ -156,6 +159,50 @@ button {
 
 .pill-nav.header-pill-nav {
   display: none;
+}
+
+.header-auth {
+  position: absolute;
+  top: 1rem;
+  right: var(--space-page);
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  z-index: 60;
+}
+
+.header-auth--desktop {
+  display: none;
+}
+
+.header-auth__name {
+  color: var(--color-muted);
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
+}
+
+.header-auth__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.45rem;
+  padding: 0.45rem 0.95rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 999px;
+  background: rgb(7 12 27 / 82%);
+  color: var(--color-text);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.header-auth__button--mobile {
+  width: 100%;
+  margin-top: 0.35rem;
+}
+
+.header-auth__name--mobile {
+  display: block;
+  padding: 0.9rem 0.75rem 0.35rem;
 }
 
 .nav-shell {
@@ -256,6 +303,10 @@ button {
 
 @media (min-width: 821px) and (hover: hover) and (pointer: fine) {
   .pill-nav.header-pill-nav {
+    display: flex;
+  }
+
+  .header-auth--desktop {
     display: flex;
   }
 
@@ -1500,6 +1551,7 @@ footer {
 @media (max-width: 820px) {
   .menu-button { display: grid; }
   .header-card-nav { display: none; }
+  .header-auth--desktop { display: none; }
 
   .nav-shell {
     width: 100%;
