@@ -10,6 +10,7 @@ import {
 } from 'react'
 
 import './Stepper.css'
+import { runFinalStepCompletion } from './stepperState'
 
 type StepIndicatorRenderProps = {
   step: number
@@ -21,7 +22,7 @@ export type StepperProps = Omit<HTMLAttributes<HTMLDivElement>, 'children'> & {
   children: ReactNode
   initialStep?: number
   onStepChange?: (step: number) => void
-  onFinalStepCompleted?: () => void
+  onFinalStepCompleted?: () => void | boolean | Promise<void | boolean>
   stepCircleContainerClassName?: string
   stepContainerClassName?: string
   contentClassName?: string
@@ -54,6 +55,7 @@ export default function Stepper({
 }: StepperProps) {
   const [currentStep, setCurrentStep] = useState(initialStep)
   const [direction, setDirection] = useState(0)
+  const [isCompleting, setIsCompleting] = useState(false)
   const stepsArray = Children.toArray(children)
   const totalSteps = stepsArray.length
   const isCompleted = currentStep > totalSteps
@@ -70,9 +72,6 @@ export default function Stepper({
   const updateStep = (newStep: number) => {
     setCurrentStep(newStep)
     onStepChange(newStep)
-    if (newStep > totalSteps) {
-      onFinalStepCompleted()
-    }
   }
 
   const goToStep = (newStep: number) => {
@@ -88,9 +87,14 @@ export default function Stepper({
     if (!isLastStep) goToStep(currentStep + 1)
   }
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
     setDirection(1)
-    updateStep(totalSteps + 1)
+    setIsCompleting(true)
+    const result = await runFinalStepCompletion(onFinalStepCompleted)
+    setIsCompleting(false)
+    if (result === false) return
+    onStepChange(totalSteps + 1)
+    setCurrentStep(totalSteps + 1)
   }
 
   return (
@@ -142,6 +146,7 @@ export default function Stepper({
                   {...backButtonRest}
                   type="button"
                   onClick={handleBack}
+                  disabled={isCompleting || backButtonRest.disabled}
                   className={`stepper-back-button ${backButtonClassName}`.trim()}
                 >
                   {backButtonText}
@@ -151,9 +156,10 @@ export default function Stepper({
                 {...nextButtonRest}
                 type="button"
                 onClick={isLastStep ? handleComplete : handleNext}
+                disabled={isCompleting || nextButtonRest.disabled}
                 className={`stepper-next-button ${nextButtonClassName}`.trim()}
               >
-                {isLastStep ? 'Complete' : nextButtonText}
+                {isLastStep ? (isCompleting ? 'Sending...' : 'Complete') : nextButtonText}
               </button>
             </div>
           </div>

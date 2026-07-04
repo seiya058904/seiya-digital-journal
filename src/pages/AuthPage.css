@@ -1,0 +1,296 @@
+.auth-page {
+  min-height: 100vh;
+  display: grid;
+  align-items: center;
+  padding: clamp(6rem, 12vw, 9rem) var(--space-page) clamp(3rem, 7vw, 5rem);
+}
+
+.auth-shell {
+  width: min(100%, 28.75rem);
+  margin: 0 auto;
+}
+
+.auth-panel {
+  position: relative;
+  padding: clamp(1.5rem, 4vw, 2.45rem);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(circle at top, rgb(104 196 255 / 10%), transparent 32%),
+    linear-gradient(160deg, rgb(15 24 46 / 90%), rgb(5 10 25 / 94%));
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.04),
+    var(--shadow-soft);
+}
+
+.auth-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-faint);
+  cursor: pointer;
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.auth-back:hover {
+  color: var(--color-text);
+  transform: translateX(-1px);
+}
+
+.auth-back:focus-visible,
+.auth-password-toggle:focus-visible,
+.auth-switch-button:focus-visible,
+.auth-submit:focus-visible,
+.auth-field input:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+.auth-kicker {
+  margin-top: 1.2rem;
+  color: var(--color-gold);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.auth-title {
+  margin-top: 0.85rem;
+  font-family: var(--font-editorial);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  line-height: 1.04;
+}
+
+.auth-copy {
+  margin-top: 0.9rem;
+  color: var(--color-muted);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.auth-view {
+  margin-top: 0.25rem;
+}
+
+.auth-feedback-slot {
+  min-height: 1.75rem;
+  margin-top: 1.35rem;
+}
+
+.auth-feedback {
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+
+.auth-feedback--info,
+.auth-feedback--success {
+  color: var(--color-cyan);
+}
+
+.auth-feedback--error {
+  color: #ffb4b4;
+}
+
+.auth-form {
+  display: grid;
+  gap: 1rem;
+  margin-top: 0.2rem;
+}
+
+.auth-field {
+  display: grid;
+  gap: 0.42rem;
+}
+
+.auth-field span {
+  color: var(--color-faint);
+  font-size: 0.76rem;
+  letter-spacing: 0.04em;
+}
+
+.auth-input-shell {
+  display: flex;
+  align-items: center;
+  min-height: 3rem;
+  overflow: hidden;
+  padding-right: 0.18rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 0.9rem;
+  background: rgb(6 10 22);
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.auth-input-shell:focus-within {
+  border-color: rgb(123 204 255 / 0.75);
+  box-shadow: 0 0 0 1px rgb(123 204 255 / 0.18);
+}
+
+.auth-input-shell.is-error {
+  border-color: rgb(255 180 180 / 0.6);
+}
+
+.auth-field input {
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.76rem 0.95rem;
+  border: 0;
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+}
+
+.auth-field input:-webkit-autofill,
+.auth-field input:-webkit-autofill:hover,
+.auth-field input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--color-text);
+  caret-color: var(--color-text);
+  border-radius: inherit;
+  box-shadow: 0 0 0 1000px rgb(6 10 22) inset;
+  transition: background-color 9999s ease-out 0s;
+}
+
+.auth-field input::placeholder {
+  color: var(--color-faint);
+}
+
+.auth-field input:focus-visible {
+  outline: none;
+}
+
+.auth-field-error {
+  color: #ffb4b4;
+  font-size: 0.74rem;
+  line-height: 1.5;
+}
+
+.auth-password-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.25rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-muted);
+  cursor: pointer;
+  flex: 0 0 auto;
+  transition:
+    background var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.auth-password-toggle:hover {
+  background: rgb(255 255 255 / 0.04);
+  color: var(--color-text);
+}
+
+.auth-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-height: 3rem;
+  margin-top: 0.3rem;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(120deg, rgb(82 95 123), rgb(20 25 39));
+  color: var(--color-text);
+  cursor: pointer;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  box-shadow: 0 0.65rem 1.8rem rgb(0 0 0 / 0.18);
+  transition:
+    transform var(--duration-fast) var(--ease-out),
+    filter var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out),
+    opacity var(--duration-fast) var(--ease-out);
+}
+
+.auth-submit:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+  box-shadow: 0 0.9rem 2rem rgb(0 0 0 / 0.24);
+}
+
+.auth-submit:active {
+  transform: translateY(0) scale(0.985);
+  box-shadow: 0 0.45rem 1.2rem rgb(0 0 0 / 0.16);
+}
+
+.auth-submit:disabled,
+.auth-field input:disabled,
+.auth-password-toggle:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.auth-submit--secondary {
+  width: 100%;
+  margin-top: 1.5rem;
+  background: transparent;
+  border: 1px solid var(--color-border-strong);
+}
+
+.auth-spinner {
+  animation: auth-spin 0.85s linear infinite;
+}
+
+.auth-switch-copy {
+  margin-top: 1.35rem;
+  color: var(--color-muted);
+  font-size: 0.84rem;
+}
+
+.auth-switch-button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+  font: inherit;
+}
+
+.auth-switch-button:hover {
+  color: var(--color-cyan);
+}
+
+.auth-email {
+  margin-top: 0.65rem;
+  color: var(--color-text);
+  font-size: 0.96rem;
+  letter-spacing: 0.01em;
+}
+
+.auth-note {
+  margin-top: 1rem;
+  color: var(--color-faint);
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+
+@keyframes auth-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 560px) {
+  .auth-panel {
+    padding: 1.3rem;
+  }
+}
