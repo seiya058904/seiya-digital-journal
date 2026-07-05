@@ -383,26 +383,15 @@ async function ensureLike(
 ): Promise<void> {
   if (await getLikeState(env, userId, target)) return
 
-  try {
-    await restFetch(env, '/likes?on_conflict=user_id,target_type,target_id', {
-      method: 'POST',
-      prefer: 'resolution=ignore-duplicates,return=minimal',
-      body: {
-        user_id: userId,
-        target_type: target.targetType,
-        target_id: target.targetId,
-      },
-    })
-  } catch (error) {
-    if (
-      typeof error === 'object' &&
-      error !== null &&
-      'code' in error &&
-      (error as { code?: string }).code === 'INTERNAL_ERROR'
-    ) {
-      throw error
-    }
-  }
+  await restFetch(env, '/likes?on_conflict=user_id,target_type,target_id', {
+    method: 'POST',
+    prefer: 'resolution=ignore-duplicates,return=minimal',
+    body: {
+      user_id: userId,
+      target_type: target.targetType,
+      target_id: target.targetId,
+    },
+  })
 }
 
 async function deleteLike(
@@ -444,10 +433,6 @@ async function restFetch<T>(
 
   if (!response.ok) {
     throw apiError('INTERNAL_ERROR', 'The backend request failed.', 500)
-  }
-
-  if (response.status === 204) {
-    return [] as T
   }
 
   const text = await response.text()
