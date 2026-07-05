@@ -64,7 +64,7 @@ export function AccountMenu({
         aria-controls={open ? panelId : undefined}
         onClick={() => setOpen((current) => !current)}
       >
-        {loading ? (
+        {loading || !avatarSrc ? (
           <span className="account-menu__chip-avatar account-menu__chip-avatar--skeleton" aria-hidden="true" />
         ) : (
           <img src={avatarSrc} alt="" className="account-menu__chip-avatar" />
@@ -84,7 +84,7 @@ export function AccountMenu({
             transition={{ duration: reduceMotion ? 0 : 0.24, ease: easeOut }}
           >
             <div className="account-menu__summary">
-              {loading ? (
+              {loading || !avatarSrc ? (
                 <span className="account-menu__summary-avatar account-menu__summary-avatar--skeleton" aria-hidden="true" />
               ) : (
                 <img src={avatarSrc} alt="" className="account-menu__summary-avatar" />

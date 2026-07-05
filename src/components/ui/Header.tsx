@@ -60,7 +60,7 @@ const exploreItems: CardNavItem[] = [
 export function Header({ activePage = 'home' }: HeaderProps) {
   const [open, setOpen] = useState(false)
   const { isAuthenticated, loading, signOut, user } = useAuth()
-  const { profile: accountProfile, loading: profileLoading } = useProfile()
+  const { profile: accountProfile, loading: profileLoading, error: profileError } = useProfile()
 
   const isHashPage = activePage !== 'home'
 
@@ -103,6 +103,7 @@ export function Header({ activePage = 'home' }: HeaderProps) {
   const accountAvatar = isProfileLoaded
     ? getProfileAvatar(accountProfile.avatarKey)
     : null
+  const isProfileError = !profileLoading && profileError !== null
 
   const handleSignOut = async () => {
     await signOut()
@@ -151,7 +152,7 @@ export function Header({ activePage = 'home' }: HeaderProps) {
             avatarSrc={accountAvatar?.src ?? ''}
             displayName={accountDisplayName}
             email={accountEmail}
-            loading={!isProfileLoaded}
+            loading={!isProfileLoaded && !isProfileError}
             onProfile={handleProfileNavigation}
             onSignOut={() => {
               void handleExplicitSignOut()
