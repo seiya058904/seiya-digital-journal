@@ -155,7 +155,7 @@ export function EditProfileSurface({
 
             <div className="profile-edit-field">
               <span>Choose avatar</span>
-              <div className="profile-avatar-picker" role="listbox" aria-label="Choose avatar">
+              <div className="profile-avatar-picker" role="group" aria-label="Choose avatar">
                 {PROFILE_AVATAR_OPTIONS.map((avatar) => {
                   const selected = avatar.key === draftAvatarKey
                   return (
@@ -164,7 +164,7 @@ export function EditProfileSurface({
                       type="button"
                       className={`profile-avatar-option ${selected ? 'is-selected' : ''}`}
                       onClick={() => setDraftAvatarKey(avatar.key)}
-                      aria-selected={selected}
+                      aria-pressed={selected}
                     >
                       <img src={avatar.src} alt={avatar.label} />
                       <span className="profile-avatar-option__check" aria-hidden="true">
