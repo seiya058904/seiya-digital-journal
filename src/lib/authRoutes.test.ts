@@ -4,7 +4,10 @@ import test from 'node:test'
 import {
   AUTH_RETURN_TARGET_KEY,
   AUTH_ROUTE,
+  clearAuthReturnTarget,
   consumeAuthReturnTarget,
+  shouldRedirectProfileToAuth,
+  getPreSignOutRoute,
   getAuthReturnTarget,
   navigateToAuth,
   normalizeAuthReturnTarget,
@@ -63,4 +66,58 @@ test('navigateToAuth records the current route before switching to auth', () => 
   assert.equal(mock.storage.get(AUTH_RETURN_TARGET_KEY), '#/archive')
   assert.equal(window.location.hash, AUTH_ROUTE)
   mock.restore()
+})
+
+test('pre-sign-out route leaves protected profile before auth state changes', () => {
+  assert.equal(getPreSignOutRoute('#/profile'), '#/')
+  assert.equal(getPreSignOutRoute('#/auth'), '#/')
+  assert.equal(getPreSignOutRoute('#/archive'), null)
+})
+
+test('clearAuthReturnTarget removes any stored redirect target', () => {
+  const mock = installMockWindow('#/profile')
+  setAuthReturnTarget('#/profile')
+  clearAuthReturnTarget()
+  assert.equal(mock.storage.has(AUTH_RETURN_TARGET_KEY), false)
+  mock.restore()
+})
+
+test('profile auth guard does not redirect while auth is loading', () => {
+  assert.equal(shouldRedirectProfileToAuth({
+    loading: true,
+    isAuthenticated: false,
+    currentRoute: '#/profile',
+  }), false)
+})
+
+test('profile auth guard does not redirect for authenticated users', () => {
+  assert.equal(shouldRedirectProfileToAuth({
+    loading: false,
+    isAuthenticated: true,
+    currentRoute: '#/profile',
+  }), false)
+})
+
+test('profile auth guard redirects only for unauthenticated users still on #/profile', () => {
+  assert.equal(shouldRedirectProfileToAuth({
+    loading: false,
+    isAuthenticated: false,
+    currentRoute: '#/profile',
+  }), true)
+})
+
+test('profile auth guard does not redirect after explicit sign-out already moved to home', () => {
+  assert.equal(shouldRedirectProfileToAuth({
+    loading: false,
+    isAuthenticated: false,
+    currentRoute: '#/',
+  }), false)
+})
+
+test('profile auth guard does not redirect from auth route', () => {
+  assert.equal(shouldRedirectProfileToAuth({
+    loading: false,
+    isAuthenticated: false,
+    currentRoute: '#/auth',
+  }), false)
 })

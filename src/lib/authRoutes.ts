@@ -1,5 +1,6 @@
 export const HOME_ROUTE = '#/'
 export const AUTH_ROUTE = '#/auth'
+export const PROFILE_ROUTE = '#/profile'
 export const AUTH_RETURN_TARGET_KEY = 'auth-return-target'
 
 export function isInternalAuthRoute(target: string | null | undefined): target is string {
@@ -31,6 +32,32 @@ export function consumeAuthReturnTarget(): string {
   const target = getAuthReturnTarget()
   window.sessionStorage.removeItem(AUTH_RETURN_TARGET_KEY)
   return target
+}
+
+export function clearAuthReturnTarget() {
+  if (typeof window === 'undefined') return
+  window.sessionStorage.removeItem(AUTH_RETURN_TARGET_KEY)
+}
+
+export function getPreSignOutRoute(route: string | null | undefined): string | null {
+  const currentRoute = normalizeAuthReturnTarget(route)
+  if (currentRoute === PROFILE_ROUTE || currentRoute === AUTH_ROUTE) {
+    return HOME_ROUTE
+  }
+  return null
+}
+
+export function shouldRedirectProfileToAuth({
+  loading,
+  isAuthenticated,
+  currentRoute,
+}: {
+  loading: boolean
+  isAuthenticated: boolean
+  currentRoute: string | null | undefined
+}): boolean {
+  if (loading || isAuthenticated) return false
+  return normalizeAuthReturnTarget(currentRoute) === PROFILE_ROUTE
 }
 
 export function navigateToAuth(returnTarget = getCurrentInternalRoute()) {

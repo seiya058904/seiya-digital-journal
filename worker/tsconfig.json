@@ -13,6 +13,7 @@
   "include": [
     "src/**/*.ts",
     "../src/lib/interactions.ts",
+    "../src/lib/profile.ts",
     "../src/worker/cors.ts"
   ]
 }

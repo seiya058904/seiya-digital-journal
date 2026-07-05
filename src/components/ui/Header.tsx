@@ -4,12 +4,15 @@ import { useState, type MouseEvent } from 'react'
 import { useAuth } from '../../auth/AuthContext'
 import profileLogo from '../../assets/brand-icon.webp'
 import { profile } from '../../data/profile'
-import { navigateToAuth } from '../../lib/authRoutes'
+import { getProfileAvatar } from '../../data/profileAvatars'
+import { clearAuthReturnTarget, getPreSignOutRoute, navigateToAuth } from '../../lib/authRoutes'
+import { useProfile } from '../../profile/ProfileContext'
 import { CardNav, type CardNavItem } from '../effects/react-bits/CardNav'
 import { PillNav } from '../effects/react-bits/PillNav'
+import { AccountMenu } from './AccountMenu'
 
 type HeaderProps = {
-  activePage?: 'home' | 'lab' | 'archive' | 'archive-images' | 'archive-notes' | 'archive-notes-category' | 'archive-note-detail' | 'archive-projects' | 'gallery' | 'auth'
+  activePage?: 'home' | 'lab' | 'archive' | 'archive-images' | 'archive-notes' | 'archive-notes-category' | 'archive-note-detail' | 'archive-projects' | 'gallery' | 'auth' | 'profile'
 }
 
 const headerItems = [
@@ -57,6 +60,7 @@ const exploreItems: CardNavItem[] = [
 export function Header({ activePage = 'home' }: HeaderProps) {
   const [open, setOpen] = useState(false)
   const { isAuthenticated, loading, signOut, user } = useAuth()
+  const { profile: accountProfile, loading: profileLoading } = useProfile()
 
   const isHashPage = activePage !== 'home'
 
@@ -83,6 +87,7 @@ export function Header({ activePage = 'home' }: HeaderProps) {
     if (!isHashPage) return '#home'
     switch (activePage) {
       case 'auth': return '#/auth'
+      case 'profile': return '#/profile'
       case 'lab': return '#/motion-lab'
       case 'archive-images': return '#/archive/images'
       case 'archive-notes':
@@ -92,22 +97,38 @@ export function Header({ activePage = 'home' }: HeaderProps) {
     }
   }
 
-  const displayName = typeof user?.user_metadata?.display_name === 'string'
-    ? user.user_metadata.display_name
-    : 'Signed in'
+  const accountDisplayName = accountProfile?.displayName ?? 'Account'
+  const accountEmail = accountProfile?.email ?? user?.email ?? ''
+  const isProfileLoaded = !profileLoading && accountProfile !== null
+  const accountAvatar = isProfileLoaded
+    ? getProfileAvatar(accountProfile.avatarKey)
+    : null
 
   const handleSignOut = async () => {
     await signOut()
     setOpen(false)
-    if (window.location.hash === '#/auth') {
-      window.location.hash = '#/'
+  }
+
+  const handleExplicitSignOut = async () => {
+    setOpen(false)
+    const preSignOutRoute = getPreSignOutRoute(window.location.hash)
+    if (preSignOutRoute) {
+      clearAuthReturnTarget()
+      window.location.hash = preSignOutRoute
     }
+
+    await handleSignOut()
   }
 
   const handleSignIn = (event: MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault()
     setOpen(false)
     navigateToAuth()
+  }
+
+  const handleProfileNavigation = () => {
+    setOpen(false)
+    window.location.hash = '#/profile'
   }
 
   return (
@@ -126,12 +147,16 @@ export function Header({ activePage = 'home' }: HeaderProps) {
       />
       <div className="header-auth header-auth--desktop">
         {isAuthenticated ? (
-          <>
-            <span className="header-auth__name">{displayName}</span>
-            <button type="button" className="header-auth__button" onClick={handleSignOut}>
-              Sign out
-            </button>
-          </>
+          <AccountMenu
+            avatarSrc={accountAvatar?.src ?? ''}
+            displayName={accountDisplayName}
+            email={accountEmail}
+            loading={!isProfileLoaded}
+            onProfile={handleProfileNavigation}
+            onSignOut={() => {
+              void handleExplicitSignOut()
+            }}
+          />
         ) : (
           <a className="header-auth__button" href="#/auth" aria-disabled={loading} onClick={handleSignIn}>
             Sign in
@@ -176,12 +201,25 @@ export function Header({ activePage = 'home' }: HeaderProps) {
             </a>
           ))}
           {isAuthenticated ? (
-            <>
-              <span className="header-auth__name header-auth__name--mobile">{displayName}</span>
-              <button type="button" className="header-auth__button header-auth__button--mobile" onClick={handleSignOut}>
+            <div className="header-mobile-account">
+              <div className="header-mobile-account__summary">
+                {accountAvatar ? (
+                  <img src={accountAvatar.src} alt="" className="header-mobile-account__avatar" />
+                ) : (
+                  <span className="header-mobile-account__avatar header-mobile-account__avatar--placeholder" aria-hidden="true" />
+                )}
+                <div>
+                  <span className="header-auth__name header-auth__name--mobile">{accountDisplayName}</span>
+                  <span className="header-mobile-account__email">{accountEmail}</span>
+                </div>
+              </div>
+              <button type="button" className="header-auth__button header-auth__button--mobile" onClick={handleProfileNavigation}>
+                Profile
+              </button>
+              <button type="button" className="header-auth__button header-auth__button--mobile" onClick={() => void handleExplicitSignOut()}>
                 Sign out
               </button>
-            </>
+            </div>
           ) : (
             <a href="#/auth" onClick={handleSignIn}>Sign in</a>
           )}

@@ -3,6 +3,13 @@ import {
   validateCommentBody,
   validateInteractionTarget,
 } from '../../src/lib/interactions'
+import {
+  DEFAULT_PROFILE_AVATAR_KEY,
+  extractExactCount,
+  getBootstrapDisplayName,
+  validateProfileAvatarKey,
+  validateProfileDisplayName,
+} from '../../src/lib/profile'
 import { isOriginAllowed, parseAllowedOrigins } from '../../src/worker/cors'
 
 type Env = {
@@ -14,7 +21,9 @@ type Env = {
 
 type AuthenticatedUser = {
   id: string
-  displayName: string
+  email: string
+  createdAt: string
+  metadataDisplayName: string
 }
 
 type CommentRow = {
@@ -22,6 +31,19 @@ type CommentRow = {
   author_name: string
   body: string
   created_at: string
+}
+
+type ProfileRow = {
+  user_id: string
+  display_name: string
+  avatar_key: string
+  created_at: string
+  updated_at: string
+}
+
+type ProfileStats = {
+  comments: number
+  likes: number
 }
 
 type ErrorCode =
@@ -80,12 +102,13 @@ export default {
 
       if (request.method === 'POST' && url.pathname === '/api/comments') {
         const user = await requireUser(request, env)
+        const profile = await getOrCreateProfile(env, user)
         const body = await readJsonBody(request)
         const target = parseTarget(body.targetType, body.targetId)
         const commentBody = parseCommentBody(body.body)
 
         await enforceCommentRateLimit(env, user.id)
-        const comment = await createComment(env, user, target, commentBody)
+        const comment = await createComment(env, user.id, profile.display_name, target, commentBody)
 
         return json({
           ok: true,
@@ -111,6 +134,23 @@ export default {
         }
 
         return json({ ok: true, data: null }, 200, cors.headers)
+      }
+
+      if (request.method === 'GET' && url.pathname === '/api/profile/me') {
+        const user = await requireUser(request, env)
+        const profile = await getOrCreateProfile(env, user)
+        const stats = await getProfileStats(env, user.id)
+        return json({ ok: true, data: buildProfileResponse(user, profile, stats) }, 200, cors.headers)
+      }
+
+      if (request.method === 'PATCH' && url.pathname === '/api/profile/me') {
+        const user = await requireUser(request, env)
+        await getOrCreateProfile(env, user)
+        const body = await readJsonBody(request)
+        const updates = parseProfileUpdate(body)
+        const profile = await updateProfile(env, user.id, updates)
+        const stats = await getProfileStats(env, user.id)
+        return json({ ok: true, data: buildProfileResponse(user, profile, stats) }, 200, cors.headers)
       }
 
       if (request.method === 'GET' && url.pathname === '/api/likes/count') {
@@ -159,7 +199,7 @@ function getCorsHeaders(origin: string | null, allowedOriginsValue: string) {
   const allowed = !origin || isOriginAllowed(origin, allowedOrigins)
   const headers = new Headers({
     'Access-Control-Allow-Headers': 'Authorization, Content-Type',
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
     'Vary': 'Origin',
   })
 
@@ -234,6 +274,23 @@ function parseLimit(rawLimit: string | null): number {
   return Math.max(1, Math.min(MAX_LIMIT, parsed))
 }
 
+function parseProfileUpdate(body: Record<string, unknown>) {
+  const displayName = validateProfileDisplayName(String(body.displayName ?? ''))
+  if (!displayName.ok) {
+    throw apiError('BAD_REQUEST', 'Display name must be between 1 and 80 characters.', 400)
+  }
+
+  const avatarKey = validateProfileAvatarKey(String(body.avatarKey ?? ''))
+  if (!avatarKey.ok) {
+    throw apiError('BAD_REQUEST', 'Avatar key is invalid.', 400)
+  }
+
+  return {
+    displayName: displayName.value,
+    avatarKey: avatarKey.value,
+  }
+}
+
 async function requireUser(request: Request, env: Env): Promise<AuthenticatedUser> {
   const token = request.headers.get('Authorization')?.replace(/^Bearer\s+/i, '').trim()
   if (!token) {
@@ -253,6 +310,8 @@ async function requireUser(request: Request, env: Env): Promise<AuthenticatedUse
 
   const user = await response.json() as {
     id: string
+    email?: unknown
+    created_at?: unknown
     user_metadata?: {
       display_name?: unknown
     }
@@ -260,9 +319,96 @@ async function requireUser(request: Request, env: Env): Promise<AuthenticatedUse
 
   return {
     id: user.id,
-    displayName: typeof user.user_metadata?.display_name === 'string'
-      ? user.user_metadata.display_name.trim() || 'User'
-      : 'User',
+    email: typeof user.email === 'string' ? user.email : '',
+    createdAt: typeof user.created_at === 'string' ? user.created_at : '',
+    metadataDisplayName: getBootstrapDisplayName(user.user_metadata?.display_name),
+  }
+}
+
+async function getOrCreateProfile(env: Env, user: AuthenticatedUser): Promise<ProfileRow> {
+  const params = new URLSearchParams({
+    select: 'user_id,display_name,avatar_key,created_at,updated_at',
+    user_id: `eq.${user.id}`,
+    limit: '1',
+  })
+
+  const existing = await restFetch<ProfileRow[]>(env, `/profiles?${params.toString()}`)
+  if (existing[0]) return existing[0]
+
+  await restFetch(env, '/profiles?on_conflict=user_id', {
+    method: 'POST',
+    prefer: 'resolution=ignore-duplicates,return=minimal',
+    body: {
+      user_id: user.id,
+      display_name: user.metadataDisplayName,
+      avatar_key: DEFAULT_PROFILE_AVATAR_KEY,
+    },
+  })
+
+  const rows = await restFetch<ProfileRow[]>(env, `/profiles?${params.toString()}`)
+  if (rows[0]) return rows[0]
+
+  throw apiError('INTERNAL_ERROR', 'Unable to load profile.', 500)
+}
+
+async function updateProfile(
+  env: Env,
+  userId: string,
+  updates: {
+    displayName: string
+    avatarKey: string
+  },
+): Promise<ProfileRow> {
+  const params = new URLSearchParams({
+    user_id: `eq.${userId}`,
+    select: 'user_id,display_name,avatar_key,created_at,updated_at',
+  })
+
+  const rows = await restFetch<ProfileRow[]>(env, `/profiles?${params.toString()}`, {
+    method: 'PATCH',
+    prefer: 'return=representation',
+    body: {
+      display_name: updates.displayName,
+      avatar_key: updates.avatarKey,
+      updated_at: new Date().toISOString(),
+    },
+  })
+
+  if (!rows[0]) {
+    throw apiError('NOT_FOUND', 'Profile not found.', 404)
+  }
+
+  return rows[0]
+}
+
+async function getProfileStats(env: Env, userId: string): Promise<ProfileStats> {
+  const commentsParams = new URLSearchParams({
+    select: 'id',
+    user_id: `eq.${userId}`,
+    status: 'eq.published',
+  })
+  const likesParams = new URLSearchParams({
+    select: 'id',
+    user_id: `eq.${userId}`,
+  })
+
+  const [comments, likes] = await Promise.all([
+    getExactCount(env, `/comments?${commentsParams.toString()}`, 'Unable to load comment count.'),
+    getExactCount(env, `/likes?${likesParams.toString()}`, 'Unable to load like count.'),
+  ])
+
+  return { comments, likes }
+}
+
+function buildProfileResponse(user: AuthenticatedUser, profile: ProfileRow, stats: ProfileStats) {
+  return {
+    profile: {
+      displayName: profile.display_name,
+      avatarKey: profile.avatar_key,
+      email: user.email,
+      memberSince: user.createdAt,
+    },
+    stats,
   }
 }
 
@@ -282,7 +428,8 @@ async function listComments(env: Env, target: typeof ARCHIVE_STEPPER_TARGET, lim
 
 async function createComment(
   env: Env,
-  user: AuthenticatedUser,
+  userId: string,
+  displayName: string,
   target: typeof ARCHIVE_STEPPER_TARGET,
   body: string,
 ): Promise<CommentRow> {
@@ -290,8 +437,8 @@ async function createComment(
     method: 'POST',
     prefer: 'return=representation',
     body: {
-      user_id: user.id,
-      author_name: user.displayName,
+      user_id: userId,
+      author_name: displayName,
       target_type: target.targetType,
       target_id: target.targetId,
       body,
@@ -342,21 +489,7 @@ async function getLikesCount(env: Env, target: typeof ARCHIVE_STEPPER_TARGET): P
     target_id: `eq.${target.targetId}`,
   })
 
-  const response = await fetch(`${env.SUPABASE_URL}/rest/v1/likes?${params.toString()}`, {
-    method: 'HEAD',
-    headers: {
-      'apikey': env.SUPABASE_SERVICE_ROLE_KEY,
-      'Authorization': `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
-      'Prefer': 'count=exact',
-    },
-  })
-
-  if (!response.ok) {
-    throw apiError('INTERNAL_ERROR', 'Unable to load likes.', 500)
-  }
-
-  const count = response.headers.get('Content-Range')?.split('/')[1]
-  return count ? Number.parseInt(count, 10) || 0 : 0
+  return getExactCount(env, `/likes?${params.toString()}`, 'Unable to load likes.')
 }
 
 async function getLikeState(
@@ -415,7 +548,7 @@ async function restFetch<T>(
   env: Env,
   path: string,
   options?: {
-    method?: 'GET' | 'POST' | 'DELETE'
+    method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
     prefer?: string
     body?: unknown
   },
@@ -437,4 +570,25 @@ async function restFetch<T>(
 
   const text = await response.text()
   return (text ? JSON.parse(text) : []) as T
+}
+
+async function getExactCount(env: Env, path: string, errorMessage: string): Promise<number> {
+  const response = await fetch(`${env.SUPABASE_URL}/rest/v1${path}`, {
+    method: 'HEAD',
+    headers: {
+      'apikey': env.SUPABASE_SERVICE_ROLE_KEY,
+      'Authorization': `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
+      'Prefer': 'count=exact',
+    },
+  })
+
+  if (!response.ok) {
+    throw apiError('INTERNAL_ERROR', errorMessage, 500)
+  }
+
+  try {
+    return extractExactCount(response.headers.get('Content-Range'))
+  } catch {
+    throw apiError('INTERNAL_ERROR', errorMessage, 500)
+  }
 }

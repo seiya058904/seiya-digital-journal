@@ -16,15 +16,17 @@ import { ArchiveProjectsPage } from './pages/ArchiveProjectsPage'
 import { ArchiveNotesCategoryPage } from './pages/ArchiveNotesCategoryPage'
 import { GalleryPage } from './pages/GalleryPage'
 import { AuthPage } from './pages/AuthPage'
+import { ProfilePage } from './pages/ProfilePage'
 
 const MotionLabPage = lazy(() => import('./pages/MotionLabPage').then(m => ({ default: m.MotionLabPage })))
 
-type Page = 'home' | 'lab' | 'archive' | 'archive-images' | 'archive-notes' | 'archive-notes-category' | 'archive-note-detail' | 'archive-projects' | 'gallery' | 'auth'
+type Page = 'home' | 'lab' | 'archive' | 'archive-images' | 'archive-notes' | 'archive-notes-category' | 'archive-note-detail' | 'archive-projects' | 'gallery' | 'auth' | 'profile'
 
 function getPageFromHash(): Page {
   if (typeof window === 'undefined') return 'home'
   const hash = window.location.hash
   if (hash === '#/auth') return 'auth'
+  if (hash === '#/profile') return 'profile'
   if (hash === '#/lab' || hash === '#/motion-lab') return 'lab'
   // Image vault sub-routes all render the same page component
   if (hash === '#/archive/images' || hash.startsWith('#/archive/images/')) return 'archive-images'
@@ -113,6 +115,7 @@ export default function App() {
         {page === 'archive-projects' && <ArchiveProjectsPage />}
         {page === 'gallery' && <GalleryPage />}
         {page === 'auth' && <AuthPage />}
+        {page === 'profile' && <ProfilePage />}
         {page === 'home' && <HomePage />}
       </div>
     </MotionConfig>
