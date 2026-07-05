@@ -12,6 +12,21 @@ The page should feel like a premium personal magazine — Apple-like, dark edito
 
 Do not turn this back into a project portfolio, SaaS landing page, dashboard, or generic resume.
 
+## Before Any Change
+
+Always check current state first:
+
+```powershell
+git status --short
+git branch --show-current
+git log -5 --oneline
+```
+
+If the user has uncommitted modifications:
+- Do NOT reset, restore, stash, or overwrite them
+- Check and protect first
+- Then proceed with your task
+
 ## Commands
 
 ```powershell
@@ -23,16 +38,60 @@ npm test             # node --experimental-strip-types --test src/**/*.test.ts
 npm run preview      # preview production build locally
 ```
 
+Worker typecheck:
+```powershell
+npx tsc -p worker/tsconfig.json --noEmit
+```
+
+Trailing whitespace check:
+```powershell
+git diff --check
+```
+
 Always run `npm run lint` and `npm run build` before committing. The lint has zero tolerance — no warnings allowed.
+
+Recent Profile release verified 65 tests; always verify with actual test output.
 
 ## Architecture
 
+### Tech Stack
+
+**Frontend:**
+- React 19
+- TypeScript
+- Vite 8
+- Framer Motion (primary animation runtime)
+- GSAP (for a few React Bits ports, loaded lazily)
+- Three.js (GridScan, Silk backgrounds)
+- `@supabase/supabase-js` (auth client)
+
+**Backend:**
+- Cloudflare Worker (`worker/src/index.ts`)
+- Supabase Auth (authentication)
+- Supabase PostgreSQL (database via PostgREST)
+
+**Deployment:**
+- GitHub Pages (frontend, via GitHub Actions)
+- Cloudflare Worker (API backend)
+
+### Directory Structure
+
 ```
-React bits/          — raw source TXT files for all 19 React Bits effects (read-only reference)
 src/
+  auth/              — AuthContext (Supabase Auth session management)
+  profile/           — ProfileContext (profile state management)
+                     — profileState.ts (mutation race guard)
+  lib/               — Utility modules:
+                         authRoutes.ts (auth redirect, return target)
+                         profile.ts (shared validation, constants)
+                         profileApi.ts (frontend profile API client)
+                         interactions.ts (comment/like validation)
+                         env.ts (public env reading)
+                         supabase.ts (Supabase client factory)
   components/
     sections/        — Hero, About, Interests, Gallery, Thoughts, Journey, Contact
-    ui/              — Header, Chapter, ActionLink (stable reusable UI atoms)
+    ui/              — Header, AccountMenu, Chapter, ActionLink (stable reusable UI atoms)
+    profile/         — ProfileHero, ActivityStats, EditProfileSurface, focusTrap
     motion/          — ScrollReveal, TextReveal (Framer Motion wrappers)
     effects/
       react-bits/    — ported React Bits components (GlareHover, BorderGlow, Stack,
@@ -41,26 +100,36 @@ src/
                        AnimatedContent, CountUp, OrbitImages, DesktopGridScan,
                        CardNav, FlowingMenu)
       text/          — custom animated text (GradientText, ShinyText, RotatingText)
-      cards/         — (removed, all migrated to react-bits/)
       AuroraBackground.tsx, CardTilt.tsx, GradientBorder.tsx
     lab/             — EffectCard, HeavyEffectGate, ReactBitsDemo (Motion Lab UI)
   pages/             — HomePage, MotionLabPage, ArchivePage, ArchiveImagesPage,
-                       ArchiveNotesPage, ArchiveCollectionsPage, GalleryPage
-  data/              — profile.ts, thoughts.ts, links.ts, effects.ts, visualArchive.ts
+                       ArchiveNotesPage, ArchiveNoteDetailPage, ArchiveProjectsPage,
+                       ArchiveNotesCategoryPage, GalleryPage, AuthPage, ProfilePage
+  data/              — profile.ts, thoughts.ts, links.ts, effects.ts, visualArchive.ts,
+                       profileAvatars.ts
   styles/            — tokens.css (design tokens), global.css (all page CSS),
                        hero-background.css (animated background effect)
-  assets/            — profile-placeholder.svg
+  assets/            — brand-icon.webp, profile-placeholder.svg
+worker/
+  src/index.ts       — Cloudflare Worker entry (all API endpoints)
+  wrangler.jsonc     — Worker config (name: seiya-digital-journal-api)
+  package.json
+supabase/
+  migrations/        — SQL migration files
+.github/
+  workflows/
+    deploy.yml       — GitHub Pages deployment workflow
+report/              — session completion reports (Markdown, dated filenames)
 public/
   gallery/           — WebP images used by Motion Lab demos
   visual-archive/    — editorial + memory photos (with thumbs/ for previews)
   orbit/             — 6 WebP images for the OrbitImages component
   favicon.svg
-report/              — session completion reports (Markdown, dated filenames)
 ```
 
 ### Component Hierarchy
 
-**Pages** route between `HomePage` (main journal), `MotionLabPage` (experimental effects showcase), and Archive pages (`ArchivePage`, `ArchiveImagesPage`, `ArchiveNotesPage`, `ArchiveCollectionsPage`, `GalleryPage`). Routing is hash-based (`#/motion-lab`, `#/archive`, `#/archive/images`, etc.), handled by a simple `hashchange` listener in `App.tsx` — no router library.
+**Pages** route between `HomePage`, `MotionLabPage`, `AuthPage`, `ProfilePage`, and Archive pages. Routing is hash-based (`#/`, `#/auth`, `#/profile`, `#/lab`, etc.), handled by a simple `hashchange` listener in `App.tsx` — no React Router library.
 
 **Sections** compose layout and content only. They call animation wrappers from `motion/` and `effects/`. Section order: Hero → About → Current Stack → Signals → Interests → Visual Archive → Thoughts → Journey → Contact. Each section is a `<section id="...">` linked from the nav.
 
@@ -68,9 +137,134 @@ report/              — session completion reports (Markdown, dated filenames)
 
 **Design tokens** in `src/styles/tokens.css` define all colors, borders, shadows, radii, typography, and motion durations via CSS custom properties. Components use these variables, never hardcoded values.
 
-**All page CSS** lives in `src/styles/global.css` — there is no component-level CSS module system. The file is large (~1270 lines) with responsive breakpoints at 1080px, 820px, and 560px.
+**All page CSS** lives in `src/styles/global.css` — there is no component-level CSS module system. The file is large (~1270+ lines) with responsive breakpoints at 1080px, 820px, and 560px.
 
-### Animation System
+## Routing
+
+No React Router. `App.tsx` uses a `hashchange` listener to parse the URL hash and select the active page.
+
+Current routes:
+- `#/` or `#home` — Home page
+- `#/auth` — Authentication page
+- `#/profile` — Personal Space (protected route — redirects to `#/auth` if not logged in)
+- `#/lab` or `#/motion-lab` — Motion Lab
+- `#/archive` — Archive main page
+- `#/archive/images` — Image Vault
+- `#/archive/notes` — Notes Vault
+- `#/archive/notes/:id` — Note detail (any segment after `notes/` that is not a known category)
+- `#/archive/projects` — Project Vault
+- `#/gallery` — Gallery
+- `#/archive/collections` — Redirects to `#/archive/images`
+
+When adding or changing routes, also check navigation and legacy URL compatibility.
+
+## Auth
+
+**AuthProvider** (`src/auth/AuthContext.tsx`):
+- Wraps the entire app in `main.tsx` (nested: `AuthProvider` → `ProfileProvider` → `App`)
+- Uses `@supabase/supabase-js` for session management
+- Exposes: `loading`, `session`, `user`, `isAuthenticated`, `isConfigured`, `signUp`, `signIn`, `signOut`
+- `signUp` stores `display_name` in `user.user_metadata` (one-time bootstrap value only)
+- Auth return target managed via `sessionStorage` (`src/lib/authRoutes.ts`)
+
+**Protected routes:** `#/profile` is protected — if user is not authenticated, `ProfilePage` redirects to `#/auth` and saves the return target.
+
+**Critical invariant — Canonical identity source:**
+- `profiles.display_name` in Supabase is the **runtime canonical** identity source
+- `user.user_metadata.display_name` is **only** used for:
+  - Signup bootstrap (new user first profile creation)
+  - Old-user lazy bootstrap fallback
+- Do NOT re-introduce Header runtime identity dependency on `user.user_metadata`
+
+## Profile / Personal Space
+
+**ProfileProvider** (`src/profile/ProfileContext.tsx`):
+- Global state management for profile data
+- Exposes: `profile`, `stats`, `loading`, `error`, `refresh`, `updateProfile`
+- Stats include real `comments` count and `likes` count from database
+
+**ProfilePage** (`src/pages/ProfilePage.tsx`):
+- Protected route (`#/profile`)
+- Shows: ProfileHero, ActivityStats, EditProfileSurface
+- Back button: `history.back()` with `#/` fallback when `history.length` is insufficient (simple history behavior, not a same-origin security guard)
+- Member since: formatted from `user.created_at`
+
+**Profile API:**
+- `GET /api/profile/me` (authenticated) — returns profile + stats
+- `PATCH /api/profile/me` (authenticated) — updates `display_name` and `avatar_key`
+
+**Avatar system:**
+- Keys: `avatar-01` through `avatar-09`
+- Default new profile avatar: `avatar-01` (set during lazy bootstrap)
+- Avatar definitions in `src/data/profileAvatars.ts`
+
+### Header Avatar State Invariant
+
+The Header must distinguish three profile loading states:
+
+| State | Header displays |
+|-------|----------------|
+| **Profile unresolved (loading)** | Neutral placeholder skeleton (NOT avatar-01) |
+| **Profile loaded** | Real saved avatar from database |
+| **Profile error** | Neutral placeholder (NOT permanent skeleton, NOT avatar-01 fallback) |
+
+**Hotfix `d749261`** fixed the Header's profile API error state handling — API errors no longer masquerade as loading forever.
+
+**Important:** Do NOT reintroduce `accountProfile?.avatarKey ?? DEFAULT_PROFILE_AVATAR_KEY` as a Header runtime fallback. When profile is unresolved, show the neutral placeholder.
+
+### ProfileProvider Race Protection
+
+`ProfileContext.tsx` uses three ref-based guards for mutation safety:
+- `requestIdRef` — fetch request ID; stale responses are rejected
+- `updateRequestIdRef` — update request ID; stale mutations are rejected
+- `activeUserIdRef` — user ID; user switching invalidates in-flight operations
+- `mountedRef` — component mount state
+
+The `shouldApplyProfileMutation()` function in `profileState.ts` enforces all guards atomically. **Do not break these protections** when modifying ProfileContext.
+
+### Lazy Bootstrap Concurrency
+
+The Worker's `getOrCreateProfile` implements duplicate-safe / idempotent profile creation:
+1. SELECT existing profile
+2. If missing → conflict-safe INSERT (using `on_conflict=user_id` + `resolution=ignore-duplicates`)
+3. Re-SELECT to return the canonical row
+
+**Do NOT** change this to a simpler `SELECT → INSERT → return` pattern — that is race-prone.
+
+### Comment Identity Consistency
+
+- `profiles.display_name` is the canonical runtime identity source
+- New comments: Worker uses `profile.display_name` as `author_name`
+- Historical comments: `profiles_sync_comment_author_name` trigger syncs on profile update
+- **Do NOT** change to use `user.user_metadata.display_name`
+
+### Account Menu Semantics
+
+- Desktop: account chip with popover
+  - Uses `aria-expanded` and `aria-controls`
+  - This is **NOT** an ARIA `role="menu"` pattern
+  - Do NOT add `role="menu"` / `role="menuitem"` unless implementing full menu keyboard pattern
+- Mobile: account summary with Profile / Sign out buttons
+
+### Avatar Picker Semantics
+
+- Uses `role="group"` with `aria-pressed` on each avatar option
+- **NOT** `role="listbox"` / `aria-selected`
+- Do NOT change to listbox unless implementing full listbox pattern
+
+### Sign-Out Flow
+
+When signing out from the protected `#/profile` route:
+1. Navigate away from protected route (`window.location.hash = preSignOutRoute`)
+2. Clear auth return target (`clearAuthReturnTarget()`)
+3. Call `signOut()`
+
+**Invariants:**
+- Sign-out correctness is guaranteed by the route guard, NOT by `await requestAnimationFrame(...)`
+- Do NOT re-introduce `await requestAnimationFrame(...)` as a sign-out correctness dependency
+- Legitimate `requestAnimationFrame` uses for scroll/focus timing in other contexts are fine — don't remove those
+
+## Animation System
 
 - `motion/` wrappers (ScrollReveal, TextReveal) — scroll-triggered entrance animations via Framer Motion
 - `effects/text/` — custom animated text components
@@ -80,11 +274,11 @@ report/              — session completion reports (Markdown, dated filenames)
 - `DesktopGridScan` — Three.js grid scan background rendered in App.tsx (home page only)
 - ScrollReveal uses `viewport: { once: false }` — animations replay on scroll revisit
 
-### Motion Lab
+## Motion Lab
 
 The Motion Lab (`#/motion-lab`) showcases interactive effects. Each effect has metadata in `src/data/effects.ts` including `integrationStatus` (`real-demo` | `metadata-only`) and `homepageUsage` (boolean). The `ReactBitsDemo` component dispatches by `effectId` to render the appropriate demo. Heavy effects (GSAP, Three.js) that aren't always visible use `HeavyEffectGate` for lazy loading.
 
-### React Bits Integration Pattern
+## React Bits Integration Pattern
 
 Each effect has a named source file in `React bits/{N}.txt`. The pipeline:
 1. Source file → `src/components/effects/react-bits/{Name}.tsx` + `{Name}.css`
@@ -159,6 +353,63 @@ Drop new WebP files into `public/gallery/` using the same filenames. The layout 
 - Touch devices should not depend on hover effects
 - Gallery images need fixed aspect ratios, lazy loading, and stable dimensions
 
+## Worker
+
+**Name:** `seiya-digital-journal-api`
+**Production URL:** `https://seiya-digital-journal-api.seiya-api.workers.dev`
+**Source:** `worker/src/index.ts`
+**Config:** `worker/wrangler.jsonc`
+
+### Endpoints (verified against `worker/src/index.ts`)
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| `GET` | `/api/health` | No | Health check |
+| `GET` | `/api/comments` | No | List comments (query: `targetType`, `targetId`, `limit`) |
+| `POST` | `/api/comments` | Yes | Create comment |
+| `DELETE` | `/api/comments/:id` | Yes | Delete own comment |
+| `GET` | `/api/likes/count` | No | Get like count (query: `targetType`, `targetId`) |
+| `GET` | `/api/likes/me` | Yes | Check if current user liked (query: `targetType`, `targetId`) |
+| `PUT` | `/api/likes` | Yes | Add like |
+| `DELETE` | `/api/likes` | Yes | Remove like |
+| `GET` | `/api/profile/me` | Yes | Get current user's profile + stats |
+| `PATCH` | `/api/profile/me` | Yes | Update display name and avatar key |
+
+**CORS must support** `PATCH` method (for profile updates).
+
+### Worker Secrets (names only — NEVER record values)
+
+- `SUPABASE_URL`
+- `SUPABASE_PUBLISHABLE_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `ALLOWED_ORIGINS`
+
+**Service role key must NEVER be exposed to the frontend.** It is only used server-side in the Worker.
+
+## Supabase
+
+**Linked project ref:** `fgeiygcycxjlqgbczrfs`
+
+**Before any remote write**, re-verify the linked project.
+
+### Migrations (applied)
+
+- `supabase/migrations/20260704224500_create_interactions.sql` — comments and likes tables
+- `supabase/migrations/20260705000100_create_profiles.sql` — profiles table with trigger
+
+### Profiles Table (`public.profiles`)
+
+| Column | Type | Constraint |
+|--------|------|-----------|
+| `user_id` | uuid | PK, FK → `auth.users` |
+| `display_name` | text | NOT NULL, 1–80 chars |
+| `avatar_key` | text | NOT NULL, regex `^avatar-[0-9]{2}$` |
+| `created_at` | timestamptz | NOT NULL |
+| `updated_at` | timestamptz | NOT NULL |
+
+- RLS: enabled, anon/authenticated have no direct table access
+- Trigger: `profiles_sync_comment_author_name` — syncs `author_name` in comments table when profile `display_name` changes
+
 ## Testing
 
 Tests use Node's built-in test runner with `--experimental-strip-types` for TypeScript.
@@ -174,37 +425,105 @@ Test files:
 
 ## Git Workflow
 
-Branch: `codex/*` branches off `origin/main`
+### Before Starting
 
+Always check:
 ```powershell
 git status --short
 git branch --show-current
+git log -5 --oneline
 ```
 
-Commit style: `feat:`, `fix:`, `remove:`, `chore:`, `docs:`, `style:`, `refactor:`
+### Branch Rules
 
-Push: `git push origin HEAD:main` (pushes current branch to origin/main)
+- Check current branch before any operation
+- New features typically use `feature/` or `fix/` branches
+- Do not assume branch naming conventions
+- **Do NOT** push directly to `main` without explicit user authorization
+- **Do NOT** force push, squash, or merge without explicit user approval
 
-Do not force push, squash, or merge without explicit user approval. Do not commit `dist/`. Do not use `git add .` — only stage files this PR actually changes.
+### Staging
 
-After changes, report: changed files, lint result, build result, commit hash, push result, git status, and confirm no force push.
+- **Do NOT** use `git add .` — stage only the files this task actually changes
+- Stage by explicit path: `git add src/path/to/file`
 
-Completion reports are saved to `report/{topic}-{yyyy-mm-dd}.md`.
+### Commit Style
 
-## Deployment
+`feat:`, `fix:`, `remove:`, `chore:`, `docs:`, `style:`, `refactor:`
 
-GitHub Actions workflow at `.github/workflows/deploy.yml`:
+Each commit should be single-purpose with a short, clear summary.
 
-push to `main` → `npm ci` → `npm run build` → upload `dist/` → deploy to GitHub Pages
+### Restrictions
 
-Pages source must be set to "GitHub Actions" in repo settings. Do not switch to "Deploy from a branch" without approval.
+Unless explicitly authorized by the user, do NOT:
+- commit
+- push
+- merge
+- deploy
+- publish
+- create releases
+- operate on databases
+
+## Visual Verification Rules
+
+Claude Code must clearly distinguish between:
+- **Automated verification** — commands Claude actually ran (lint, build, test, typecheck)
+- **Browser verification** — requires actually opening a browser (Playwright, screenshot, etc.)
+- **User manual verification** — user checks pages in their own browser
+
+**Do NOT claim visual verification** unless a browser was actually opened.
+**Do NOT impersonate user-performed checks.** If the user checked something, list it separately as "user-verified."
+
+## Completion Report
+
+After changes, report:
+- Branch and HEAD
+- Exact changed files
+- Test results (with actual output)
+- Lint result
+- Build result
+- Worker typecheck result
+- `git diff --check` result
+- `git status --short`
+- Browser checks actually performed vs user-performed checks
+- Commit/push/deploy status
+- Remaining risks
+
+## Current Production Snapshot
+
+**This is a point-in-time snapshot. Values may change in future operations.**
+
+The following values were accurate at the time of writing. Before any remote write, re-verify all of them:
+- Git SHAs
+- Worker version
+- Deployment state
+- PR state
+- Linked Supabase project
+
+### Snapshot (as of HEAD `d749261b754c276ff7f86b495ce45f8afcd26367`)
+
+**Git:**
+- Current main HEAD: `d749261` (`fix: handle profile API error state in Header`)
+- PR #6 (`feat: add Personal Space profile experience`): merged
+- Merge commit: `2d4b81a`
+
+**Worker:**
+- Version: `e5cdfd1f-7be4-4978-923c-189916573978`
+
+**Supabase:**
+- Project ref: `fgeiygcycxjlqgbczrfs`
+- Profile migration: applied
+- Interactions migration: applied
+
+**Production manual verification (performed by user):**
+- Login flow
+- Avatar switching
+- Display name editing
+- Back button
+- Refresh behavior: neutral/blank placeholder → real saved avatar (no longer avatar-01 → real avatar flash)
 
 ## Privacy
 
 The following keywords must NEVER appear in source code:
 - `face-api`, `getUserMedia`, `modelsPath`, `DeviceOrientationEvent`, `enableWebcam`, `showPreview`
 - If a React Bits source file contains them, strip that code during porting.
-
-## Intentionally Skipped Features
-
-- **CardNav** (card-based navigation) — intentionally not integrated
