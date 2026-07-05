@@ -1,11 +1,12 @@
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { ChevronDown, LogOut, UserRound } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 
 type AccountMenuProps = {
   avatarSrc: string
   displayName: string
   email: string
+  loading?: boolean
   onProfile: () => void
   onSignOut: () => void
 }
@@ -16,11 +17,13 @@ export function AccountMenu({
   avatarSrc,
   displayName,
   email,
+  loading = false,
   onProfile,
   onSignOut,
 }: AccountMenuProps) {
   const reduceMotion = useReducedMotion() ?? false
   const [open, setOpen] = useState(false)
+  const panelId = useId()
   const rootRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -58,10 +61,14 @@ export function AccountMenu({
         type="button"
         className={`account-menu__chip ${open ? 'is-open' : ''}`}
         aria-expanded={open}
-        aria-haspopup="menu"
+        aria-controls={open ? panelId : undefined}
         onClick={() => setOpen((current) => !current)}
       >
-        <img src={avatarSrc} alt="" className="account-menu__chip-avatar" />
+        {loading ? (
+          <span className="account-menu__chip-avatar account-menu__chip-avatar--skeleton" aria-hidden="true" />
+        ) : (
+          <img src={avatarSrc} alt="" className="account-menu__chip-avatar" />
+        )}
         <span className="account-menu__chip-name">{displayName}</span>
         <ChevronDown aria-hidden="true" size={15} className="account-menu__chip-icon" />
       </button>
@@ -69,15 +76,19 @@ export function AccountMenu({
       <AnimatePresence>
         {open ? (
           <motion.div
+            id={panelId}
             className="account-menu__panel"
-            role="menu"
             initial={reduceMotion ? false : { opacity: 0, y: -8, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={reduceMotion ? undefined : { opacity: 0, y: -4, scale: 0.985 }}
             transition={{ duration: reduceMotion ? 0 : 0.24, ease: easeOut }}
           >
             <div className="account-menu__summary">
-              <img src={avatarSrc} alt="" className="account-menu__summary-avatar" />
+              {loading ? (
+                <span className="account-menu__summary-avatar account-menu__summary-avatar--skeleton" aria-hidden="true" />
+              ) : (
+                <img src={avatarSrc} alt="" className="account-menu__summary-avatar" />
+              )}
               <div>
                 <p className="account-menu__summary-name">{displayName}</p>
                 <p className="account-menu__summary-email">{email}</p>
@@ -87,7 +98,6 @@ export function AccountMenu({
             <button
               type="button"
               className="account-menu__item"
-              role="menuitem"
               onClick={() => {
                 setOpen(false)
                 onProfile()
@@ -100,7 +110,6 @@ export function AccountMenu({
             <button
               type="button"
               className="account-menu__item"
-              role="menuitem"
               onClick={() => {
                 setOpen(false)
                 onSignOut()

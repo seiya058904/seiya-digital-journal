@@ -5,7 +5,6 @@ import { useAuth } from '../../auth/AuthContext'
 import profileLogo from '../../assets/brand-icon.webp'
 import { profile } from '../../data/profile'
 import { getProfileAvatar } from '../../data/profileAvatars'
-import { DEFAULT_PROFILE_AVATAR_KEY } from '../../lib/profile'
 import { clearAuthReturnTarget, getPreSignOutRoute, navigateToAuth } from '../../lib/authRoutes'
 import { useProfile } from '../../profile/ProfileContext'
 import { CardNav, type CardNavItem } from '../effects/react-bits/CardNav'
@@ -61,7 +60,7 @@ const exploreItems: CardNavItem[] = [
 export function Header({ activePage = 'home' }: HeaderProps) {
   const [open, setOpen] = useState(false)
   const { isAuthenticated, loading, signOut, user } = useAuth()
-  const { profile: accountProfile } = useProfile()
+  const { profile: accountProfile, loading: profileLoading } = useProfile()
 
   const isHashPage = activePage !== 'home'
 
@@ -100,7 +99,10 @@ export function Header({ activePage = 'home' }: HeaderProps) {
 
   const accountDisplayName = accountProfile?.displayName ?? 'Account'
   const accountEmail = accountProfile?.email ?? user?.email ?? ''
-  const accountAvatar = getProfileAvatar(accountProfile?.avatarKey ?? DEFAULT_PROFILE_AVATAR_KEY)
+  const isProfileLoaded = !profileLoading && accountProfile !== null
+  const accountAvatar = isProfileLoaded
+    ? getProfileAvatar(accountProfile.avatarKey)
+    : null
 
   const handleSignOut = async () => {
     await signOut()
@@ -113,9 +115,6 @@ export function Header({ activePage = 'home' }: HeaderProps) {
     if (preSignOutRoute) {
       clearAuthReturnTarget()
       window.location.hash = preSignOutRoute
-      await new Promise<void>((resolve) => {
-        requestAnimationFrame(() => resolve())
-      })
     }
 
     await handleSignOut()
@@ -149,9 +148,10 @@ export function Header({ activePage = 'home' }: HeaderProps) {
       <div className="header-auth header-auth--desktop">
         {isAuthenticated ? (
           <AccountMenu
-            avatarSrc={accountAvatar.src}
+            avatarSrc={accountAvatar?.src ?? ''}
             displayName={accountDisplayName}
             email={accountEmail}
+            loading={!isProfileLoaded}
             onProfile={handleProfileNavigation}
             onSignOut={() => {
               void handleExplicitSignOut()
@@ -203,7 +203,11 @@ export function Header({ activePage = 'home' }: HeaderProps) {
           {isAuthenticated ? (
             <div className="header-mobile-account">
               <div className="header-mobile-account__summary">
-                <img src={accountAvatar.src} alt="" className="header-mobile-account__avatar" />
+                {accountAvatar ? (
+                  <img src={accountAvatar.src} alt="" className="header-mobile-account__avatar" />
+                ) : (
+                  <span className="header-mobile-account__avatar header-mobile-account__avatar--placeholder" aria-hidden="true" />
+                )}
                 <div>
                   <span className="header-auth__name header-auth__name--mobile">{accountDisplayName}</span>
                   <span className="header-mobile-account__email">{accountEmail}</span>

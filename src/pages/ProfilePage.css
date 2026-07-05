@@ -20,6 +20,43 @@
   margin: 0 auto;
 }
 
+.profile-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-muted);
+  font-size: 0.78rem;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    background var(--duration-fast) var(--ease-out);
+}
+
+.profile-back:hover {
+  color: var(--color-text);
+  border-color: var(--color-border-strong);
+  background: rgb(255 255 255 / 0.03);
+}
+
+.profile-back:active {
+  background: rgb(255 255 255 / 0.05);
+}
+
+.profile-back:focus-visible {
+  outline: 2px solid var(--color-cyan);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .profile-back { transition: none; }
+}
+
 .profile-hero {
   display: grid;
   justify-items: center;

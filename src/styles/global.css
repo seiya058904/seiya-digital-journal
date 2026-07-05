@@ -214,6 +214,15 @@ button {
   object-fit: cover;
 }
 
+.account-menu__chip-avatar--skeleton,
+.account-menu__summary-avatar--skeleton,
+.header-mobile-account__avatar--placeholder {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  background: linear-gradient(90deg, rgb(255 255 255 / 5%), rgb(255 255 255 / 9%), rgb(255 255 255 / 5%));
+}
+
 .account-menu__chip-name {
   max-width: 8rem;
   overflow: hidden;

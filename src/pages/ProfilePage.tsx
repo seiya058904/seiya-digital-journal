@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion'
+import { ArrowLeft } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { useAuth } from '../auth/AuthContext'
@@ -106,12 +107,30 @@ export function ProfilePage() {
   if (error) {
     return (
       <main className="profile-page">
-        <section className="profile-empty-state">
-          <p className="profile-kicker">Personal Space</p>
-          <h1>Unable to load your profile.</h1>
-          <p>{error}</p>
-          <button type="button" onClick={() => void refresh()}>Retry</button>
-        </section>
+        <div className="profile-page__ambient" aria-hidden="true" />
+        <div className="profile-page__inner">
+          <button
+            type="button"
+            className="profile-back"
+            onClick={() => {
+              if (window.history.length > 1) {
+                window.history.back()
+              } else {
+                window.location.hash = '#/'
+              }
+            }}
+            aria-label="Back to previous page"
+          >
+            <ArrowLeft aria-hidden="true" size={15} />
+            <span>Back</span>
+          </button>
+          <section className="profile-empty-state">
+            <p className="profile-kicker">Personal Space</p>
+            <h1>Unable to load your profile.</h1>
+            <p>{error}</p>
+            <button type="button" onClick={() => void refresh()}>Retry</button>
+          </section>
+        </div>
       </main>
     )
   }
@@ -129,6 +148,21 @@ export function ProfilePage() {
     >
       <div className="profile-page__ambient" aria-hidden="true" />
       <div className="profile-page__inner">
+        <button
+          type="button"
+          className="profile-back"
+          onClick={() => {
+            if (window.history.length > 1) {
+              window.history.back()
+            } else {
+              window.location.hash = '#/'
+            }
+          }}
+          aria-label="Back to previous page"
+        >
+          <ArrowLeft aria-hidden="true" size={15} />
+          <span>Back</span>
+        </button>
         <ProfileHero
           avatarSrc={avatar.src}
           displayName={profile.displayName}
@@ -160,16 +194,34 @@ export function ProfilePage() {
 function ProfileLoading() {
   return (
     <main className="profile-page">
-      <section className="profile-loading" aria-label="Loading profile">
-        <div className="profile-loading__avatar" />
-        <div className="profile-loading__line profile-loading__line--name" />
-        <div className="profile-loading__line profile-loading__line--email" />
-        <div className="profile-loading__line profile-loading__line--meta" />
-        <div className="profile-loading__stats">
-          <div />
-          <div />
-        </div>
-      </section>
+      <div className="profile-page__ambient" aria-hidden="true" />
+      <div className="profile-page__inner">
+        <button
+          type="button"
+          className="profile-back"
+          onClick={() => {
+            if (window.history.length > 1) {
+              window.history.back()
+            } else {
+              window.location.hash = '#/'
+            }
+          }}
+          aria-label="Back to previous page"
+        >
+          <ArrowLeft aria-hidden="true" size={15} />
+          <span>Back</span>
+        </button>
+        <section className="profile-loading" aria-label="Loading profile">
+          <div className="profile-loading__avatar" />
+          <div className="profile-loading__line profile-loading__line--name" />
+          <div className="profile-loading__line profile-loading__line--email" />
+          <div className="profile-loading__line profile-loading__line--meta" />
+          <div className="profile-loading__stats">
+            <div />
+            <div />
+          </div>
+        </section>
+      </div>
     </main>
   )
 }
