@@ -73,6 +73,7 @@ export function AuthPage() {
 
   const isSignUp = view === 'signup'
   const disabled = loading || Boolean(submittingMode) || !isConfigured
+  const shouldStaggerFields = isSignUp && !reduceMotion
 
   useEffect(() => {
     if (backendMessage) {
@@ -241,18 +242,29 @@ export function AuthPage() {
     }
   }
 
-  const viewExit = reduceMotion
-    ? undefined
+  const pageAnimate = reduceMotion
+    ? { opacity: 1, x: 0, y: 0, scale: 1 }
+    : isNavigatingBack
+      ? { opacity: 0, x: 8, y: 0, scale: 1 }
+      : { opacity: 1, x: 0, y: 0, scale: 1 }
+
+  const checkEmailAnimate = reduceMotion
+    ? { opacity: 1, y: 0 }
     : isExiting
       ? { opacity: 0, y: -8, scale: 0.985 }
-      : { opacity: 0, y: -8 }
+      : { opacity: 1, y: 0 }
+
+  const signInSignUpAnimate = reduceMotion
+    ? { opacity: 1, y: 0 }
+    : isExiting
+      ? { opacity: 0, y: -8, scale: 0.985 }
+      : { opacity: 1, y: 0 }
 
   return (
     <motion.main
       className="auth-page"
       initial={reduceMotion ? false : { opacity: 0, y: 16, scale: 0.99 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={reduceMotion ? undefined : { opacity: 0, x: 8 }}
+      animate={pageAnimate}
       transition={{ duration: reduceMotion ? 0 : 0.4, ease: easeOut }}
       onAnimationComplete={handlePageAnimationComplete}
     >
@@ -272,8 +284,8 @@ export function AuthPage() {
               <motion.div
                 key="check-email"
                 initial={reduceMotion ? false : { opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={viewExit}
+                animate={checkEmailAnimate}
+                exit={reduceMotion ? undefined : { opacity: 0, y: -8 }}
                 transition={{ duration: reduceMotion ? 0 : 0.18, ease: easeOut }}
                 className="auth-view"
                 onAnimationComplete={handleViewAnimationComplete}
@@ -341,8 +353,8 @@ export function AuthPage() {
               <motion.div
                 key={view}
                 initial={reduceMotion ? false : { opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={viewExit}
+                animate={signInSignUpAnimate}
+                exit={reduceMotion ? undefined : { opacity: 0, y: -8 }}
                 transition={{ duration: reduceMotion ? 0 : 0.24, ease: easeOut }}
                 className="auth-view"
                 onAnimationComplete={handleViewAnimationComplete}
@@ -390,12 +402,12 @@ export function AuthPage() {
                   className="auth-form"
                   onSubmit={handleSubmit}
                   aria-busy={Boolean(submittingMode)}
-                  variants={isSignUp ? fieldContainerVariants : undefined}
-                  initial={isSignUp ? 'hidden' : false}
-                  animate={isSignUp ? 'visible' : undefined}
+                  variants={shouldStaggerFields ? fieldContainerVariants : undefined}
+                  initial={shouldStaggerFields ? 'hidden' : false}
+                  animate={shouldStaggerFields ? 'visible' : undefined}
                 >
                   {isSignUp ? (
-                    <motion.div variants={fieldItemVariants}>
+                    <motion.div variants={shouldStaggerFields ? fieldItemVariants : undefined}>
                       <AuthField
                         id={displayNameInputId}
                         label="Display name"
@@ -409,7 +421,7 @@ export function AuthPage() {
                     </motion.div>
                   ) : null}
 
-                  <motion.div variants={isSignUp ? fieldItemVariants : undefined}>
+                  <motion.div variants={shouldStaggerFields ? fieldItemVariants : undefined}>
                     <AuthField
                       id={emailInputId}
                       label="Email"
@@ -424,7 +436,7 @@ export function AuthPage() {
                     />
                   </motion.div>
 
-                  <motion.div variants={isSignUp ? fieldItemVariants : undefined}>
+                  <motion.div variants={shouldStaggerFields ? fieldItemVariants : undefined}>
                     <AuthField
                       id={passwordInputId}
                       label="Password"
@@ -449,7 +461,7 @@ export function AuthPage() {
                   </motion.div>
 
                   {isSignUp ? (
-                    <motion.div variants={fieldItemVariants}>
+                    <motion.div variants={shouldStaggerFields ? fieldItemVariants : undefined}>
                       <AuthField
                         id={confirmPasswordInputId}
                         label="Confirm password"
@@ -473,7 +485,7 @@ export function AuthPage() {
                     </motion.div>
                   ) : null}
 
-                  <motion.div variants={isSignUp ? fieldItemVariants : undefined}>
+                  <motion.div variants={shouldStaggerFields ? fieldItemVariants : undefined}>
                     <button className="auth-submit" type="submit" disabled={disabled}>
                       {submittingMode ? (
                         <>
