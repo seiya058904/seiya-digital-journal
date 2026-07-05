@@ -21,6 +21,7 @@
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 0.04),
     var(--shadow-soft);
+  overflow: hidden;
 }
 
 .auth-back {
@@ -187,7 +188,7 @@
   transition:
     background var(--duration-fast) var(--ease-out),
     color var(--duration-fast) var(--ease-out),
-    transform var(--duration-fast) var(--ease-out);
+    transform 120ms ease;
 }
 
 .auth-password-toggle:hover {
@@ -263,6 +264,18 @@
 
 .auth-switch-button:hover {
   color: var(--color-cyan);
+}
+
+.auth-check-email-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-top: 1rem;
+  border-radius: 50%;
+  background: rgb(140 117 255 / 12%);
+  color: var(--color-violet);
 }
 
 .auth-email {
