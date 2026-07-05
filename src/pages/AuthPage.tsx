@@ -1,6 +1,6 @@
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
-import { ArrowLeft, Eye, EyeOff, LoaderCircle } from 'lucide-react'
-import { useCallback, useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from 'react'
+import { AnimatePresence, motion, useReducedMotion, type AnimationDefinition, type Variants } from 'framer-motion'
+import { ArrowLeft, Eye, EyeOff, LoaderCircle, Mail } from 'lucide-react'
+import { useEffect, useId, useState, type FormEvent, type ReactNode } from 'react'
 
 import { useAuth } from '../auth/AuthContext'
 import {
@@ -26,9 +26,30 @@ type AuthFeedback = {
 } | null
 type TouchedFields = Partial<Record<AuthFieldName, boolean>>
 
+const easeOut = [0.22, 1, 0.36, 1] as const
+
+const fieldContainerVariants: Variants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.03,
+      delayChildren: 0.04,
+    },
+  },
+}
+
+const fieldItemVariants: Variants = {
+  hidden: { opacity: 0, y: 6 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.2, ease: easeOut },
+  },
+}
+
 export function AuthPage() {
   const { backendMessage, isAuthenticated, isConfigured, loading, signIn, signUp } = useAuth()
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = useReducedMotion() ?? false
 
   const [view, setView] = useState<AuthView>('signin')
   const [values, setValues] = useState(createEmptyAuthFormValues)
@@ -41,26 +62,17 @@ export function AuthPage() {
   const [maskedEmail, setMaskedEmail] = useState('your email')
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [isExiting, setIsExiting] = useState(false)
+  const [isNavigatingBack, setIsNavigatingBack] = useState(false)
 
   const emailInputId = useId()
   const passwordInputId = useId()
   const displayNameInputId = useId()
   const confirmPasswordInputId = useId()
   const feedbackId = useId()
-  const navigationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const isSignUp = view === 'signup'
   const disabled = loading || Boolean(submittingMode) || !isConfigured
-  const clearNavigationTimer = () => {
-    if (navigationTimeoutRef.current) {
-      clearTimeout(navigationTimeoutRef.current)
-      navigationTimeoutRef.current = null
-    }
-  }
-
-  useEffect(() => () => {
-    clearNavigationTimer()
-  }, [])
 
   useEffect(() => {
     if (backendMessage) {
@@ -68,21 +80,18 @@ export function AuthPage() {
     }
   }, [backendMessage])
 
-  const scheduleReturnNavigation = useCallback((target: string) => {
-    clearNavigationTimer()
-    navigationTimeoutRef.current = setTimeout(() => {
-      window.location.hash = target
-    }, reduceMotion ? 200 : 320)
-  }, [reduceMotion])
-
   useEffect(() => {
-    if (loading || !isAuthenticated || view === 'check-email' || submittingMode) return
-    setFeedback({ tone: 'success', message: 'Signed in successfully.' })
-    scheduleReturnNavigation(consumeAuthReturnTarget())
-  }, [isAuthenticated, loading, scheduleReturnNavigation, submittingMode, view])
+    if (loading || !isAuthenticated || view === 'check-email' || submittingMode || isExiting || isNavigatingBack) return
+
+    if (reduceMotion) {
+      window.location.hash = consumeAuthReturnTarget()
+      return
+    }
+
+    setIsExiting(true)
+  }, [isAuthenticated, loading, view, submittingMode, reduceMotion, isExiting, isNavigatingBack])
 
   const switchView = (nextView: AuthView) => {
-    clearNavigationTimer()
     setView(nextView)
     setFieldErrors({})
     setTouchedFields({})
@@ -142,13 +151,15 @@ export function AuthPage() {
   }
 
   const handleBack = () => {
-    clearNavigationTimer()
-    window.location.hash = consumeAuthReturnTarget()
+    if (reduceMotion) {
+      window.location.hash = consumeAuthReturnTarget()
+      return
+    }
+    setIsNavigatingBack(true)
   }
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    clearNavigationTimer()
     setFeedback(null)
 
     const mode: AuthMode = isSignUp ? 'signup' : 'signin'
@@ -218,10 +229,39 @@ export function AuthPage() {
     })
   }
 
+  const handleViewAnimationComplete = (definition: AnimationDefinition) => {
+    if (isExiting && !isNavigatingBack && typeof definition === 'object' && definition !== null && 'opacity' in definition && definition.opacity === 0) {
+      window.location.hash = consumeAuthReturnTarget()
+    }
+  }
+
+  const handlePageAnimationComplete = (definition: AnimationDefinition) => {
+    if (isNavigatingBack && typeof definition === 'object' && definition !== null && 'opacity' in definition && definition.opacity === 0) {
+      window.location.hash = consumeAuthReturnTarget()
+    }
+  }
+
+  const viewExit = reduceMotion
+    ? undefined
+    : isExiting
+      ? { opacity: 0, y: -8, scale: 0.985 }
+      : { opacity: 0, y: -8 }
+
   return (
-    <main className="auth-page">
+    <motion.main
+      className="auth-page"
+      initial={reduceMotion ? false : { opacity: 0, y: 16, scale: 0.99 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={reduceMotion ? undefined : { opacity: 0, x: 8 }}
+      transition={{ duration: reduceMotion ? 0 : 0.4, ease: easeOut }}
+      onAnimationComplete={handlePageAnimationComplete}
+    >
       <section className="auth-shell" aria-labelledby="auth-title">
-        <div className="auth-panel">
+        <motion.div
+          className="auth-panel"
+          layout
+          transition={{ layout: { duration: 0.31, ease: easeOut } }}
+        >
           <button type="button" className="auth-back" onClick={handleBack}>
             <ArrowLeft aria-hidden="true" size={16} />
             <span>Back</span>
@@ -233,140 +273,219 @@ export function AuthPage() {
                 key="check-email"
                 initial={reduceMotion ? false : { opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={reduceMotion ? undefined : { opacity: 0, y: -6 }}
-                transition={{ duration: reduceMotion ? 0 : 0.2 }}
+                exit={viewExit}
+                transition={{ duration: reduceMotion ? 0 : 0.18, ease: easeOut }}
                 className="auth-view"
+                onAnimationComplete={handleViewAnimationComplete}
               >
-                <h1 id="auth-title" className="auth-title">Check your email</h1>
-                <p className="auth-copy">
+                <motion.div
+                  className="auth-check-email-icon"
+                  initial={reduceMotion ? false : { opacity: 0, scale: 0.94, y: 4 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  transition={{ duration: 0.22, ease: easeOut }}
+                >
+                  <Mail size={20} aria-hidden="true" />
+                </motion.div>
+
+                <motion.h1
+                  id="auth-title"
+                  className="auth-title"
+                  initial={reduceMotion ? false : { opacity: 0, y: 3 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.2, delay: 0.04, ease: easeOut }}
+                >
+                  Check your email
+                </motion.h1>
+
+                <motion.p
+                  className="auth-copy"
+                  initial={reduceMotion ? false : { opacity: 0, y: 2 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.2, delay: 0.08, ease: easeOut }}
+                >
                   We sent a confirmation link to:
-                </p>
+                </motion.p>
+
                 <p className="auth-email">{maskedEmail}</p>
-                <p className="auth-copy">
+
+                <motion.p
+                  className="auth-copy"
+                  initial={reduceMotion ? false : { opacity: 0, y: 2 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.2, delay: 0.1, ease: easeOut }}
+                >
                   Confirm your email to finish creating your account.
-                </p>
-                <p className="auth-note">
+                </motion.p>
+
+                <motion.p
+                  className="auth-note"
+                  initial={reduceMotion ? false : { opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.2, delay: 0.12 }}
+                >
                   Check your spam folder if you do not see the email.
-                </p>
-                <button
+                </motion.p>
+
+                <motion.button
                   type="button"
                   className="auth-submit auth-submit--secondary"
                   onClick={() => switchView('signin')}
+                  initial={reduceMotion ? false : { opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.2, delay: 0.14 }}
                 >
                   Back to sign in
-                </button>
+                </motion.button>
               </motion.div>
             ) : (
               <motion.div
                 key={view}
-                initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+                initial={reduceMotion ? false : { opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={reduceMotion ? undefined : { opacity: 0, y: -6 }}
-                transition={{ duration: reduceMotion ? 0 : 0.2 }}
+                exit={viewExit}
+                transition={{ duration: reduceMotion ? 0 : 0.24, ease: easeOut }}
                 className="auth-view"
+                onAnimationComplete={handleViewAnimationComplete}
               >
-                <h1 id="auth-title" className="auth-title">
+                <motion.h1
+                  id="auth-title"
+                  className="auth-title"
+                  initial={reduceMotion ? false : { opacity: 0, y: 3 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.18, ease: easeOut }}
+                >
                   {isSignUp ? 'Create your account' : 'Welcome back'}
-                </h1>
-                <p className="auth-copy">
+                </motion.h1>
+                <motion.p
+                  className="auth-copy"
+                  initial={reduceMotion ? false : { opacity: 0, y: 2 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.2, delay: 0.03, ease: easeOut }}
+                >
                   {isSignUp
                     ? 'Join the journal with a simple identity.'
                     : 'Sign in to continue.'}
-                </p>
+                </motion.p>
 
                 <div className="auth-feedback-slot" aria-live="polite">
-                  {feedback ? (
-                    <p
-                      id={feedbackId}
-                      className={`auth-feedback auth-feedback--${feedback.tone}`}
-                      role={feedback.tone === 'error' ? 'alert' : 'status'}
-                    >
-                      {feedback.message}
-                    </p>
-                  ) : null}
+                  <AnimatePresence mode="wait">
+                    {feedback ? (
+                      <motion.p
+                        key={feedback.message}
+                        id={feedbackId}
+                        className={`auth-feedback auth-feedback--${feedback.tone}`}
+                        role={feedback.tone === 'error' ? 'alert' : 'status'}
+                        initial={reduceMotion ? false : { opacity: 0, y: -4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={reduceMotion ? undefined : { opacity: 0 }}
+                        transition={{ duration: 0.18 }}
+                      >
+                        {feedback.message}
+                      </motion.p>
+                    ) : null}
+                  </AnimatePresence>
                 </div>
 
-                <form className="auth-form" onSubmit={handleSubmit} aria-busy={Boolean(submittingMode)}>
+                <motion.form
+                  className="auth-form"
+                  onSubmit={handleSubmit}
+                  aria-busy={Boolean(submittingMode)}
+                  variants={isSignUp ? fieldContainerVariants : undefined}
+                  initial={isSignUp ? 'hidden' : false}
+                  animate={isSignUp ? 'visible' : undefined}
+                >
                   {isSignUp ? (
-                    <AuthField
-                      id={displayNameInputId}
-                      label="Display name"
-                      value={values.displayName}
-                      onChange={(value) => handleFieldChange('displayName', value)}
-                      onBlur={() => handleFieldBlur('displayName')}
-                      autoComplete="name"
-                      disabled={disabled}
-                      error={fieldErrors.displayName}
-                    />
+                    <motion.div variants={fieldItemVariants}>
+                      <AuthField
+                        id={displayNameInputId}
+                        label="Display name"
+                        value={values.displayName}
+                        onChange={(value) => handleFieldChange('displayName', value)}
+                        onBlur={() => handleFieldBlur('displayName')}
+                        autoComplete="name"
+                        disabled={disabled}
+                        error={fieldErrors.displayName}
+                      />
+                    </motion.div>
                   ) : null}
 
-                  <AuthField
-                    id={emailInputId}
-                    label="Email"
-                    type="email"
-                    value={values.email}
-                    onChange={(value) => handleFieldChange('email', value)}
-                    onBlur={() => handleFieldBlur('email')}
-                    autoComplete="email"
-                    disabled={disabled}
-                    error={fieldErrors.email}
-                    describedBy={feedback?.tone === 'error' ? feedbackId : undefined}
-                  />
-
-                  <AuthField
-                    id={passwordInputId}
-                    label="Password"
-                    type={showPassword ? 'text' : 'password'}
-                    value={values.password}
-                    onChange={(value) => handleFieldChange('password', value)}
-                    onBlur={() => handleFieldBlur('password')}
-                    autoComplete={isSignUp ? 'new-password' : 'current-password'}
-                    disabled={disabled}
-                    error={fieldErrors.password}
-                    describedBy={feedback?.tone === 'error' ? feedbackId : undefined}
-                    trailingButton={
-                      <PasswordToggle
-                        visible={showPassword}
-                        onToggle={() => setShowPassword((current) => !current)}
-                        disabled={disabled}
-                        label={showPassword ? 'Hide password' : 'Show password'}
-                      />
-                    }
-                  />
-
-                  {isSignUp ? (
+                  <motion.div variants={isSignUp ? fieldItemVariants : undefined}>
                     <AuthField
-                      id={confirmPasswordInputId}
-                      label="Confirm password"
-                      type={showConfirmPassword ? 'text' : 'password'}
-                      value={values.confirmPassword}
-                      onChange={(value) => handleFieldChange('confirmPassword', value)}
-                      onBlur={() => handleFieldBlur('confirmPassword')}
-                      autoComplete="new-password"
+                      id={emailInputId}
+                      label="Email"
+                      type="email"
+                      value={values.email}
+                      onChange={(value) => handleFieldChange('email', value)}
+                      onBlur={() => handleFieldBlur('email')}
+                      autoComplete="email"
                       disabled={disabled}
-                      error={fieldErrors.confirmPassword}
+                      error={fieldErrors.email}
+                      describedBy={feedback?.tone === 'error' ? feedbackId : undefined}
+                    />
+                  </motion.div>
+
+                  <motion.div variants={isSignUp ? fieldItemVariants : undefined}>
+                    <AuthField
+                      id={passwordInputId}
+                      label="Password"
+                      type={showPassword ? 'text' : 'password'}
+                      value={values.password}
+                      onChange={(value) => handleFieldChange('password', value)}
+                      onBlur={() => handleFieldBlur('password')}
+                      autoComplete={isSignUp ? 'new-password' : 'current-password'}
+                      disabled={disabled}
+                      error={fieldErrors.password}
+                      describedBy={feedback?.tone === 'error' ? feedbackId : undefined}
                       trailingButton={
                         <PasswordToggle
-                          visible={showConfirmPassword}
-                          onToggle={() => setShowConfirmPassword((current) => !current)}
+                          visible={showPassword}
+                          onToggle={() => setShowPassword((current) => !current)}
                           disabled={disabled}
-                          label={showConfirmPassword ? 'Hide confirmation password' : 'Show confirmation password'}
+                          label={showPassword ? 'Hide password' : 'Show password'}
+                          reduceMotion={reduceMotion}
                         />
                       }
                     />
+                  </motion.div>
+
+                  {isSignUp ? (
+                    <motion.div variants={fieldItemVariants}>
+                      <AuthField
+                        id={confirmPasswordInputId}
+                        label="Confirm password"
+                        type={showConfirmPassword ? 'text' : 'password'}
+                        value={values.confirmPassword}
+                        onChange={(value) => handleFieldChange('confirmPassword', value)}
+                        onBlur={() => handleFieldBlur('confirmPassword')}
+                        autoComplete="new-password"
+                        disabled={disabled}
+                        error={fieldErrors.confirmPassword}
+                        trailingButton={
+                          <PasswordToggle
+                            visible={showConfirmPassword}
+                            onToggle={() => setShowConfirmPassword((current) => !current)}
+                            disabled={disabled}
+                            label={showConfirmPassword ? 'Hide confirmation password' : 'Show confirmation password'}
+                            reduceMotion={reduceMotion}
+                          />
+                        }
+                      />
+                    </motion.div>
                   ) : null}
 
-                  <button className="auth-submit" type="submit" disabled={disabled}>
-                    {submittingMode ? (
-                      <>
-                        <LoaderCircle className="auth-spinner" size={16} aria-hidden="true" />
-                        <span>{submittingMode === 'signup' ? 'Creating account...' : 'Signing in...'}</span>
-                      </>
-                    ) : (
-                      isSignUp ? 'Create account' : 'Sign in'
-                    )}
-                  </button>
-                </form>
+                  <motion.div variants={isSignUp ? fieldItemVariants : undefined}>
+                    <button className="auth-submit" type="submit" disabled={disabled}>
+                      {submittingMode ? (
+                        <>
+                          <LoaderCircle className="auth-spinner" size={16} aria-hidden="true" />
+                          <span>{submittingMode === 'signup' ? 'Creating account...' : 'Signing in...'}</span>
+                        </>
+                      ) : (
+                        isSignUp ? 'Create account' : 'Sign in'
+                      )}
+                    </button>
+                  </motion.div>
+                </motion.form>
 
                 <p className="auth-switch-copy">
                   {isSignUp ? 'Already have an account?' : 'New here?'}
@@ -382,9 +501,9 @@ export function AuthPage() {
               </motion.div>
             )}
           </AnimatePresence>
-        </div>
+        </motion.div>
       </section>
-    </main>
+    </motion.main>
   )
 }
 
@@ -449,21 +568,25 @@ function PasswordToggle({
   onToggle,
   disabled,
   label,
+  reduceMotion,
 }: {
   visible: boolean
   onToggle: () => void
   disabled: boolean
   label: string
+  reduceMotion: boolean
 }) {
   return (
-    <button
+    <motion.button
       type="button"
       className="auth-password-toggle"
       onClick={onToggle}
       disabled={disabled}
       aria-label={label}
+      whileTap={reduceMotion ? undefined : { scale: 0.92, rotate: -8 }}
+      transition={{ duration: 0.12 }}
     >
       {visible ? <EyeOff aria-hidden="true" size={16} /> : <Eye aria-hidden="true" size={16} />}
-    </button>
+    </motion.button>
   )
 }
