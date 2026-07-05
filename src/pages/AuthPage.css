@@ -200,11 +200,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
   gap: 0.55rem;
   min-height: 3rem;
   margin-top: 0.3rem;
   border: 0;
-  border-radius: 999px;
+  border-radius: 0.9rem;
   background: linear-gradient(120deg, rgb(82 95 123), rgb(20 25 39));
   color: var(--color-text);
   cursor: pointer;
