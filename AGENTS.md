@@ -9,12 +9,12 @@
 - `src/pages/`：首页、Archive 子页面、Gallery、Motion Lab、Auth、Profile。
 - `src/components/sections/`：首页章节；`ui/`：共享界面组件（Header、AccountMenu、DesktopOnly 等）；`profile/`：Profile 相关组件（ProfileHero、ActivityStats、EditProfileSurface、focusTrap）。
 - `src/components/motion/`、`effects/`：动效、WebGL 效果及 React Bits 组件；修改时保留降级与 reduced-motion 行为。
-- `src/data/`：个人资料、链接、文字、效果清单、视觉档案和头像配置（profileAvatars.ts）。
+- `src/data/`：个人资料、链接、文字、效果清单、视觉档案、笔记、项目和头像配置（notes.ts、projects.ts、profileAvatars.ts）。
 - `src/styles/tokens.css`：设计变量；`global.css` 与各页面/组件 CSS：全局及局部样式。
 - `src/assets/`：由代码导入的资源；`public/`：按原路径直接发布的图片、演示和视觉档案。
 - `src/auth/`：AuthContext 和相关路由工具。
 - `src/profile/`：ProfileContext 和状态管理（ProfileContext.tsx、profileState.ts）。
-- `src/lib/`：工具函数（authRoutes.ts、profile.ts、profileApi.ts、interactions.ts、env.ts、supabase.ts）。
+- `src/lib/`：工具函数（api.ts、authRoutes.ts、authFlow.ts、authForm.ts、commentSuccess.ts、profile.ts、profileApi.ts、interactions.ts、env.ts、site.ts、supabase.ts）及共置测试。
 - `scripts/trace-image.mjs`：图片引用追踪脚本。测试与被测模块相邻，命名为 `*.test.ts`。
 
 ## Architecture Notes
@@ -59,7 +59,7 @@ npm run preview # 本地预览生产构建
 
 ## Commit & Pull Request Guidelines
 
-近期历史采用 `feat:`、`fix:`、`refactor:`、`perf:`、`style:`、`chore:` 等 Conventional Commit 前缀。每个提交保持单一目的，摘要简短且明确。。PR 应说明可见行为、复现或验证结果及未运行的检查；UI 变更附前后截图。不得提交 `dist/`、`node_modules/`、日志、缓存、原始图片目录、敏感文件或无关改动。
+近期历史采用 `feat:`、`fix:`、`refactor:`、`perf:`、`style:`、`chore:` 等 Conventional Commit 前缀。每个提交保持单一目的，摘要简短且明确。PR 应说明可见行为、复现或验证结果及未运行的检查；UI 变更附前后截图。不得提交 `dist/`、`node_modules/`、日志、缓存、原始图片目录、敏感文件或无关改动。
 
 ## Security & Configuration
 
@@ -83,8 +83,7 @@ When working on Archive Notes content:
   - **Medium notes (500–1200 words)**: Can use chapter cards with a mini table of contents
   - **Long notes (1200+ words)**: Switch to article reading layout - avoid wrapping each paragraph in large cards
 - Keep notes focused on identity, growth, thoughts, interests, and visual storytelling
-- Match the existing glass tile UI pattern for
- folder display
+- Match the existing glass tile UI pattern for folder display
 - When adding new notes to `src/data/notes.ts`, ensure consistency with existing metadata structure
 
 ### Glass Tile UI Styling

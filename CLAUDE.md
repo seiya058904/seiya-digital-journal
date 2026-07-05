@@ -82,12 +82,18 @@ src/
   profile/           — ProfileContext (profile state management)
                      — profileState.ts (mutation race guard)
   lib/               — Utility modules:
+                         api.ts (API helper base)
                          authRoutes.ts (auth redirect, return target)
+                         authFlow.ts (auth flow orchestration)
+                         authForm.ts (auth form state)
+                         commentSuccess.ts (comment success handling)
+                         env.ts (public env reading)
+                         interactions.ts (comment/like validation)
                          profile.ts (shared validation, constants)
                          profileApi.ts (frontend profile API client)
-                         interactions.ts (comment/like validation)
-                         env.ts (public env reading)
+                         site.ts (site-level helpers)
                          supabase.ts (Supabase client factory)
+                         *.test.ts (co-located tests for each module)
   components/
     sections/        — Hero, About, Interests, Gallery, Thoughts, Journey, Contact
     ui/              — Header, AccountMenu, Chapter, ActionLink (stable reusable UI atoms)
@@ -100,16 +106,18 @@ src/
                        AnimatedContent, CountUp, OrbitImages, DesktopGridScan,
                        CardNav, FlowingMenu)
       text/          — custom animated text (GradientText, ShinyText, RotatingText)
-      AuroraBackground.tsx, CardTilt.tsx, GradientBorder.tsx
+      ArchiveBackground.tsx, AuroraBackground.tsx, CardTilt.tsx,
+      CursorGlow.tsx, GradientBorder.tsx, MultiStepLoader.tsx
     lab/             — EffectCard, HeavyEffectGate, ReactBitsDemo (Motion Lab UI)
   pages/             — HomePage, MotionLabPage, ArchivePage, ArchiveImagesPage,
                        ArchiveNotesPage, ArchiveNoteDetailPage, ArchiveProjectsPage,
                        ArchiveNotesCategoryPage, GalleryPage, AuthPage, ProfilePage
   data/              — profile.ts, thoughts.ts, links.ts, effects.ts, visualArchive.ts,
-                       profileAvatars.ts
+                       notes.ts, projects.ts, profileAvatars.ts
   styles/            — tokens.css (design tokens), global.css (all page CSS),
                        hero-background.css (animated background effect)
-  assets/            — brand-icon.webp, profile-placeholder.svg
+  assets/            — brand-icon.webp, avatar-seiya.webp, profile-placeholder.svg,
+                       profile-avatars/, lanyard/
 worker/
   src/index.ts       — Cloudflare Worker entry (all API endpoints)
   wrangler.jsonc     — Worker config (name: seiya-digital-journal-api)
@@ -137,7 +145,7 @@ public/
 
 **Design tokens** in `src/styles/tokens.css` define all colors, borders, shadows, radii, typography, and motion durations via CSS custom properties. Components use these variables, never hardcoded values.
 
-**All page CSS** lives in `src/styles/global.css` — there is no component-level CSS module system. The file is large (~1270+ lines) with responsive breakpoints at 1080px, 820px, and 560px.
+**All page CSS** lives in `src/styles/global.css` — there is no component-level CSS module system. The file is large (~2004 lines) with responsive breakpoints at 1080px, 820px, and 560px.
 
 ## Routing
 
