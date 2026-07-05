@@ -265,14 +265,14 @@ export function AuthPage() {
       className="auth-page"
       initial={reduceMotion ? false : { opacity: 0, y: 16, scale: 0.99 }}
       animate={pageAnimate}
-      transition={{ duration: reduceMotion ? 0 : 0.4, ease: easeOut }}
+      transition={{ duration: reduceMotion ? 0 : isNavigatingBack ? 0.2 : 0.4, ease: easeOut }}
       onAnimationComplete={handlePageAnimationComplete}
     >
       <section className="auth-shell" aria-labelledby="auth-title">
         <motion.div
           className="auth-panel"
-          layout
-          transition={{ layout: { duration: 0.31, ease: easeOut } }}
+          layout={!reduceMotion}
+          transition={reduceMotion ? undefined : { layout: { duration: 0.31, ease: easeOut } }}
         >
           <button type="button" className="auth-back" onClick={handleBack}>
             <ArrowLeft aria-hidden="true" size={16} />
