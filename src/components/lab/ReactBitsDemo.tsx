@@ -1,5 +1,7 @@
 import { useState } from 'react'
 
+import { FileText, Code, Image, Settings } from 'lucide-react'
+
 import profileLogo from '../../assets/profile-placeholder.svg'
 import { MultiStepLoader } from '../effects/MultiStepLoader'
 import { AnimatedContent } from '../effects/react-bits/AnimatedContent'
@@ -20,6 +22,9 @@ import { ShinyText } from '../effects/text/ShinyText'
 import { SplitText } from '../effects/react-bits/SplitText'
 import { Stack } from '../effects/react-bits/Stack'
 import { TiltedCard } from '../effects/react-bits/TiltedCard'
+import { OrbitImages } from '../effects/react-bits/OrbitImages'
+import { Folder } from '../effects/react-bits/Folder'
+import { GlassIcons } from '../effects/react-bits/GlassIcons'
 
 import './ReactBitsDemo.css'
 
@@ -68,6 +73,21 @@ const stackCards = [
     src={`${base}gallery/geometry.webp`}
     alt="Geometry journal artwork"
   />,
+]
+
+const orbitImages = demoImages.slice(0, 5)
+
+const folderItems = [
+  <span key="a">Image notes</span>,
+  <span key="b">Written thoughts</span>,
+  <span key="c">Project links</span>,
+]
+
+const glassIconItems = [
+  { icon: <FileText size={18} />, color: 'blue', label: 'Docs' },
+  { icon: <Code size={18} />, color: 'purple', label: 'Code' },
+  { icon: <Image size={18} />, color: 'orange', label: 'Design' },
+  { icon: <Settings size={18} />, color: 'green', label: 'Config' },
 ]
 
 function MultiStepLoaderDemo() {
@@ -315,6 +335,33 @@ export function ReactBitsDemo({ effectId }: ReactBitsDemoProps) {
 
     case 'stepper':
       return <JournalStepperDemo />
+
+    case 'orbit-images':
+      return (
+        <OrbitImages
+          images={orbitImages}
+          shape="ellipse"
+          rotation={-8}
+          itemSize={64}
+          duration={20}
+          showPath
+          pathColor="rgba(255,255,255,0.08)"
+          width="100%"
+          height="14rem"
+        />
+      )
+
+    case 'folder':
+      return (
+        <div className="rb-demo-folder">
+          <Folder color="#56e4ff" size={2} items={folderItems} />
+        </div>
+      )
+
+    case 'glass-icons':
+      return (
+        <GlassIcons className="rb-demo-glass-icons" items={glassIconItems} />
+      )
 
     default:
       return null
