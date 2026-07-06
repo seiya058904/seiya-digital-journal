@@ -1,5 +1,5 @@
 import { ArrowRight } from 'lucide-react'
-import { useEffect, useId, useRef, useState } from 'react'
+import { useId, useRef, useState } from 'react'
 
 import { getWrappedProjectIndex, projects, type ProjectRecord } from '../../data/projects'
 import './ProjectCarousel.css'
@@ -22,21 +22,6 @@ function ProjectSlide({ project, index, current, onSelect, headingId }: ProjectS
   const active = current === index
   const actionLink = project.primaryLink ?? project.secondaryLink
 
-  useEffect(() => {
-    const animate = () => {
-      if (slideRef.current) {
-        slideRef.current.style.setProperty('--pointer-x', `${xRef.current}px`)
-        slideRef.current.style.setProperty('--pointer-y', `${yRef.current}px`)
-      }
-      frameRef.current = requestAnimationFrame(animate)
-    }
-
-    frameRef.current = requestAnimationFrame(animate)
-    return () => {
-      if (frameRef.current !== undefined) cancelAnimationFrame(frameRef.current)
-    }
-  }, [])
-
   return (
     <li
       ref={slideRef}
@@ -46,14 +31,32 @@ function ProjectSlide({ project, index, current, onSelect, headingId }: ProjectS
         if (!active) onSelect(index)
       }}
       onMouseMove={(event) => {
-        const bounds = slideRef.current?.getBoundingClientRect()
-        if (!bounds) return
+        const el = slideRef.current
+        if (!el) return
+        const bounds = el.getBoundingClientRect()
         xRef.current = event.clientX - (bounds.left + Math.floor(bounds.width / 2))
         yRef.current = event.clientY - (bounds.top + Math.floor(bounds.height / 2))
+        if (frameRef.current === undefined) {
+          frameRef.current = requestAnimationFrame(() => {
+            frameRef.current = undefined
+            el.style.setProperty('--pointer-x', `${xRef.current}px`)
+            el.style.setProperty('--pointer-y', `${yRef.current}px`)
+          })
+        }
       }}
       onMouseLeave={() => {
         xRef.current = 0
         yRef.current = 0
+        if (frameRef.current === undefined) {
+          const el = slideRef.current
+          if (el) {
+            frameRef.current = requestAnimationFrame(() => {
+              frameRef.current = undefined
+              el.style.setProperty('--pointer-x', '0px')
+              el.style.setProperty('--pointer-y', '0px')
+            })
+          }
+        }
       }}
     >
       <div className="project-carousel__image-plane">

@@ -34,6 +34,7 @@ export function ImageTrail({ items, className = '', threshold = 80 }: ImageTrail
     const onMove = (event: PointerEvent) => {
       const rect = root.getBoundingClientRect()
       pointer = { x: event.clientX - rect.left, y: event.clientY - rect.top }
+      startLoop()
     }
 
     const render = () => {
@@ -71,14 +72,26 @@ export function ImageTrail({ items, className = '', threshold = 80 }: ImageTrail
 
         previous = { ...pointer }
       }
-      frame = requestAnimationFrame(render)
+
+      const catchUp = Math.abs(pointer.x - cached.x) + Math.abs(pointer.y - cached.y)
+      if (catchUp > 0.01) {
+        frame = requestAnimationFrame(render)
+      } else {
+        cached = { ...pointer }
+        frame = 0
+      }
+    }
+
+    function startLoop() {
+      if (!frame) {
+        frame = requestAnimationFrame(render)
+      }
     }
 
     root.addEventListener('pointermove', onMove)
-    frame = requestAnimationFrame(render)
     return () => {
       root.removeEventListener('pointermove', onMove)
-      cancelAnimationFrame(frame)
+      if (frame) cancelAnimationFrame(frame)
       gsap.killTweensOf(images)
     }
   }, [items, threshold])

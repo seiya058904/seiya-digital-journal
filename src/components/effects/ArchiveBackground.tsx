@@ -30,6 +30,7 @@ export function ArchiveBackground({ hidden = false }: { hidden?: boolean }) {
           color="#524499"
           noiseIntensity={1.5}
           rotation={0.5}
+          paused={hidden}
         />
       </Suspense>
     </div>

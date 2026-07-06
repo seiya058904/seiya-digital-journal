@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unknown-property */
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { forwardRef, useRef, useMemo, useLayoutEffect } from 'react'
+import { forwardRef, useRef, useMemo, useLayoutEffect, useCallback, useEffect } from 'react'
 import { Color } from 'three'
 
 const hexToNormalizedRGB = (hex: string) => {
@@ -69,8 +69,11 @@ void main() {
 }
 `
 
-const SilkPlane = forwardRef(function SilkPlane({ uniforms }: { uniforms: Record<string, { value: unknown }> }, ref: any) {
+const SilkPlane = forwardRef(function SilkPlane({ uniforms, paused }: { uniforms: Record<string, { value: unknown }>; paused?: boolean }, ref: any) {
   const { viewport } = useThree()
+  const pausedRef = useRef(paused)
+  pausedRef.current = paused
+  const pausedAtRef = useRef<number | undefined>(undefined)
 
   useLayoutEffect(() => {
     if (ref.current) {
@@ -78,7 +81,21 @@ const SilkPlane = forwardRef(function SilkPlane({ uniforms }: { uniforms: Record
     }
   }, [ref, viewport])
 
-  useFrame((_, delta) => {
+  useFrame((state, delta) => {
+    const elapsed = state.clock.getElapsedTime()
+
+    if (pausedRef.current) {
+      if (pausedAtRef.current === undefined) {
+        pausedAtRef.current = elapsed
+      }
+      return
+    }
+
+    if (pausedAtRef.current !== undefined) {
+      ref.current.material.uniforms.uTime.value += 0.1 * (elapsed - pausedAtRef.current)
+      pausedAtRef.current = undefined
+    }
+
     ref.current.material.uniforms.uTime.value += 0.1 * delta
   })
 
@@ -91,8 +108,16 @@ const SilkPlane = forwardRef(function SilkPlane({ uniforms }: { uniforms: Record
 })
 SilkPlane.displayName = 'SilkPlane'
 
-const Silk = ({ speed = 5, scale = 1, color = '#7B7481', noiseIntensity = 1.5, rotation = 0 }) => {
+const Silk = ({ speed = 5, scale = 1, color = '#7B7481', noiseIntensity = 1.5, rotation = 0, paused = false }: {
+  speed?: number
+  scale?: number
+  color?: string
+  noiseIntensity?: number
+  rotation?: number
+  paused?: boolean
+}) => {
   const meshRef = useRef(null)
+  const setFrameloopRef = useRef<((mode: 'always' | 'demand' | 'manual') => void) | null>(null)
 
   const uniforms = useMemo(
     () => ({
@@ -106,9 +131,27 @@ const Silk = ({ speed = 5, scale = 1, color = '#7B7481', noiseIntensity = 1.5, r
     [speed, scale, noiseIntensity, color, rotation],
   )
 
+  const handleCreated = useCallback((state: any) => {
+    setFrameloopRef.current = state.setFrameloop
+  }, [])
+
+  useEffect(() => {
+    const setFrameloop = setFrameloopRef.current
+    if (!setFrameloop) return
+    if (paused) {
+      setFrameloop('demand')
+    } else {
+      setFrameloop('always')
+    }
+  }, [paused])
+
   return (
-    <Canvas dpr={[1, 2]} frameloop="always">
-      <SilkPlane ref={meshRef} uniforms={uniforms} />
+    <Canvas
+      dpr={[1, 2]}
+      frameloop="always"
+      onCreated={handleCreated}
+    >
+      <SilkPlane ref={meshRef} uniforms={uniforms} paused={paused} />
     </Canvas>
   )
 }
