@@ -32,11 +32,13 @@ test('Motion Lab distinguishes real React Bits demos from metadata', () => {
       .map(({ name }) => name)
       .sort(),
     [
-      'AnimatedContent', 'BorderGlow', 'BounceCards', 'CardNav', 'CountUp',
-      'Folder', 'GlareHover', 'GlassIcons', 'GradientText', 'GridScan',
-      'ImageTrail', 'MagicBento', 'MultiStepLoader', 'OrbitImages', 'PillNav',
-      'ProfileCard', 'RotatingText', 'ScrambledText', 'ShinyText', 'SplitText',
-      'Stack', 'Stepper', 'TiltedCard',
+      'AnimatedContent', 'BorderGlow', 'BounceCards', 'CardNav', 'CardTilt',
+      'CountUp', 'CursorGlow', 'FlowingMenu', 'Folder', 'GlareHover',
+      'GlassIcons', 'GradientBorder', 'GradientText', 'ImageTrail',
+      'MagicBento', 'MultiStepLoader', 'OrbitImages', 'PillNav',
+      'ProfileCard', 'RotatingText', 'ScrambledText', 'ScrollReveal',
+      'ShinyText', 'SplitText', 'Stack', 'Stepper', 'TextReveal',
+      'TiltedCard',
     ],
   )
   assert.equal(
@@ -44,6 +46,7 @@ test('Motion Lab distinguishes real React Bits demos from metadata', () => {
       .filter(({ integrationStatus }) => integrationStatus === 'real-demo')
       .every(({ sourceFile }) =>
         sourceFile.startsWith('React bits/') ||
+        sourceFile.startsWith('src/components/') ||
         sourceFile === '@aceternity/multi-step-loader'
       ),
     true,

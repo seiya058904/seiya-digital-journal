@@ -1,0 +1,35 @@
+名称：网格扫描 / GridScan
+分类：3D 动效
+依赖：Three.js + postprocessing
+使用位置：首页背景、Motion Lab
+
+────────────────────────────────────
+
+【视觉描述】
+
+Three.js WebGL 场景，渲染一个透视网格隧道，
+包含四个平面（地板、天花板、左墙、右墙）。
+
+发光扫描线在隧道深度方向来回持续扫过。
+
+网格响应鼠标移动——
+透视角度和倾斜随光标位置变化，带平滑阻尼。
+
+网格线可以是实线、虚线或点线，
+可选抖动（jitter）产生有机感。
+
+后期处理添加 bloom（辉光）和轻微色差。
+
+点击可触发额外的一次性扫描脉冲。
+胶片颗粒噪声增加质感。
+
+────────────────────────────────────
+【技术要点】
+
+- Three.js WebGL 渲染
+- 4 个 planeGeometry 构建隧道
+- 自定义 shader 或 Line 实现扫描线
+- 鼠标位置 → camera rotation 映射
+- postprocessing: bloom + chromaticAberration
+- Film grain noise 叠加
+- 点击触发额外脉冲动画

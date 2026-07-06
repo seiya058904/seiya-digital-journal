@@ -1,0 +1,28 @@
+名称：光泽文字 / ShinyText
+分类：文字动效
+依赖：Framer Motion
+使用位置：Hero、Thoughts、Motion Lab
+
+────────────────────────────────────
+
+【视觉描述】
+
+低饱和度的文字表面上，一条明亮的高光条
+以匀速从左向右（或反向）反复扫过字符区域。
+
+高光是一条窄的渐变带（透明→白色→透明），
+宽度约占文字区域的 15-20%，
+像一束聚光灯从左滑到右再滑回来。
+
+可配置启动延迟（高光出现前的等待时间）。
+hover 时可暂停。
+
+prefers-reduced-motion 下高光静止停留在文字中央。
+
+────────────────────────────────────
+【技术要点】
+
+- CSS background-clip + linear-gradient 实现高光条
+- Framer Motion 驱动 background-position 循环
+- 支持 delay / direction / pauseOnHover 参数
+- reduced-motion 时停止循环，高光固定

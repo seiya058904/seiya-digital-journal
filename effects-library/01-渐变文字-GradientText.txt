@@ -1,0 +1,27 @@
+名称：渐变文字 / GradientText
+分类：文字动效
+依赖：Framer Motion
+使用位置：Hero 标题、Motion Lab
+
+────────────────────────────────────
+
+【视觉描述】
+
+文字表面覆盖多色渐变（青色、紫色、洋红、金色），
+通过 background-clip: text 将渐变色裁剪到字形轮廓内。
+
+渐变色带沿指定方向（左→右、右→左、对角线等）
+以匀速持续流动，产生颜色不断循环穿越文字的效果。
+
+hover 时可配置暂停流动。
+支持 yoyo（来回弹返）模式。
+
+prefers-reduced-motion 下显示静态渐变填充，无流动。
+
+────────────────────────────────────
+【技术要点】
+
+- CSS background-clip: text 实现渐变裁剪
+- Framer Motion 驱动 background-position 动画
+- 支持 direction / duration / pauseOnHover / yoyo 参数
+- reduced-motion 时停止 position 动画

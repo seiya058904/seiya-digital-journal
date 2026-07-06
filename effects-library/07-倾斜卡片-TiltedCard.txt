@@ -1,0 +1,33 @@
+名称：倾斜卡片 / TiltedCard
+分类：卡片动效
+依赖：Framer Motion
+使用位置：Motion Lab
+
+────────────────────────────────────
+
+【视觉描述】
+
+图片卡片具有 3D 透视倾斜效果，跟随鼠标移动。
+
+光标移动时，卡片绕 X 轴和 Y 轴旋转，
+旋转幅度与光标偏离中心的距离成正比。
+
+hover 时卡片放大到 1.1 倍。
+
+跟随光标还有一个浮动标签（tooltip），
+标签根据光标速度产生额外旋转，
+hover 时淡入显示。
+
+倾斜使用 Framer Motion 弹簧物理，
+质量设为 2，产生缓慢、沉稳的跟随感。
+
+标注"不适用于移动端"。
+
+────────────────────────────────────
+【技术要点】
+
+- Framer Motion useMotionValue + useTransform
+- spring 物理：mass: 2（重阻尼）
+- 光标偏移 → rotateX / rotateY 映射
+- tooltip 跟随光标位置 + 速度旋转
+- scale hover 效果

@@ -1,9 +1,7 @@
-import { useMotionValue, useAnimationFrame, useTransform, useReducedMotion, motion } from 'framer-motion'
-import { useState, useRef, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
+import { motion, useMotionValue, useAnimationFrame, useTransform } from 'framer-motion'
 
 import './ShinyText.css'
-
-type Direction = 'left' | 'right'
 
 type ShinyTextProps = {
   text: string
@@ -15,114 +13,113 @@ type ShinyTextProps = {
   spread?: number
   yoyo?: boolean
   pauseOnHover?: boolean
-  direction?: Direction
+  direction?: 'left' | 'right'
   delay?: number
 }
 
-export function ShinyText({
+const ShinyText = ({
   text,
   disabled = false,
-  speed = 2.5,
-  className,
-  color = 'var(--color-muted)',
-  shineColor = 'var(--color-text)',
-  spread = 100,
+  speed = 2,
+  className = '',
+  color = '#b5b5b5',
+  shineColor = '#ffffff',
+  spread = 120,
   yoyo = false,
   pauseOnHover = false,
-  direction = 'right',
+  direction = 'left',
   delay = 0,
-}: ShinyTextProps) {
-  const reducedMotion = useReducedMotion()
-  const [hovering, setHovering] = useState(false)
-  const [delayDone, setDelayDone] = useState(delay <= 0)
-  const currentDirRef = useRef(direction === 'left' ? -1 : 1)
-  const progressRef = useRef(direction === 'left' ? 100 : -100)
+}: ShinyTextProps) => {
+  const [isPaused, setIsPaused] = useState(false)
+  const progress = useMotionValue(0)
+  const elapsedRef = useRef(0)
+  const lastTimeRef = useRef<number | null>(null)
+  const directionRef = useRef(direction === 'left' ? 1 : -1)
 
-  const motionProgress = useMotionValue(direction === 'left' ? 100 : -100)
+  const animationDuration = speed * 1000
+  const delayDuration = delay * 1000
 
-  // Handle initial delay
-  useEffect(() => {
-    if (delay <= 0 || delayDone || reducedMotion) return
-
-    const start = performance.now()
-    let rafId: number
-
-    const check = () => {
-      if (performance.now() - start >= delay * 1000) {
-        setDelayDone(true)
-        return
-      }
-      rafId = requestAnimationFrame(check)
-    }
-    rafId = requestAnimationFrame(check)
-
-    return () => cancelAnimationFrame(rafId)
-  }, [delay, delayDone, reducedMotion])
-
-  useAnimationFrame((_, delta) => {
-    if (reducedMotion || disabled || !delayDone) return
-    if (pauseOnHover && hovering) return
-
-    const step = (speed * delta) / 1000
-    let next = progressRef.current + step * currentDirRef.current
-
-    if (next >= 200) {
-      if (yoyo) {
-        next = 200
-        currentDirRef.current = -1
-      } else {
-        next = -100
-      }
-    } else if (next <= -100) {
-      if (yoyo) {
-        next = -100
-        currentDirRef.current = 1
-      } else {
-        next = 200
-      }
+  useAnimationFrame((time) => {
+    if (disabled || isPaused) {
+      lastTimeRef.current = null
+      return
     }
 
-    progressRef.current = next
-    motionProgress.set(next)
+    if (lastTimeRef.current === null) {
+      lastTimeRef.current = time
+      return
+    }
+
+    const deltaTime = time - lastTimeRef.current
+    lastTimeRef.current = time
+
+    elapsedRef.current += deltaTime
+
+    if (yoyo) {
+      const cycleDuration = animationDuration + delayDuration
+      const fullCycle = cycleDuration * 2
+      const cycleTime = elapsedRef.current % fullCycle
+
+      if (cycleTime < animationDuration) {
+        const p = (cycleTime / animationDuration) * 100
+        progress.set(directionRef.current === 1 ? p : 100 - p)
+      } else if (cycleTime < cycleDuration) {
+        progress.set(directionRef.current === 1 ? 100 : 0)
+      } else if (cycleTime < cycleDuration + animationDuration) {
+        const reverseTime = cycleTime - cycleDuration
+        const p = 100 - (reverseTime / animationDuration) * 100
+        progress.set(directionRef.current === 1 ? p : 100 - p)
+      } else {
+        progress.set(directionRef.current === 1 ? 0 : 100)
+      }
+    } else {
+      const cycleDuration = animationDuration + delayDuration
+      const cycleTime = elapsedRef.current % cycleDuration
+
+      if (cycleTime < animationDuration) {
+        const p = (cycleTime / animationDuration) * 100
+        progress.set(directionRef.current === 1 ? p : 100 - p)
+      } else {
+        progress.set(directionRef.current === 1 ? 100 : 0)
+      }
+    }
   })
 
-  const backgroundPosition = useTransform(motionProgress, (p) => `${p}% 0`)
+  useEffect(() => {
+    directionRef.current = direction === 'left' ? 1 : -1
+    elapsedRef.current = 0
+    progress.set(0)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [direction])
 
-  const handleEnter = useCallback(() => { if (pauseOnHover) setHovering(true) }, [pauseOnHover])
-  const handleLeave = useCallback(() => { if (pauseOnHover) setHovering(false) }, [pauseOnHover])
+  const backgroundPosition = useTransform(progress, (p) => `${150 - p * 2}% center`)
 
-  const isAnimationDisabled = disabled || reducedMotion
+  const handleMouseEnter = useCallback(() => {
+    if (pauseOnHover) setIsPaused(true)
+  }, [pauseOnHover])
 
-  const shineGradient = `linear-gradient(90deg, transparent 0%, ${shineColor} 50%, transparent 100%)`
+  const handleMouseLeave = useCallback(() => {
+    if (pauseOnHover) setIsPaused(false)
+  }, [pauseOnHover])
 
-  const maskClasses = [
-    'shiny-text__mask',
-    isAnimationDisabled ? 'shiny-text__mask--disabled' : '',
-    pauseOnHover && hovering ? 'shiny-text__mask--paused' : '',
-  ].filter(Boolean).join(' ')
+  const gradientStyle = {
+    backgroundImage: `linear-gradient(${spread}deg, ${color} 0%, ${color} 35%, ${shineColor} 50%, ${color} 65%, ${color} 100%)`,
+    backgroundSize: '200% auto',
+    WebkitBackgroundClip: 'text',
+    backgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+  }
 
   return (
-    <span
-      className={`shiny-text ${className ?? ''}`}
-      style={{
-        color,
-        ['--shine-spread' as string]: `${spread}%`,
-      }}
-      onMouseEnter={handleEnter}
-      onMouseLeave={handleLeave}
+    <motion.span
+      className={`shiny-text ${className}`}
+      style={{ ...gradientStyle, backgroundPosition }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       {text}
-      <motion.span
-        className={maskClasses}
-        style={{
-          backgroundImage: shineGradient,
-          backgroundPosition: isAnimationDisabled ? '50% 0' : backgroundPosition,
-          backgroundSize: `${spread}% 100%`,
-        }}
-        aria-hidden="true"
-      >
-        {text}
-      </motion.span>
-    </span>
+    </motion.span>
   )
 }
+
+export default ShinyText

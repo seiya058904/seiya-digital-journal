@@ -1,0 +1,27 @@
+名称：拆分文字 / SplitText
+分类：文字动效
+依赖：GSAP + ScrollTrigger
+使用位置：Thoughts 引用、Motion Lab
+
+────────────────────────────────────
+
+【视觉描述】
+
+文字按字符（或词/行）逐个入场动画。
+
+每个单元从下方 40px 处、完全透明状态，
+滑入到自然位置并淡入，逐个交错延迟。
+
+使用 GSAP ScrollTrigger，
+当元素滚动到视口阈值时触发一次。
+
+prefers-reduced-motion 下文字直接可见，无动画。
+
+────────────────────────────────────
+【技术要点】
+
+- GSAP SplitText 或手动分割字符
+- ScrollTrigger 控制触发时机
+- toggleActions 支持反向（滚回时重播）
+- stagger 控制字符间延迟
+- reduced-motion 跳过动画

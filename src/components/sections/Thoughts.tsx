@@ -2,7 +2,7 @@ import { ArrowUpRight } from 'lucide-react'
 
 import { thoughts } from '../../data/thoughts'
 import { SplitText } from '../effects/react-bits/SplitText'
-import { ShinyText } from '../effects/text/ShinyText'
+import ShinyText from '../effects/text/ShinyText'
 import { ScrollReveal } from '../motion/ScrollReveal'
 import { Chapter } from '../ui/Chapter'
 
@@ -18,7 +18,7 @@ export function Thoughts() {
               color="var(--color-gold)"
               shineColor="var(--color-text)"
               speed={0.4}
-              spread={80}
+              spread={120}
               delay={3}
             />
           </span>

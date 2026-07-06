@@ -1,0 +1,29 @@
+名称：轨道图片 / OrbitImages
+分类：实验性动效
+依赖：Framer Motion
+使用位置：Signals 区块（首页）、Motion Lab
+
+────────────────────────────────────
+
+【视觉描述】
+
+图片沿 SVG 椭圆（或圆形）路径持续旋转。
+
+每张图片通过 CSS offset-path 定位，
+使用百分比偏移量随时间递增实现旋转。
+
+整个轨道有可配置的倾斜角度（默认 -8°）。
+
+支持可选的中心内容、可见路径轮廓，
+以及响应式缩放。
+
+prefers-reduced-motion 下显示为简单静态网格布局。
+
+────────────────────────────────────
+【技术要点】
+
+- CSS offset-path + offset-distance 定位
+- Framer Motion animation 驱动偏移量递增
+- SVG path 定义椭圆/圆形轨迹
+- transform: rotate 倾斜整个轨道
+- reduced-motion 降级为静态网格

@@ -1,0 +1,33 @@
+名称：桌面网格扫描 / DesktopGridScan
+分类：3D 动效
+依赖：Three.js（GridScan 包装器）
+使用位置：首页背景（App.tsx）
+
+────────────────────────────────────
+
+【视觉描述】
+
+GridScan 的性能包装器，仅在桌面端渲染。
+
+渲染条件：
+- 宽度 ≥ 1024px
+- 支持 hover
+- 细指针（鼠标）
+- 无 reduced-motion 偏好
+
+不满足条件时返回降级元素。
+
+使用 React lazy-loading 延迟加载
+重量级 Three.js 代码。
+
+视觉效果与 GridScan 一致：
+透视网格隧道 + 扫描线 + 鼠标跟随。
+
+────────────────────────────────────
+【技术要点】
+
+- window.matchMedia 检测设备能力
+- React.lazy 延迟加载 GridScan
+- Suspense 包装降级处理
+- 仅桌面端渲染 WebGL
+- 移动端零 GPU 开销

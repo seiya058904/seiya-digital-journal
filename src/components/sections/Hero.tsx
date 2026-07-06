@@ -4,7 +4,8 @@ import { motion } from 'framer-motion'
 import avatarSeiya from '../../assets/avatar-seiya.webp'
 import { profile } from '../../data/profile'
 import { ProfileCard } from '../effects/react-bits/ProfileCard'
-import { GradientText } from '../effects/text/GradientText'
+import GradientText from '../effects/text/GradientText'
+import ShinyText from '../effects/text/ShinyText'
 import { RotatingText } from '../effects/text/RotatingText'
 import { TextReveal } from '../motion/TextReveal'
 import { ActionLink } from '../ui/ActionLink'
@@ -21,7 +22,7 @@ export function Hero() {
             <GradientText
               colors={['#f3f6ff', '#56e4ff', '#a78bfa', '#f0abfc', '#f3f6ff']}
               animationSpeed={7}
-              direction="right"
+              direction="horizontal"
             >
               {profile.hero.title[0].text}{profile.hero.title[0].accent}
             </GradientText>
@@ -30,7 +31,7 @@ export function Hero() {
             <GradientText
               colors={['#f3f6ff', '#56e4ff', '#a78bfa', '#f0abfc', '#f3f6ff']}
               animationSpeed={7}
-              direction="right"
+              direction="horizontal"
             >
               {profile.hero.title[1].text}{profile.hero.title[1].accent}
             </GradientText>
@@ -42,7 +43,7 @@ export function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.72, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
         >
-          {profile.hero.subtitle}
+          <ShinyText text={profile.hero.subtitle} speed={2} spread={120} shineColor="#e0e8ff" />
         </motion.p>
         <motion.p
           className="hero__chinese"
