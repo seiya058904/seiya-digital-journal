@@ -324,7 +324,6 @@ const realDemoNames = new Set([
   'TiltedCard',
   'Stack',
   'PillNav',
-  'GridScan',
   'BounceCards',
   'ImageTrail',
   'MagicBento',

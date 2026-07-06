@@ -8,7 +8,6 @@ import { AnimatedContent } from '../effects/react-bits/AnimatedContent'
 import { BorderGlow } from '../effects/react-bits/BorderGlow'
 import { BounceCards } from '../effects/react-bits/BounceCards'
 import { CountUp } from '../effects/react-bits/CountUp'
-import { DesktopGridScan } from '../effects/react-bits/DesktopGridScan'
 import { GlareHover } from '../effects/react-bits/GlareHover'
 import { GradientText } from '../effects/text/GradientText'
 import { ImageTrail } from '../effects/react-bits/ImageTrail'
@@ -25,6 +24,8 @@ import { TiltedCard } from '../effects/react-bits/TiltedCard'
 import { OrbitImages } from '../effects/react-bits/OrbitImages'
 import { Folder } from '../effects/react-bits/Folder'
 import { GlassIcons } from '../effects/react-bits/GlassIcons'
+import { CardNav } from '../effects/react-bits/CardNav'
+import { FlowingMenu } from '../effects/react-bits/FlowingMenu'
 
 import './ReactBitsDemo.css'
 
@@ -88,6 +89,33 @@ const glassIconItems = [
   { icon: <Code size={18} />, color: 'purple', label: 'Code' },
   { icon: <Image size={18} />, color: 'orange', label: 'Design' },
   { icon: <Settings size={18} />, color: 'green', label: 'Config' },
+]
+
+const cardNavItems = [
+  {
+    label: 'Journal',
+    bgColor: 'rgba(20, 30, 60, 0.95)',
+    textColor: '#e0e8ff',
+    links: [
+      { label: 'Thoughts', href: '#/' },
+      { label: 'Gallery', href: '#/gallery' },
+    ],
+  },
+  {
+    label: 'Archive',
+    bgColor: 'rgba(40, 20, 60, 0.95)',
+    textColor: '#e0d0ff',
+    links: [
+      { label: 'Images', href: '#/archive/images' },
+      { label: 'Notes', href: '#/archive/notes' },
+    ],
+  },
+]
+
+const flowingMenuItems = [
+  { link: '#/', text: 'Journal', image: `${base}gallery/aurora.webp` },
+  { link: '#/gallery', text: 'Gallery', image: `${base}gallery/horizon.webp` },
+  { link: '#/archive', text: 'Archive', image: `${base}gallery/geometry.webp` },
 ]
 
 function MultiStepLoaderDemo() {
@@ -196,19 +224,6 @@ export function ReactBitsDemo({ effectId }: ReactBitsDemoProps) {
           pillTextColor="#9ca6bb"
           initialLoadAnimation={false}
         />
-      )
-
-    case 'grid-scan':
-      return (
-        <div className="rb-demo-gridscan">
-          <DesktopGridScan
-            fallback={<div className="rb-demo-gridscan__fallback">Desktop visual core</div>}
-            linesColor="#315b86"
-            scanColor="#70e8ff"
-            scanOpacity={0.58}
-            gridScale={0.12}
-          />
-        </div>
       )
 
     case 'bounce-cards':
@@ -361,6 +376,29 @@ export function ReactBitsDemo({ effectId }: ReactBitsDemoProps) {
     case 'glass-icons':
       return (
         <GlassIcons className="rb-demo-glass-icons" items={glassIconItems} />
+      )
+
+    case 'card-nav':
+      return (
+        <CardNav
+          className="rb-demo-card-nav"
+          items={cardNavItems}
+          baseColor="rgba(5, 10, 24, 0.92)"
+          menuColor="#9ca6bb"
+        />
+      )
+
+    case 'flowing-menu':
+      return (
+        <FlowingMenu
+          items={flowingMenuItems}
+          speed={15}
+          textColor="#e0e8ff"
+          bgColor="#0a0d1a"
+          marqueeBgColor="#fff"
+          marqueeTextColor="#0a0d1a"
+          borderColor="rgba(255,255,255,0.15)"
+        />
       )
 
     default:
