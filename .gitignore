@@ -47,6 +47,9 @@ Profile Picture/
 # React Bits reference source files
 React bits/
 
+# Effects library documentation (local-only notes)
+effects-library/
+
 # Session process artifacts (reports, audits, contact sheets)
 report/
 
