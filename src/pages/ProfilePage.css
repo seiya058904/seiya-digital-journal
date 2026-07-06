@@ -117,7 +117,7 @@
   font-size: clamp(3rem, 7vw, 4.8rem);
   font-weight: 400;
   letter-spacing: -0.05em;
-  line-height: 1.05;
+  line-height: 1.2;
 }
 
 .profile-hero__email {
