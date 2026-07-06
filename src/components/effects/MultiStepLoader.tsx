@@ -33,7 +33,6 @@ export function MultiStepLoader({
       setCurrentState(0)
       return
     }
-    if (reducedMotion) return
 
     const timeout = window.setTimeout(() => {
       const nextState = getNextLoaderState(currentState, loadingStates.length, loop)
@@ -45,7 +44,7 @@ export function MultiStepLoader({
     }, duration)
 
     return () => window.clearTimeout(timeout)
-  }, [currentState, duration, loading, loadingStates.length, loop, onClose, reducedMotion])
+  }, [currentState, duration, loading, loadingStates.length, loop, onClose])
 
   useEffect(() => {
     if (!loading) return
