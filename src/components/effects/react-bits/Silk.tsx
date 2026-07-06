@@ -69,11 +69,8 @@ void main() {
 }
 `
 
-const SilkPlane = forwardRef(function SilkPlane({ uniforms, paused }: { uniforms: Record<string, { value: unknown }>; paused?: boolean }, ref: any) {
+const SilkPlane = forwardRef(function SilkPlane({ uniforms }: { uniforms: Record<string, { value: unknown }> }, ref: any) {
   const { viewport } = useThree()
-  const pausedRef = useRef(paused)
-  pausedRef.current = paused
-  const pausedAtRef = useRef<number | undefined>(undefined)
 
   useLayoutEffect(() => {
     if (ref.current) {
@@ -82,19 +79,6 @@ const SilkPlane = forwardRef(function SilkPlane({ uniforms, paused }: { uniforms
   }, [ref, viewport])
 
   useFrame((_, delta) => {
-    if (pausedRef.current) {
-      if (pausedAtRef.current === undefined) {
-        pausedAtRef.current = performance.now()
-      }
-      return
-    }
-
-    if (pausedAtRef.current !== undefined) {
-      ref.current.material.uniforms.uTime.value +=
-        0.1 * (performance.now() - pausedAtRef.current) / 1000
-      pausedAtRef.current = undefined
-    }
-
     ref.current.material.uniforms.uTime.value += 0.1 * delta
   })
 
@@ -117,6 +101,7 @@ const Silk = ({ speed = 5, scale = 1, color = '#7B7481', noiseIntensity = 1.5, r
 }) => {
   const meshRef = useRef(null)
   const setFrameloopRef = useRef<((mode: 'always' | 'demand' | 'manual') => void) | null>(null)
+  const pauseStartedAtRef = useRef<number | null>(null)
 
   const uniforms = useMemo(
     () => ({
@@ -137,12 +122,19 @@ const Silk = ({ speed = 5, scale = 1, color = '#7B7481', noiseIntensity = 1.5, r
   useEffect(() => {
     const setFrameloop = setFrameloopRef.current
     if (!setFrameloop) return
+
     if (paused) {
+      pauseStartedAtRef.current = performance.now()
       setFrameloop('demand')
     } else {
+      if (pauseStartedAtRef.current !== null) {
+        uniforms.uTime.value +=
+          0.1 * (performance.now() - pauseStartedAtRef.current) / 1000
+        pauseStartedAtRef.current = null
+      }
       setFrameloop('always')
     }
-  }, [paused])
+  }, [paused, uniforms])
 
   return (
     <Canvas
@@ -150,7 +142,7 @@ const Silk = ({ speed = 5, scale = 1, color = '#7B7481', noiseIntensity = 1.5, r
       frameloop="always"
       onCreated={handleCreated}
     >
-      <SilkPlane ref={meshRef} uniforms={uniforms} paused={paused} />
+      <SilkPlane ref={meshRef} uniforms={uniforms} />
     </Canvas>
   )
 }
