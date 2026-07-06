@@ -19,24 +19,40 @@ export function getCurrentInternalRoute(): string {
 export function setAuthReturnTarget(target: string) {
   if (typeof window === 'undefined') return
   const nextTarget = normalizeAuthReturnTarget(target)
-  window.sessionStorage.setItem(AUTH_RETURN_TARGET_KEY, nextTarget)
+  try {
+    window.sessionStorage.setItem(AUTH_RETURN_TARGET_KEY, nextTarget)
+  } catch {
+    // storage unavailable — silently degrade
+  }
 }
 
 export function getAuthReturnTarget(): string {
   if (typeof window === 'undefined') return HOME_ROUTE
-  return normalizeAuthReturnTarget(window.sessionStorage.getItem(AUTH_RETURN_TARGET_KEY))
+  try {
+    return normalizeAuthReturnTarget(window.sessionStorage.getItem(AUTH_RETURN_TARGET_KEY))
+  } catch {
+    return HOME_ROUTE
+  }
 }
 
 export function consumeAuthReturnTarget(): string {
   if (typeof window === 'undefined') return HOME_ROUTE
   const target = getAuthReturnTarget()
-  window.sessionStorage.removeItem(AUTH_RETURN_TARGET_KEY)
+  try {
+    window.sessionStorage.removeItem(AUTH_RETURN_TARGET_KEY)
+  } catch {
+    // ignore removal failure — target already read
+  }
   return target
 }
 
 export function clearAuthReturnTarget() {
   if (typeof window === 'undefined') return
-  window.sessionStorage.removeItem(AUTH_RETURN_TARGET_KEY)
+  try {
+    window.sessionStorage.removeItem(AUTH_RETURN_TARGET_KEY)
+  } catch {
+    // ignore removal failure
+  }
 }
 
 export function getPreSignOutRoute(route: string | null | undefined): string | null {
@@ -62,6 +78,10 @@ export function shouldRedirectProfileToAuth({
 
 export function navigateToAuth(returnTarget = getCurrentInternalRoute()) {
   if (typeof window === 'undefined') return
-  setAuthReturnTarget(returnTarget)
+  try {
+    setAuthReturnTarget(returnTarget)
+  } catch {
+    // storage unavailable — proceed to auth route anyway
+  }
   window.location.hash = AUTH_ROUTE
 }

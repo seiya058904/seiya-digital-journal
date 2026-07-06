@@ -121,3 +121,56 @@ test('profile auth guard does not redirect from auth route', () => {
     currentRoute: '#/auth',
   }), false)
 })
+
+function installThrowingStorageWindow() {
+  const windowMock = {
+    location: { hash: '#/' },
+    sessionStorage: {
+      getItem() { throw new Error('storage unavailable') },
+      setItem() { throw new Error('storage unavailable') },
+      removeItem() { throw new Error('storage unavailable') },
+    },
+  }
+
+  Object.defineProperty(globalThis, 'window', {
+    configurable: true,
+    value: windowMock,
+  })
+
+  return {
+    restore() {
+      delete (globalThis as { window?: unknown }).window
+    },
+  }
+}
+
+test('setAuthReturnTarget does not throw when sessionStorage.setItem fails', () => {
+  const mock = installThrowingStorageWindow()
+  assert.doesNotThrow(() => setAuthReturnTarget('#/archive'))
+  mock.restore()
+})
+
+test('getAuthReturnTarget returns home route when sessionStorage.getItem fails', () => {
+  const mock = installThrowingStorageWindow()
+  assert.equal(getAuthReturnTarget(), '#/')
+  mock.restore()
+})
+
+test('clearAuthReturnTarget does not throw when sessionStorage.removeItem fails', () => {
+  const mock = installThrowingStorageWindow()
+  assert.doesNotThrow(() => clearAuthReturnTarget())
+  mock.restore()
+})
+
+test('consumeAuthReturnTarget returns target even when sessionStorage.removeItem fails', () => {
+  const mock = installThrowingStorageWindow()
+  assert.equal(consumeAuthReturnTarget(), '#/')
+  mock.restore()
+})
+
+test('navigateToAuth still sets AUTH_ROUTE when sessionStorage is unavailable', () => {
+  const mock = installThrowingStorageWindow()
+  navigateToAuth('#/archive')
+  assert.equal(window.location.hash, AUTH_ROUTE)
+  mock.restore()
+})
