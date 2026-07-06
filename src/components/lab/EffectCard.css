@@ -96,7 +96,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 120px;
+  min-height: 220px;
 }
 
 @media (max-width: 1023px) {

@@ -26,6 +26,11 @@ import { Folder } from '../effects/react-bits/Folder'
 import { GlassIcons } from '../effects/react-bits/GlassIcons'
 import { CardNav } from '../effects/react-bits/CardNav'
 import { FlowingMenu } from '../effects/react-bits/FlowingMenu'
+import { CursorGlow } from '../effects/CursorGlow'
+import { GradientBorder } from '../effects/GradientBorder'
+import { CardTilt } from '../effects/CardTilt'
+import { ScrollReveal } from '../motion/ScrollReveal'
+import { TextReveal } from '../motion/TextReveal'
 
 import './ReactBitsDemo.css'
 
@@ -399,6 +404,52 @@ export function ReactBitsDemo({ effectId }: ReactBitsDemoProps) {
           marqueeTextColor="#0a0d1a"
           borderColor="rgba(255,255,255,0.15)"
         />
+      )
+
+    case 'scroll-reveal':
+      return (
+        <ScrollReveal className="rb-demo-scroll-reveal" amount={0.3}>
+          <div className="rb-demo-scroll-reveal__box">
+            Scroll into view to reveal this content.
+          </div>
+        </ScrollReveal>
+      )
+
+    case 'text-reveal':
+      return (
+        <div className="rb-demo-text-reveal">
+          <TextReveal>
+            <span className="rb-demo-text-reveal__text">
+              Words rise from the ground.
+            </span>
+          </TextReveal>
+        </div>
+      )
+
+    case 'cursor-glow':
+      return (
+        <div className="rb-demo-cursor-glow">
+          <CursorGlow />
+          <span>Move your cursor here</span>
+        </div>
+      )
+
+    case 'gradient-border':
+      return (
+        <GradientBorder className="rb-demo-gradient-border">
+          <div className="rb-demo-gradient-border__inner">
+            Gradient border wrapper
+          </div>
+        </GradientBorder>
+      )
+
+    case 'card-tilt':
+      return (
+        <CardTilt className="rb-demo-card-tilt" intensity={8}>
+          <div className="rb-demo-card-tilt__inner">
+            Tilt me
+          </div>
+        </CardTilt>
       )
 
     default:
