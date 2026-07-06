@@ -337,6 +337,7 @@ const realDemoNames = new Set([
   'GlassIcons',
   'MultiStepLoader',
   'Stepper',
+  'FlowingMenu',
 ])
 
 const homepageNames = new Set([
