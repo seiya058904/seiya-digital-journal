@@ -33,7 +33,7 @@ export function ProfileHero({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: reduceMotion ? 0 : 0.32, ease: easeOut, delay: reduceMotion ? 0 : 0.06 }}
       >
-        <ShinyText text="Personal Space" speed={2} spread={120} shineColor="#e0e8ff" />
+        <ShinyText text="Personal Space" speed={2} spread={120} color="var(--color-gold)" shineColor="#e0e8ff" />
       </motion.p>
       <motion.p
         className="profile-hero__subtitle"
@@ -41,7 +41,7 @@ export function ProfileHero({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: reduceMotion ? 0 : 0.32, ease: easeOut, delay: reduceMotion ? 0 : 0.11 }}
       >
-        <ShinyText text="Your quiet corner of the journal." speed={2} spread={120} shineColor="#e0e8ff" />
+        <ShinyText text="Your quiet corner of the journal." speed={2} spread={120} color="var(--color-muted)" shineColor="#e0e8ff" />
       </motion.p>
 
       <motion.div
@@ -86,7 +86,7 @@ export function ProfileHero({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: reduceMotion ? 0 : 0.28, ease: easeOut, delay: reduceMotion ? 0 : 0.28 }}
       >
-        <ShinyText text={email} speed={2} spread={120} shineColor="#e0e8ff" />
+        <ShinyText text={email} speed={2} spread={120} color="var(--color-muted)" shineColor="#e0e8ff" />
       </motion.p>
 
       <motion.div
@@ -95,10 +95,10 @@ export function ProfileHero({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: reduceMotion ? 0 : 0.28, ease: easeOut, delay: reduceMotion ? 0 : 0.32 }}
       >
-        <span><ShinyText text={`Member since ${memberSinceLabel}`} speed={2} spread={120} shineColor="#e0e8ff" /></span>
+        <span><ShinyText text={`Member since ${memberSinceLabel}`} speed={2} spread={120} color="var(--color-faint)" shineColor="#e0e8ff" /></span>
         <span className="profile-hero__status">
           <i aria-hidden="true" />
-          <ShinyText text="Active" speed={2} spread={120} shineColor="#e0e8ff" />
+          <ShinyText text="Active" speed={2} spread={120} color="var(--color-faint)" shineColor="#e0e8ff" />
         </span>
       </motion.div>
 
