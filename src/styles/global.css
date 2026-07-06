@@ -547,7 +547,7 @@ main {
   font-size: clamp(3.15rem, 5.5vw, 6rem);
   font-weight: 430;
   letter-spacing: -0.04em;
-  line-height: 1.22;
+  line-height: 1.27;
   text-wrap: balance;
 }
 
