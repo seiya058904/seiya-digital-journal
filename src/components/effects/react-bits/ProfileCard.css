@@ -92,6 +92,30 @@
   transform: translateZ(0) rotateX(var(--rotate-y)) rotateY(var(--rotate-x));
 }
 
+.pc-card::before {
+  content: '';
+  position: absolute;
+  inset: -20%;
+  background: conic-gradient(
+    from var(--bgrotate),
+    transparent 0%,
+    rgba(255, 255, 255, 0.02) 8%,
+    transparent 16%,
+    rgba(180, 160, 255, 0.025) 24%,
+    transparent 32%,
+    rgba(100, 200, 255, 0.02) 40%,
+    transparent 48%,
+    rgba(255, 180, 220, 0.025) 56%,
+    transparent 64%,
+    rgba(200, 255, 200, 0.02) 72%,
+    transparent 80%,
+    rgba(255, 255, 180, 0.025) 88%,
+    transparent 100%
+  );
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
 .pc-card * {
   display: grid;
   grid-area: 1 / -1;
@@ -116,7 +140,7 @@
   mask-position:
     top calc(200% - (var(--background-y) * 5)) left calc(100% - var(--background-x));
   transition: filter 0.8s ease;
-  filter: brightness(0.66) contrast(1.33) saturate(0.33) opacity(0.5);
+  filter: brightness(0.25) contrast(1.05) saturate(0.1) opacity(0.2);
   animation: holo-bg 18s linear infinite;
   animation-play-state: running;
   mix-blend-mode: color-dodge;
@@ -182,7 +206,7 @@
 
 .pc-card:hover .pc-shine,
 .pc-card.active .pc-shine {
-  filter: brightness(0.85) contrast(1.5) saturate(0.5);
+  filter: brightness(0.35) contrast(1.1) saturate(0.15);
   animation-play-state: paused;
 }
 
@@ -243,6 +267,7 @@
 .pc-glare {
   transform: translate3d(0, 0, 1.1px);
   overflow: hidden;
+  opacity: 0.1;
   background-image: radial-gradient(
     farthest-corner circle at var(--pointer-x) var(--pointer-y),
     hsl(248, 25%, 80%) 12%,
@@ -251,6 +276,11 @@
   mix-blend-mode: overlay;
   filter: brightness(0.8) contrast(1.2);
   z-index: 4;
+}
+
+.pc-card:hover .pc-glare,
+.pc-card.active .pc-glare {
+  opacity: 0.15;
 }
 
 /* Avatar content area */
@@ -416,6 +446,12 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   -webkit-background-clip: text;
+}
+
+@property --bgrotate {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
 }
 
 /* Keyframes */
