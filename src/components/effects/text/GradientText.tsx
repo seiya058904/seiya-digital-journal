@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
-import { motion, useMotionValue, useAnimationFrame, useTransform } from 'framer-motion'
+import { motion, useMotionValue, useAnimationFrame, useTransform, useReducedMotion } from 'framer-motion'
 
 import './GradientText.css'
 
@@ -26,6 +26,7 @@ export default function GradientText({
   pauseOnHover = false,
   yoyo = true,
 }: GradientTextProps) {
+  const reducedMotion = useReducedMotion()
   const [isPaused, setIsPaused] = useState(false)
   const progress = useMotionValue(0)
   const elapsedRef = useRef(0)
@@ -34,7 +35,7 @@ export default function GradientText({
   const animationDuration = animationSpeed * 1000
 
   useAnimationFrame((time) => {
-    if (isPaused) {
+    if (reducedMotion || isPaused) {
       lastTimeRef.current = null
       return
     }
@@ -97,17 +98,17 @@ export default function GradientText({
   }
 
   return (
-    <motion.div
+    <motion.span
       className={`animated-gradient-text ${showBorder ? 'with-border' : ''} ${className}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
       {showBorder && (
-        <motion.div className="gradient-overlay" style={{ ...gradientStyle, backgroundPosition }} />
+        <motion.span className="gradient-overlay" style={{ ...gradientStyle, backgroundPosition }} />
       )}
-      <motion.div className="text-content" style={{ ...gradientStyle, backgroundPosition }}>
+      <motion.span className="text-content" style={{ ...gradientStyle, backgroundPosition }}>
         {children}
-      </motion.div>
-    </motion.div>
+      </motion.span>
+    </motion.span>
   )
 }
