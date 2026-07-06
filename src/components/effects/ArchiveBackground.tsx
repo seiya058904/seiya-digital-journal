@@ -1,7 +1,9 @@
-import { lazy, Suspense, useMemo } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import './ArchiveBackground.css'
 
 const Silk = lazy(() => import('./react-bits/Silk'))
+
+const FADE_MS = 400
 
 export function ArchiveBackground({ hidden = false }: { hidden?: boolean }) {
   const reducedMotion = useMemo(() => {
@@ -16,13 +18,44 @@ export function ArchiveBackground({ hidden = false }: { hidden?: boolean }) {
     return window.matchMedia('(hover: none) and (pointer: coarse)').matches
   }, [])
 
+  const [fadeDone, setFadeDone] = useState(!hidden)
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
+  const bgRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!hidden) {
+      if (timerRef.current) clearTimeout(timerRef.current)
+      setFadeDone(true)
+      return
+    }
+    setFadeDone(false)
+    const id = setTimeout(() => setFadeDone(true), FADE_MS)
+    timerRef.current = id
+    return () => clearTimeout(id)
+  }, [hidden])
+
+  const onTransitionEnd = useCallback(() => {
+    if (hidden) setFadeDone(true)
+  }, [hidden])
+
+  useEffect(() => {
+    const el = bgRef.current
+    if (!el || !hidden) return
+    el.addEventListener('transitionend', onTransitionEnd, { once: true })
+    return () => el.removeEventListener('transitionend', onTransitionEnd)
+  }, [hidden, onTransitionEnd])
+
   // Keep Silk mounted on desktop even when hidden so WebGL context survives
   // navigation — prevents stutter on home↔archive transitions.
   // On mobile / reduced-motion: skip entirely.
   if (reducedMotion || isMobile) return null
 
   return (
-    <div className={`archive-bg${hidden ? ' archive-bg--hidden' : ''}`} aria-hidden="true">
+    <div
+      ref={bgRef}
+      className={`archive-bg${hidden ? ' archive-bg--hidden' : ''}`}
+      aria-hidden="true"
+    >
       <Suspense fallback={null}>
         <Silk
           speed={4}
@@ -30,7 +63,7 @@ export function ArchiveBackground({ hidden = false }: { hidden?: boolean }) {
           color="#524499"
           noiseIntensity={1.5}
           rotation={0.5}
-          paused={hidden}
+          paused={hidden && fadeDone}
         />
       </Suspense>
     </div>

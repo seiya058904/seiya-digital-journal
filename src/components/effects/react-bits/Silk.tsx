@@ -81,18 +81,17 @@ const SilkPlane = forwardRef(function SilkPlane({ uniforms, paused }: { uniforms
     }
   }, [ref, viewport])
 
-  useFrame((state, delta) => {
-    const elapsed = state.clock.getElapsedTime()
-
+  useFrame((_, delta) => {
     if (pausedRef.current) {
       if (pausedAtRef.current === undefined) {
-        pausedAtRef.current = elapsed
+        pausedAtRef.current = performance.now()
       }
       return
     }
 
     if (pausedAtRef.current !== undefined) {
-      ref.current.material.uniforms.uTime.value += 0.1 * (elapsed - pausedAtRef.current)
+      ref.current.material.uniforms.uTime.value +=
+        0.1 * (performance.now() - pausedAtRef.current) / 1000
       pausedAtRef.current = undefined
     }
 

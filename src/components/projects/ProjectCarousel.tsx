@@ -22,6 +22,18 @@ function ProjectSlide({ project, index, current, onSelect, headingId }: ProjectS
   const active = current === index
   const actionLink = project.primaryLink ?? project.secondaryLink
 
+  const scheduleWrite = () => {
+    if (frameRef.current !== undefined) return
+    frameRef.current = requestAnimationFrame(() => {
+      frameRef.current = undefined
+      const el = slideRef.current
+      if (el) {
+        el.style.setProperty('--pointer-x', `${xRef.current}px`)
+        el.style.setProperty('--pointer-y', `${yRef.current}px`)
+      }
+    })
+  }
+
   return (
     <li
       ref={slideRef}
@@ -36,27 +48,12 @@ function ProjectSlide({ project, index, current, onSelect, headingId }: ProjectS
         const bounds = el.getBoundingClientRect()
         xRef.current = event.clientX - (bounds.left + Math.floor(bounds.width / 2))
         yRef.current = event.clientY - (bounds.top + Math.floor(bounds.height / 2))
-        if (frameRef.current === undefined) {
-          frameRef.current = requestAnimationFrame(() => {
-            frameRef.current = undefined
-            el.style.setProperty('--pointer-x', `${xRef.current}px`)
-            el.style.setProperty('--pointer-y', `${yRef.current}px`)
-          })
-        }
+        scheduleWrite()
       }}
       onMouseLeave={() => {
         xRef.current = 0
         yRef.current = 0
-        if (frameRef.current === undefined) {
-          const el = slideRef.current
-          if (el) {
-            frameRef.current = requestAnimationFrame(() => {
-              frameRef.current = undefined
-              el.style.setProperty('--pointer-x', '0px')
-              el.style.setProperty('--pointer-y', '0px')
-            })
-          }
-        }
+        scheduleWrite()
       }}
     >
       <div className="project-carousel__image-plane">
