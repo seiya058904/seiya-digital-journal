@@ -6,7 +6,6 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
 }
 
 .animated-gradient-text.with-border {
@@ -16,6 +15,7 @@
   backdrop-filter: blur(10px);
   transition: box-shadow 0.5s ease-out;
   cursor: pointer;
+  overflow: hidden;
 }
 
 .gradient-overlay {
