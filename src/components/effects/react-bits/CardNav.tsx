@@ -227,6 +227,7 @@ function CardNavComponent({
                     aria-label={lnk.ariaLabel ?? lnk.label}
                     target={lnk.target}
                     rel={lnk.rel}
+                    tabIndex={isExpanded ? undefined : -1}
                   >
                     <ArrowUpRight className="nav-card-link-icon" aria-hidden="true" size={14} strokeWidth={1.6} />
                     {lnk.label}
