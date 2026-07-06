@@ -50,8 +50,6 @@ git diff --check
 
 Always run `npm run lint` and `npm run build` before committing. The lint has zero tolerance — no warnings allowed.
 
-Recent Profile release verified 65 tests; always verify with actual test output.
-
 ## Architecture
 
 ### Tech Stack
@@ -145,7 +143,7 @@ public/
 
 **Design tokens** in `src/styles/tokens.css` define all colors, borders, shadows, radii, typography, and motion durations via CSS custom properties. Components use these variables, never hardcoded values.
 
-**All page CSS** lives in `src/styles/global.css` — there is no component-level CSS module system. The file is large (~2004 lines) with responsive breakpoints at 1080px, 820px, and 560px.
+**Layout CSS** lives in `src/styles/global.css`. Individual pages and components also have co-located CSS files (e.g. `ProfilePage.css`, `AuthPage.css`, `GalleryPage.css`). The global file is ~1984 lines with responsive breakpoints at 1080px, 820px, and 560px. There is no CSS module or CSS-in-JS system.
 
 ## Routing
 
@@ -288,7 +286,7 @@ The Motion Lab (`#/motion-lab`) showcases interactive effects. Each effect has m
 
 ## React Bits Integration Pattern
 
-Each effect has a named source file in `React bits/{N}.txt`. The pipeline:
+Each effect has a named source file in `React bits/{N}.txt` (local only — the directory is gitignored). The pipeline:
 1. Source file → `src/components/effects/react-bits/{Name}.tsx` + `{Name}.css`
 2. Metadata entry → `src/data/effects.ts`
 3. Demo renderer → `src/components/lab/ReactBitsDemo.tsx` (add a `case`)
@@ -342,14 +340,6 @@ const src = `${base}gallery/aurora.webp`  // → /seiya-digital-journal/gallery/
 ```
 
 Vite rewrites paths in `index.html` and ES module imports automatically, but does NOT rewrite hardcoded strings in data files.
-
-### Replacing the Hero portrait
-
-Replace `src/assets/profile-placeholder.svg` with a new image (keep the same import path), or put a new image in the same folder and update the import in `src/components/sections/Hero.tsx`. Use a ~4:5 ratio portrait, keep `width`, `height`, and `alt` accurate.
-
-### Replacing Gallery images
-
-Drop new WebP files into `public/gallery/` using the same filenames. The layout and animation continue to work without code changes. Note: `public/gallery/` images are used directly by Motion Lab demos (`ReactBitsDemo.tsx`), not through a data file — update hardcoded paths there if filenames change.
 
 ## Motion Principles
 
@@ -420,16 +410,12 @@ Drop new WebP files into `public/gallery/` using the same filenames. The layout 
 
 ## Testing
 
-Tests use Node's built-in test runner with `--experimental-strip-types` for TypeScript.
+Tests use Node's built-in test runner with `--experimental-strip-types` for TypeScript. 17 test files co-located with source as `*.test.ts`.
 
 ```powershell
-npm test                    # run all tests
+npm test                    # run all tests (currently 65 tests)
 node --experimental-strip-types --test src/data/content.test.ts  # single file
 ```
-
-Test files:
-- `src/data/content.test.ts` — validates content integrity (brand name, navigation order, gallery filenames, placeholder links)
-- `src/components/effects/CardTilt.test.ts` — tests tilt calculation logic
 
 ## Git Workflow
 
@@ -497,38 +483,20 @@ After changes, report:
 - Commit/push/deploy status
 - Remaining risks
 
-## Current Production Snapshot
+## Current State (re-verify before remote writes)
 
-**This is a point-in-time snapshot. Values may change in future operations.**
+Before any remote write, re-verify:
+- Git SHAs and branch
+- Worker deployment state
+- Linked Supabase project ref (`fgeiygcycxjlqgbczrfs`)
+- Applied migrations: `20260704224500_create_interactions.sql`, `20260705000100_create_profiles.sql`
 
-The following values were accurate at the time of writing. Before any remote write, re-verify all of them:
-- Git SHAs
-- Worker version
-- Deployment state
-- PR state
-- Linked Supabase project
-
-### Snapshot (as of HEAD `d749261b754c276ff7f86b495ce45f8afcd26367`)
-
-**Git:**
-- Current main HEAD: `d749261` (`fix: handle profile API error state in Header`)
-- PR #6 (`feat: add Personal Space profile experience`): merged
-- Merge commit: `2d4b81a`
-
-**Worker:**
-- Version: `e5cdfd1f-7be4-4978-923c-189916573978`
-
-**Supabase:**
-- Project ref: `fgeiygcycxjlqgbczrfs`
-- Profile migration: applied
-- Interactions migration: applied
-
-**Production manual verification (performed by user):**
+**Production manual verification (performed by user, as of PR #6):**
 - Login flow
 - Avatar switching
 - Display name editing
 - Back button
-- Refresh behavior: neutral/blank placeholder → real saved avatar (no longer avatar-01 → real avatar flash)
+- Refresh behavior: neutral/blank placeholder → real saved avatar
 
 ## Privacy
 
