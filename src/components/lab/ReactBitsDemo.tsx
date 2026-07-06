@@ -1,14 +1,15 @@
 import { useState } from 'react'
 
+import { FileText, Code, Image, Settings } from 'lucide-react'
+
 import profileLogo from '../../assets/profile-placeholder.svg'
 import { MultiStepLoader } from '../effects/MultiStepLoader'
 import { AnimatedContent } from '../effects/react-bits/AnimatedContent'
 import { BorderGlow } from '../effects/react-bits/BorderGlow'
 import { BounceCards } from '../effects/react-bits/BounceCards'
 import { CountUp } from '../effects/react-bits/CountUp'
-import { DesktopGridScan } from '../effects/react-bits/DesktopGridScan'
 import { GlareHover } from '../effects/react-bits/GlareHover'
-import { GradientText } from '../effects/text/GradientText'
+import GradientText from '../effects/text/GradientText'
 import { ImageTrail } from '../effects/react-bits/ImageTrail'
 import { JournalStepperDemo } from '../effects/react-bits/JournalStepperDemo'
 import { MagicBento } from '../effects/react-bits/MagicBento'
@@ -16,10 +17,20 @@ import { PillNav } from '../effects/react-bits/PillNav'
 import { ProfileCard } from '../effects/react-bits/ProfileCard'
 import { RotatingText } from '../effects/text/RotatingText'
 import { ScrambledText } from '../effects/react-bits/ScrambledText'
-import { ShinyText } from '../effects/text/ShinyText'
+import ShinyText from '../effects/text/ShinyText'
 import { SplitText } from '../effects/react-bits/SplitText'
 import { Stack } from '../effects/react-bits/Stack'
 import { TiltedCard } from '../effects/react-bits/TiltedCard'
+import { OrbitImages } from '../effects/react-bits/OrbitImages'
+import { Folder } from '../effects/react-bits/Folder'
+import { GlassIcons } from '../effects/react-bits/GlassIcons'
+import { CardNav } from '../effects/react-bits/CardNav'
+import { FlowingMenu } from '../effects/react-bits/FlowingMenu'
+import { CursorGlow } from '../effects/CursorGlow'
+import { GradientBorder } from '../effects/GradientBorder'
+import { CardTilt } from '../effects/CardTilt'
+import { ScrollReveal } from '../motion/ScrollReveal'
+import { TextReveal } from '../motion/TextReveal'
 
 import './ReactBitsDemo.css'
 
@@ -68,6 +79,48 @@ const stackCards = [
     src={`${base}gallery/geometry.webp`}
     alt="Geometry journal artwork"
   />,
+]
+
+const orbitImages = demoImages.slice(0, 5)
+
+const folderItems = [
+  <span key="a">Image notes</span>,
+  <span key="b">Written thoughts</span>,
+  <span key="c">Project links</span>,
+]
+
+const glassIconItems = [
+  { icon: <FileText size={18} />, color: 'blue', label: 'Docs' },
+  { icon: <Code size={18} />, color: 'purple', label: 'Code' },
+  { icon: <Image size={18} />, color: 'orange', label: 'Design' },
+  { icon: <Settings size={18} />, color: 'green', label: 'Config' },
+]
+
+const cardNavItems = [
+  {
+    label: 'Journal',
+    bgColor: 'rgba(20, 30, 60, 0.95)',
+    textColor: '#e0e8ff',
+    links: [
+      { label: 'Thoughts', href: '#/' },
+      { label: 'Gallery', href: '#/gallery' },
+    ],
+  },
+  {
+    label: 'Archive',
+    bgColor: 'rgba(40, 20, 60, 0.95)',
+    textColor: '#e0d0ff',
+    links: [
+      { label: 'Images', href: '#/archive/images' },
+      { label: 'Notes', href: '#/archive/notes' },
+    ],
+  },
+]
+
+const flowingMenuItems = [
+  { link: '#/', text: 'Journal', image: `${base}gallery/aurora.webp` },
+  { link: '#/gallery', text: 'Gallery', image: `${base}gallery/horizon.webp` },
+  { link: '#/archive', text: 'Archive', image: `${base}gallery/geometry.webp` },
 ]
 
 function MultiStepLoaderDemo() {
@@ -178,19 +231,6 @@ export function ReactBitsDemo({ effectId }: ReactBitsDemoProps) {
         />
       )
 
-    case 'grid-scan':
-      return (
-        <div className="rb-demo-gridscan">
-          <DesktopGridScan
-            fallback={<div className="rb-demo-gridscan__fallback">Desktop visual core</div>}
-            linesColor="#315b86"
-            scanColor="#70e8ff"
-            scanOpacity={0.58}
-            gridScale={0.12}
-          />
-        </div>
-      )
-
     case 'bounce-cards':
       return (
         <BounceCards
@@ -264,7 +304,7 @@ export function ReactBitsDemo({ effectId }: ReactBitsDemoProps) {
           className="rb-demo-gradient"
           colors={['#56e4ff', '#a78bfa', '#f472b6', '#fbbf24', '#56e4ff']}
           animationSpeed={3}
-          direction="diagonal"
+          direction="horizontal"
         >
           Gradient text in motion.
         </GradientText>
@@ -276,7 +316,7 @@ export function ReactBitsDemo({ effectId }: ReactBitsDemoProps) {
           className="rb-demo-shiny"
           text="Move across the shine."
           speed={3}
-          spread={80}
+          spread={120}
           shineColor="#e0e8ff"
           pauseOnHover
           yoyo
@@ -315,6 +355,102 @@ export function ReactBitsDemo({ effectId }: ReactBitsDemoProps) {
 
     case 'stepper':
       return <JournalStepperDemo />
+
+    case 'orbit-images':
+      return (
+        <OrbitImages
+          images={orbitImages}
+          shape="ellipse"
+          rotation={-8}
+          itemSize={64}
+          duration={20}
+          showPath
+          pathColor="rgba(255,255,255,0.08)"
+          width="100%"
+          height="14rem"
+        />
+      )
+
+    case 'folder':
+      return (
+        <div className="rb-demo-folder">
+          <Folder color="#56e4ff" size={2} items={folderItems} />
+        </div>
+      )
+
+    case 'glass-icons':
+      return (
+        <GlassIcons className="rb-demo-glass-icons" items={glassIconItems} />
+      )
+
+    case 'card-nav':
+      return (
+        <CardNav
+          className="rb-demo-card-nav"
+          items={cardNavItems}
+          baseColor="rgba(5, 10, 24, 0.92)"
+          menuColor="#9ca6bb"
+        />
+      )
+
+    case 'flowing-menu':
+      return (
+        <FlowingMenu
+          items={flowingMenuItems}
+          speed={15}
+          textColor="#e0e8ff"
+          bgColor="#0a0d1a"
+          marqueeBgColor="#fff"
+          marqueeTextColor="#0a0d1a"
+          borderColor="rgba(255,255,255,0.15)"
+        />
+      )
+
+    case 'scroll-reveal':
+      return (
+        <ScrollReveal className="rb-demo-scroll-reveal" amount={0.3}>
+          <div className="rb-demo-scroll-reveal__box">
+            Scroll into view to reveal this content.
+          </div>
+        </ScrollReveal>
+      )
+
+    case 'text-reveal':
+      return (
+        <div className="rb-demo-text-reveal">
+          <TextReveal>
+            <span className="rb-demo-text-reveal__text">
+              Words rise from the ground.
+            </span>
+          </TextReveal>
+        </div>
+      )
+
+    case 'cursor-glow':
+      return (
+        <div className="rb-demo-cursor-glow">
+          <CursorGlow />
+          <span>Move your cursor here</span>
+        </div>
+      )
+
+    case 'gradient-border':
+      return (
+        <GradientBorder className="rb-demo-gradient-border">
+          <div className="rb-demo-gradient-border__inner">
+            Gradient border wrapper
+          </div>
+        </GradientBorder>
+      )
+
+    case 'card-tilt':
+      return (
+        <CardTilt className="rb-demo-card-tilt" intensity={8}>
+          <div className="rb-demo-card-tilt__inner">
+            Tilt me
+          </div>
+        </CardTilt>
+      )
 
     default:
       return null

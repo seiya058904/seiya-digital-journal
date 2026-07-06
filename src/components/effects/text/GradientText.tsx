@@ -1,11 +1,12 @@
-import { useMotionValue, useAnimationFrame, useTransform, useReducedMotion, motion } from 'framer-motion'
-import { useState, useRef, useCallback, type PropsWithChildren } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
+import { motion, useMotionValue, useAnimationFrame, useTransform, useReducedMotion } from 'framer-motion'
 
 import './GradientText.css'
 
-type Direction = 'left' | 'right' | 'top' | 'bottom' | 'diagonal'
+type Direction = 'horizontal' | 'vertical' | 'diagonal'
 
-type GradientTextProps = PropsWithChildren<{
+type GradientTextProps = {
+  children: React.ReactNode
   className?: string
   colors?: string[]
   animationSpeed?: number
@@ -13,122 +14,101 @@ type GradientTextProps = PropsWithChildren<{
   direction?: Direction
   pauseOnHover?: boolean
   yoyo?: boolean
-}>
-
-const DEFAULT_COLORS = [
-  'var(--color-cyan)',
-  'var(--color-violet)',
-  'var(--color-magenta)',
-  'var(--color-gold)',
-  'var(--color-cyan)',
-]
-
-function getAngle(direction: Direction): number {
-  switch (direction) {
-    case 'right': return 90
-    case 'left': return 270
-    case 'top': return 0
-    case 'bottom': return 180
-    case 'diagonal': return 135
-  }
 }
 
-function getPositions(direction: Direction, progress: number) {
-  if (direction === 'top' || direction === 'bottom') {
-    const from = -100 + progress
-    const to = 100 + progress
-    return { from: `50% ${from}%`, to: `50% ${to}%` }
-  }
-  const from = -100 + progress
-  const to = 100 + progress
-  return { from: `${from}% 50%`, to: `${to}% 50%` }
-}
-
-export function GradientText({
+export default function GradientText({
   children,
-  className,
-  colors = DEFAULT_COLORS,
-  animationSpeed = 5,
+  className = '',
+  colors = ['#5227FF', '#FF9FFC', '#B497CF'],
+  animationSpeed = 8,
   showBorder = false,
-  direction = 'right',
+  direction = 'horizontal',
   pauseOnHover = false,
-  yoyo = false,
+  yoyo = true,
 }: GradientTextProps) {
   const reducedMotion = useReducedMotion()
-  const [hovering, setHovering] = useState(false)
-  const currentDirRef = useRef(1)
-  const progressRef = useRef(0)
+  const [isPaused, setIsPaused] = useState(false)
+  const progress = useMotionValue(0)
+  const elapsedRef = useRef(0)
+  const lastTimeRef = useRef<number | null>(null)
 
-  const motionProgress = useMotionValue(0)
+  const animationDuration = animationSpeed * 1000
 
-  useAnimationFrame((_, delta) => {
-    if (reducedMotion) return
-    if (pauseOnHover && hovering) return
-
-    const speed = (animationSpeed * delta) / 1000
-    let next = progressRef.current + speed * currentDirRef.current
-
-    if (next >= 100) {
-      if (yoyo) {
-        next = 100
-        currentDirRef.current = -1
-      } else {
-        next = next % 200
-        if (next >= 100) next = next - 200
-      }
-    } else if (next <= 0) {
-      if (yoyo) {
-        next = 0
-        currentDirRef.current = 1
-      } else {
-        next = next % 200
-        if (next < 0) next = next + 200
-      }
+  useAnimationFrame((time) => {
+    if (reducedMotion || isPaused) {
+      lastTimeRef.current = null
+      return
     }
 
-    progressRef.current = next
-    motionProgress.set(next)
+    if (lastTimeRef.current === null) {
+      lastTimeRef.current = time
+      return
+    }
+
+    const deltaTime = time - lastTimeRef.current
+    lastTimeRef.current = time
+    elapsedRef.current += deltaTime
+
+    if (yoyo) {
+      const fullCycle = animationDuration * 2
+      const cycleTime = elapsedRef.current % fullCycle
+
+      if (cycleTime < animationDuration) {
+        progress.set((cycleTime / animationDuration) * 100)
+      } else {
+        progress.set(100 - ((cycleTime - animationDuration) / animationDuration) * 100)
+      }
+    } else {
+      progress.set((elapsedRef.current / animationDuration) * 100)
+    }
   })
 
-  const backgroundPosition = useTransform(motionProgress, (p) => {
-    const pos = getPositions(direction, p)
-    return pos.from
+  useEffect(() => {
+    elapsedRef.current = 0
+    progress.set(0)
+  }, [animationSpeed, progress, yoyo])
+
+  const backgroundPosition = useTransform(progress, (p) => {
+    if (direction === 'horizontal') {
+      return `${p}% 50%`
+    } else if (direction === 'vertical') {
+      return `50% ${p}%`
+    } else {
+      return `${p}% 50%`
+    }
   })
 
-  const gradientAngle = getAngle(direction)
-  const gradient = `linear-gradient(${gradientAngle}deg, ${colors.join(', ')})`
+  const handleMouseEnter = useCallback(() => {
+    if (pauseOnHover) setIsPaused(true)
+  }, [pauseOnHover])
 
-  const handleEnter = useCallback(() => { if (pauseOnHover) setHovering(true) }, [pauseOnHover])
-  const handleLeave = useCallback(() => { if (pauseOnHover) setHovering(false) }, [pauseOnHover])
+  const handleMouseLeave = useCallback(() => {
+    if (pauseOnHover) setIsPaused(false)
+  }, [pauseOnHover])
 
-  if (reducedMotion) {
-    const flatClass = ['gradient-text', className].filter(Boolean).join(' ')
-    return (
-      <span className={flatClass} style={{ backgroundImage: gradient, backgroundPosition: '0% 50%' }}>
-        {children}
-      </span>
-    )
+  const gradientAngle =
+    direction === 'horizontal' ? 'to right' : direction === 'vertical' ? 'to bottom' : 'to bottom right'
+  const gradientColors = [...colors, colors[0]].join(', ')
+
+  const gradientStyle = {
+    backgroundImage: `linear-gradient(${gradientAngle}, ${gradientColors})`,
+    backgroundSize:
+      direction === 'horizontal' ? '300% 100%' : direction === 'vertical' ? '100% 300%' : '300% 300%',
+    backgroundRepeat: 'repeat' as const,
   }
-
-  const classes = [
-    'gradient-text',
-    'gradient-text--animated',
-    showBorder ? 'gradient-text--border' : '',
-    className ?? '',
-  ].filter(Boolean).join(' ')
 
   return (
     <motion.span
-      className={classes}
-      style={{
-        backgroundImage: gradient,
-        backgroundPosition,
-        backgroundSize: '300% 300%',
-      }}
-      onMouseEnter={handleEnter}
-      onMouseLeave={handleLeave}
+      className={`animated-gradient-text ${showBorder ? 'with-border' : ''} ${className}`}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
-      {children}
+      {showBorder && (
+        <motion.span className="gradient-overlay" style={{ ...gradientStyle, backgroundPosition }} />
+      )}
+      <motion.span className="text-content" style={{ ...gradientStyle, backgroundPosition }}>
+        {children}
+      </motion.span>
     </motion.span>
   )
 }
