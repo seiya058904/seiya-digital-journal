@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unknown-property */
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { forwardRef, useRef, useMemo, useLayoutEffect } from 'react'
+import { forwardRef, useRef, useMemo, useLayoutEffect, useCallback, useEffect } from 'react'
 import { Color } from 'three'
 
 const hexToNormalizedRGB = (hex: string) => {
@@ -91,8 +91,17 @@ const SilkPlane = forwardRef(function SilkPlane({ uniforms }: { uniforms: Record
 })
 SilkPlane.displayName = 'SilkPlane'
 
-const Silk = ({ speed = 5, scale = 1, color = '#7B7481', noiseIntensity = 1.5, rotation = 0 }) => {
+const Silk = ({ speed = 5, scale = 1, color = '#7B7481', noiseIntensity = 1.5, rotation = 0, paused = false }: {
+  speed?: number
+  scale?: number
+  color?: string
+  noiseIntensity?: number
+  rotation?: number
+  paused?: boolean
+}) => {
   const meshRef = useRef(null)
+  const setFrameloopRef = useRef<((mode: 'always' | 'demand' | 'manual') => void) | null>(null)
+  const pauseStartedAtRef = useRef<number | null>(null)
 
   const uniforms = useMemo(
     () => ({
@@ -106,8 +115,33 @@ const Silk = ({ speed = 5, scale = 1, color = '#7B7481', noiseIntensity = 1.5, r
     [speed, scale, noiseIntensity, color, rotation],
   )
 
+  const handleCreated = useCallback((state: any) => {
+    setFrameloopRef.current = state.setFrameloop
+  }, [])
+
+  useEffect(() => {
+    const setFrameloop = setFrameloopRef.current
+    if (!setFrameloop) return
+
+    if (paused) {
+      pauseStartedAtRef.current = performance.now()
+      setFrameloop('demand')
+    } else {
+      if (pauseStartedAtRef.current !== null) {
+        uniforms.uTime.value +=
+          0.1 * (performance.now() - pauseStartedAtRef.current) / 1000
+        pauseStartedAtRef.current = null
+      }
+      setFrameloop('always')
+    }
+  }, [paused, uniforms])
+
   return (
-    <Canvas dpr={[1, 2]} frameloop="always">
+    <Canvas
+      dpr={[1, 2]}
+      frameloop="always"
+      onCreated={handleCreated}
+    >
       <SilkPlane ref={meshRef} uniforms={uniforms} />
     </Canvas>
   )

@@ -1,5 +1,5 @@
 import { ArrowRight } from 'lucide-react'
-import { useEffect, useId, useRef, useState } from 'react'
+import { useId, useRef, useState } from 'react'
 
 import { getWrappedProjectIndex, projects, type ProjectRecord } from '../../data/projects'
 import './ProjectCarousel.css'
@@ -22,20 +22,17 @@ function ProjectSlide({ project, index, current, onSelect, headingId }: ProjectS
   const active = current === index
   const actionLink = project.primaryLink ?? project.secondaryLink
 
-  useEffect(() => {
-    const animate = () => {
-      if (slideRef.current) {
-        slideRef.current.style.setProperty('--pointer-x', `${xRef.current}px`)
-        slideRef.current.style.setProperty('--pointer-y', `${yRef.current}px`)
+  const scheduleWrite = () => {
+    if (frameRef.current !== undefined) return
+    frameRef.current = requestAnimationFrame(() => {
+      frameRef.current = undefined
+      const el = slideRef.current
+      if (el) {
+        el.style.setProperty('--pointer-x', `${xRef.current}px`)
+        el.style.setProperty('--pointer-y', `${yRef.current}px`)
       }
-      frameRef.current = requestAnimationFrame(animate)
-    }
-
-    frameRef.current = requestAnimationFrame(animate)
-    return () => {
-      if (frameRef.current !== undefined) cancelAnimationFrame(frameRef.current)
-    }
-  }, [])
+    })
+  }
 
   return (
     <li
@@ -46,14 +43,17 @@ function ProjectSlide({ project, index, current, onSelect, headingId }: ProjectS
         if (!active) onSelect(index)
       }}
       onMouseMove={(event) => {
-        const bounds = slideRef.current?.getBoundingClientRect()
-        if (!bounds) return
+        const el = slideRef.current
+        if (!el) return
+        const bounds = el.getBoundingClientRect()
         xRef.current = event.clientX - (bounds.left + Math.floor(bounds.width / 2))
         yRef.current = event.clientY - (bounds.top + Math.floor(bounds.height / 2))
+        scheduleWrite()
       }}
       onMouseLeave={() => {
         xRef.current = 0
         yRef.current = 0
+        scheduleWrite()
       }}
     >
       <div className="project-carousel__image-plane">
