@@ -67,13 +67,14 @@ function ProjectSlide({ project, index, current, onSelect, headingId }: ProjectS
         <span className="project-carousel__shade" aria-hidden="true" />
       </div>
 
-      <article className="project-carousel__content">
+      <article className="project-carousel__content" aria-hidden={!active}>
         <h3 id={headingId}>{project.title}</h3>
         <p>{project.subtitle}</p>
         {actionLink ? (
           <a
             href={actionLink}
             className="project-carousel__explore"
+            tabIndex={active ? undefined : -1}
             {...(actionLink.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
           >
             Explore Project

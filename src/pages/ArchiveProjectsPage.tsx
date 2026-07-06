@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { ArrowLeft, Target, Globe, Gamepad2, Monitor, FlaskConical, Search, Route, Trophy, BookOpen, FileText, Code, Image, Settings } from 'lucide-react'
 
 import { ScrollReveal } from '../components/motion/ScrollReveal'
@@ -110,6 +110,25 @@ const recordPhases = [
 
 export function ArchiveProjectsPage() {
   const [activeFocus, setActiveFocus] = useState(focusTabs[0])
+  const focusTabRefs = useRef<(HTMLButtonElement | null)[]>([])
+
+  const handleTabKeyDown = (e: React.KeyboardEvent, index: number) => {
+    let nextIndex: number | null = null
+    if (e.key === 'ArrowRight') {
+      nextIndex = (index + 1) % focusTabs.length
+    } else if (e.key === 'ArrowLeft') {
+      nextIndex = (index - 1 + focusTabs.length) % focusTabs.length
+    } else if (e.key === 'Home') {
+      nextIndex = 0
+    } else if (e.key === 'End') {
+      nextIndex = focusTabs.length - 1
+    }
+    if (nextIndex !== null) {
+      e.preventDefault()
+      setActiveFocus(focusTabs[nextIndex])
+      focusTabRefs.current[nextIndex]?.focus()
+    }
+  }
 
   return (
     <main className="archive-projects">
@@ -154,16 +173,19 @@ export function ArchiveProjectsPage() {
                 role="tablist"
                 aria-label="Current focus details"
               >
-                {focusTabs.map((tab) => (
+                {focusTabs.map((tab, index) => (
                   <button
                     key={tab.id}
+                    ref={(el) => { focusTabRefs.current[index] = el }}
                     id={`focus-tab-${tab.id}`}
                     type="button"
                     role="tab"
+                    tabIndex={activeFocus.id === tab.id ? 0 : -1}
                     aria-selected={activeFocus.id === tab.id}
                     aria-controls="current-focus-panel"
                     className={`rb-glass-icon${activeFocus.id === tab.id ? ' is-active' : ''}`}
                     onClick={() => setActiveFocus(tab)}
+                    onKeyDown={(e) => handleTabKeyDown(e, index)}
                   >
                     <span className="rb-glass-icon__back" />
                     <span className="rb-glass-icon__front">
