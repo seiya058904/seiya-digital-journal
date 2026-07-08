@@ -6,13 +6,15 @@ This document tells an AI how to look at an image and write a data entry for the
 
 ## Task
 
-You will receive images one at a time. For each image, write a complete data entry in the exact format below. Nothing else — no explanations, no commentary, just the entry.
+You will receive a batch of data entries written by the user. Review each entry against the format rules below. Fix any errors you find. Output only the corrected entries — no explanations, no commentary.
+
+If all entries are correct, output them unchanged.
 
 ---
 
 ## Output Format
 
-For each image, output exactly this block (and nothing else):
+For each entry, output exactly this block. Fix any issues found, or output unchanged if correct:
 
 ```ts
 {
@@ -32,7 +34,7 @@ For each image, output exactly this block (and nothing else):
 },
 ```
 
-If processing multiple images, output all blocks consecutively with no text between them.
+If processing multiple entries, output all blocks consecutively with no text between them.
 
 ---
 
@@ -50,15 +52,18 @@ Examples: `editorial-043`, `illustration-030`, `art-012`
 
 One of exactly these values:
 - `editorial` — photography of non-specific places, still life, objects, daily life, architecture not tied to a specific city
-- `memory` — photography of a specific city's landmarks, streets, scenery (requires `city` field)
+- `memory` — **user's own travel photos** of specific cities (landmarks, streets, scenery the user personally visited and photographed). Requires `city` field
 - `illustration` — digital art, anime, fan art, pixel art, concept art, sketches
 - `art` — traditional paintings (oil, watercolor, acrylic), fine art, sculptures photographed
 - `design` — graphic design, posters, product design, typography work
 
+**Important:** `memory` is NOT for any photo that happens to depict a city. It is exclusively for photos the user took during their own travels. If a photo shows a city but was not taken by the user (e.g., a stock photo, artwork, or found image), use `editorial` instead.
+
 ### city
 
-- Set to a city name only when `category` is `memory`
+- Set to a city name **only** when `category` is `memory` AND the photo was taken by the user in that city
 - Allowed values: `'Chongqing'`, `'Chengdu'`, `'Wuhan'`, `'Kaifeng'`, `'Tianjin'`, `'Emeishan'`, `'Venice'`, or `null`
+- If the category is not `memory`, always set to `null` — even if the image depicts a recognizable city
 - If you don't recognize the city, set to `null` and flag it
 
 ### title
@@ -231,7 +236,7 @@ Before outputting each entry, verify:
 
 - [ ] id uses the correct next number
 - [ ] category is one of the 5 allowed values
-- [ ] city is null unless category is memory
+- [ ] city is null unless category is memory AND the photo was taken by the user
 - [ ] title is 2–4 words, Title Case, NOT literal
 - [ ] caption is a complete sentence ending with period, 10–20 words
 - [ ] note is exactly 1–2 Chinese characters from the approved list
@@ -247,9 +252,8 @@ Before outputting each entry, verify:
 
 ## Example
 
-**Input:** Image of a Coca-Cola glass bottle held against a sunset sky, shot from below, moody lighting.
+**Input:** User provides this entry for review:
 
-**Output:**
 ```ts
 {
   id: 'editorial-041',
@@ -267,3 +271,5 @@ Before outputting each entry, verify:
   alt: 'Classic Coca-Cola glass bottle held against a deep blue and orange sunset sky.',
 },
 ```
+
+**Output:** Entry passes all checks — output unchanged.
