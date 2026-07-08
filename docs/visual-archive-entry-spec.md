@@ -49,9 +49,11 @@ If processing multiple entries, output all blocks consecutively with no text bet
 
 Format: `{category}-{3-digit number}`
 
-You will be told the next available number for each category. Use it and increment for each subsequent image.
+You do NOT know the existing IDs in the archive. Use sequential placeholder numbers starting from `001` for each batch. The user will reassign the correct IDs before adding to the codebase.
 
-Examples: `editorial-043`, `illustration-030`, `art-012`
+Examples for a batch of 3 editorial images: `editorial-001`, `editorial-002`, `editorial-003`
+
+Examples for a batch of 2 Chongqing memory images: `memory-001`, `memory-002`
 
 ### category
 
