@@ -102,7 +102,7 @@ function ImageCategoryView({ category, onBack }: { category: ImageCategory; onBa
         <h1 className="archive-images__title">Image Vault</h1>
         <p className="archive-images__subtitle">
           A larger visual archive beyond the homepage selection —
-          {visualArchiveItems.length} images across editorial and memory categories.
+          {visualArchiveItems.length} images from editorial, memory, illustration, art, and design.
         </p>
       </div>
 
@@ -167,7 +167,7 @@ function ImageVaultOverview() {
         <h1 className="archive-images__title">Image Vault</h1>
         <p className="archive-images__subtitle">
           A larger visual archive beyond the homepage selection —
-          {visualArchiveItems.length} images across editorial and memory categories.
+          {visualArchiveItems.length} images from editorial, memory, illustration, art, and design.
         </p>
       </div>
 
