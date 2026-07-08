@@ -333,6 +333,14 @@ For glass tile components in the Archive Notes:
 - **Glass effect**: Maintain the 3D rotation and blur effects from GlassIcons.css
 - **Color gradients**: Use the predefined gradient mapping (blue, purple, orange) for different categories
 
+### Adding Images to Visual Archive
+
+When adding new images to the Visual Archive, **always use the `adding-visual-archive-images` skill** (`C:\Users\admin\.claude\skills\adding-visual-archive-images\SKILL.md`).
+
+The fixed workflow: scan source folder → read/analyze each image → determine category (editorial/memory/illustration/art/design) → generate data entries following exact format conventions (title, caption, note, tags, alt text) → place files (full image + thumbnail) → check file sizes → compress if needed → update `src/data/visualArchive.ts` → run lint + build.
+
+Do not improvise or skip steps. The skill contains all field conventions, naming patterns, and compression thresholds.
+
 ## Critical: Asset Paths and GitHub Pages Base
 
 Deployed at: `https://seiya058904.github.io/seiya-digital-journal/`
