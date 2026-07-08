@@ -1559,7 +1559,7 @@ export const visualArchiveItems: VisualArchiveItem[] = [
   {
     id: 'art-004',
     category: 'art',
-    city: 'Venice',
+    city: null,
     title: 'Still Waters',
     caption: 'Time flows gently where the water remembers.',
     note: '水城',

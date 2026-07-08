@@ -124,6 +124,18 @@
 .gallery-masonry-item--landscape .gallery-card__image { aspect-ratio: 3 / 2; }
 .gallery-masonry-item--square .gallery-card__image { aspect-ratio: 1; }
 
+/* Per-image display adjustments */
+.gallery-masonry-item--editorial-021 .glare-hover img,
+.gallery-masonry-item--editorial-022 .glare-hover img,
+.gallery-masonry-item--editorial-023 .glare-hover img,
+.gallery-masonry-item--illustration-010 .glare-hover img {
+  transform: translateY(-8%) !important;
+}
+
+.gallery-masonry-item--editorial-025 .glare-hover img {
+  transform: scale(1.25) !important;
+}
+
 /* ── Responsive ───────────────────────────────── */
 
 @media (max-width: 820px) {

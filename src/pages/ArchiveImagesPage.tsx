@@ -13,6 +13,16 @@ const featuredItems = visualArchiveItems.filter(i => i.featured)
 const editorialItems = visualArchiveItems.filter(i => i.category === 'editorial')
 const memoryItems = visualArchiveItems.filter(i => i.category === 'memory')
 const cityItems = visualArchiveItems.filter(i => i.city !== null)
+
+/** Per-image display modifiers — applied in every archive grid */
+function itemModifier(id: string): string {
+  if (id === 'editorial-004') return ' archive-images__item--zoomed'
+  if (id === 'illustration-004') return ' archive-images__item--subtle-zoom'
+  if (id === 'editorial-022' || id === 'editorial-023' || id === 'editorial-021' || id === 'illustration-010')
+    return ' archive-images__item--shift-down'
+  if (id === 'editorial-025') return ' archive-images__item--zoom-in'
+  return ''
+}
 const cities: VisualArchiveCity[] = [...new Set(visualArchiveItems.map(i => i.city).filter(Boolean))] as VisualArchiveCity[]
 
 const firstItem = (items: typeof visualArchiveItems) =>
@@ -103,7 +113,7 @@ function ImageCategoryView({ category, onBack }: { category: ImageCategory; onBa
             {items.map((item, i) => (
               <ScrollReveal
                 key={item.id}
-                className={`archive-images__item${item.id === 'editorial-004' ? ' archive-images__item--zoomed' : item.id === 'illustration-004' ? ' archive-images__item--subtle-zoom' : ''}`}
+                className={`archive-images__item${itemModifier(item.id)}`}
                 delay={(i % 4) * 0.05}
                 amount={0.08}
               >
@@ -126,7 +136,7 @@ function ImageCategoryView({ category, onBack }: { category: ImageCategory; onBa
                     {cityItemsFiltered.map((item, i) => (
                       <ScrollReveal
                         key={item.id}
-                        className="archive-images__item"
+                        className={`archive-images__item${itemModifier(item.id)}`}
                         delay={(i % 4) * 0.05}
                         amount={0.08}
                       >
@@ -184,7 +194,7 @@ function ImageVaultOverview() {
             {featuredItems.slice(0, PREVIEW_COUNT).map((item, i) => (
               <ScrollReveal
                 key={item.id}
-                className={`archive-images__item${item.id === 'illustration-004' ? ' archive-images__item--subtle-zoom' : ''}`}
+                className={`archive-images__item${itemModifier(item.id)}`}
                 delay={i * 0.05}
                 amount={0.08}
               >
@@ -209,7 +219,7 @@ function ImageVaultOverview() {
             {editorialItems.slice(0, PREVIEW_COUNT).map((item, i) => (
               <ScrollReveal
                 key={item.id}
-                className={`archive-images__item${item.id === 'editorial-004' ? ' archive-images__item--zoomed' : ''}`}
+                className={`archive-images__item${itemModifier(item.id)}`}
                 delay={i * 0.05}
                 amount={0.08}
               >

@@ -61,7 +61,7 @@ export function GalleryPage() {
           {visualArchiveItems.map((item, i) => (
             <ScrollReveal
               key={item.id}
-              className={`gallery-masonry-item gallery-masonry-item--${item.aspect}`}
+              className={`gallery-masonry-item gallery-masonry-item--${item.aspect} gallery-masonry-item--${item.id}`}
               delay={(i % 3) * 0.05}
               amount={0.08}
             >
