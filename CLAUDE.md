@@ -102,7 +102,7 @@ src/
                          supabase.ts (Supabase client factory)
                          *.test.ts (co-located tests for each module)
   components/
-    sections/        — Hero, About, Interests, Gallery, Thoughts, Journey, Contact
+    sections/        — Hero, About, Interests, Gallery, GalleryCard, Thoughts, Journey, Contact
     ui/              — Header, AccountMenu, Chapter, ActionLink (stable reusable UI atoms)
     profile/         — ProfileHero, ActivityStats, EditProfileSurface, focusTrap
     motion/          — ScrollReveal, TextReveal (Framer Motion wrappers)
@@ -111,7 +111,8 @@ src/
                        TiltedCard, ProfileCard, PillNav, GridScan, BounceCards,
                        ImageTrail, MagicBento, ScrambledText, SplitText,
                        AnimatedContent, CountUp, OrbitImages, DesktopGridScan,
-                       CardNav, FlowingMenu)
+                       CardNav, FlowingMenu, DesktopLanyard, Folder, GlassIcons,
+                       Lanyard, Silk, Stepper)
       text/          — custom animated text (GradientText, ShinyText, RotatingText)
       ArchiveBackground.tsx, AuroraBackground.tsx, CardTilt.tsx,
       CursorGlow.tsx, GradientBorder.tsx, MultiStepLoader.tsx
@@ -135,6 +136,8 @@ supabase/
   workflows/
     deploy.yml       — GitHub Pages deployment workflow
 report/              — session completion reports (Markdown, dated filenames)
+docs/
+  visual-archive-entry-spec.md — format spec for writing/reviewing archive image entries
 public/
   gallery/           — WebP images used by Motion Lab demos
   visual-archive/    — editorial + memory photos (with thumbs/ for previews)
@@ -341,6 +344,8 @@ When adding new images to the Visual Archive, **always use the `adding-visual-ar
 
 The agent does NOT read images. User handles identification and entry writing; agent handles file conversion, placement, review, and code updates.
 
+**Entry format spec:** `docs/visual-archive-entry-spec.md` — the format document given to other AIs for writing/reviewing archive entries. Covers all field rules, naming conventions, and the quality checklist.
+
 ## Critical: Asset Paths and GitHub Pages Base
 
 Deployed at: `https://seiya058904.github.io/seiya-digital-journal/`
@@ -442,7 +447,7 @@ Vite rewrites paths in `index.html` and ES module imports automatically, but doe
 Tests use Node's built-in test runner with `--experimental-strip-types` for TypeScript. 17 test files co-located with source as `*.test.ts`.
 
 ```powershell
-npm test                    # run all tests (currently 65 tests)
+npm test                    # run all tests (currently 70 tests)
 node --experimental-strip-types --test src/data/content.test.ts  # single file
 ```
 
