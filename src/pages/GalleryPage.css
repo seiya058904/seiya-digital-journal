@@ -128,14 +128,28 @@
 .gallery-masonry-item--editorial-021 .glare-hover img,
 .gallery-masonry-item--editorial-022 .glare-hover img,
 .gallery-masonry-item--editorial-023 .glare-hover img,
-.gallery-masonry-item--illustration-010 .glare-hover img {
+.gallery-masonry-item--illustration-010 .glare-hover img,
+.gallery-masonry-item--editorial-033 .glare-hover img,
+.gallery-masonry-item--illustration-033 .glare-hover img {
   transform: translateY(-8%) !important;
 }
 .gallery-masonry-item--editorial-021 .glare-hover:hover img,
 .gallery-masonry-item--editorial-022 .glare-hover:hover img,
 .gallery-masonry-item--editorial-023 .glare-hover:hover img,
-.gallery-masonry-item--illustration-010 .glare-hover:hover img {
+.gallery-masonry-item--illustration-010 .glare-hover:hover img,
+.gallery-masonry-item--editorial-033 .glare-hover:hover img,
+.gallery-masonry-item--illustration-033 .glare-hover:hover img {
   transform: translateY(-8%) scale(1.025) !important;
+}
+
+/* Per-image: stronger shift */
+.gallery-masonry-item--editorial-049 .glare-hover img,
+.gallery-masonry-item--illustration-034 .glare-hover img {
+  transform: translateY(-22%) !important;
+}
+.gallery-masonry-item--editorial-049 .glare-hover:hover img,
+.gallery-masonry-item--illustration-034 .glare-hover:hover img {
+  transform: translateY(-22%) scale(1.025) !important;
 }
 
 .gallery-masonry-item--editorial-025 .glare-hover img {

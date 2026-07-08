@@ -152,6 +152,22 @@
   transform: translateY(-8%) scale(1.025) !important;
 }
 
+/* Per-image: shift content downward (stronger) */
+.archive-images__item--shift-down-strong .glare-hover img {
+  transform: translateY(-14%) !important;
+}
+.archive-images__item--shift-down-strong .glare-hover:hover img {
+  transform: translateY(-14%) scale(1.025) !important;
+}
+
+/* Per-image: shift content downward (max) */
+.archive-images__item--shift-down-max .glare-hover img {
+  transform: translateY(-22%) !important;
+}
+.archive-images__item--shift-down-max .glare-hover:hover img {
+  transform: translateY(-22%) scale(1.025) !important;
+}
+
 /* Per-image zoom in (smaller visible area) */
 .archive-images__item--zoom-in .glare-hover img {
   transform: scale(1.25) !important;

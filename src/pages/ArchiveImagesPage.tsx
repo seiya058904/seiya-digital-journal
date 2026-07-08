@@ -18,7 +18,9 @@ const cityItems = visualArchiveItems.filter(i => i.city !== null)
 function itemModifier(id: string): string {
   if (id === 'editorial-004') return ' archive-images__item--zoomed'
   if (id === 'illustration-004') return ' archive-images__item--subtle-zoom'
-  if (id === 'editorial-022' || id === 'editorial-023' || id === 'editorial-021' || id === 'illustration-010')
+  if (id === 'editorial-049' || id === 'illustration-034') return ' archive-images__item--shift-down-max'
+  if (id === 'illustration-033' || id === 'editorial-023') return ' archive-images__item--shift-down-strong'
+  if (id === 'editorial-022' || id === 'editorial-021' || id === 'illustration-010' || id === 'editorial-033')
     return ' archive-images__item--shift-down'
   if (id === 'editorial-025') return ' archive-images__item--zoom-in'
   return ''
