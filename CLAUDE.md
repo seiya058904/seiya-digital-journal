@@ -140,7 +140,7 @@ docs/
   visual-archive-entry-spec.md — format spec for writing/reviewing archive image entries
 public/
   gallery/           — WebP images used by Motion Lab demos
-  visual-archive/    — editorial + memory photos (with thumbs/ for previews)
+  visual-archive/    — editorial, memory, illustration, art, design photos (with thumbs/ for previews)
   orbit/             — 6 WebP images for the OrbitImages component
   favicon.svg
 ```
@@ -212,7 +212,7 @@ When adding or changing routes, also check navigation and legacy URL compatibili
 - `PATCH /api/profile/me` (authenticated) — updates `display_name` and `avatar_key`
 
 **Avatar system:**
-- Keys: `avatar-01` through `avatar-09`
+- Keys: `avatar-01` through `avatar-12`
 - Default new profile avatar: `avatar-01` (set during lazy bootstrap)
 - Avatar definitions in `src/data/profileAvatars.ts`
 
@@ -345,6 +345,23 @@ When adding new images to the Visual Archive, **always use the `adding-visual-ar
 The agent does NOT read images. User handles identification and entry writing; agent handles file conversion, placement, review, and code updates.
 
 **Entry format spec:** `docs/visual-archive-entry-spec.md` — the format document given to other AIs for writing/reviewing archive entries. Covers all field rules, naming conventions, and the quality checklist.
+
+### Per-Image Display Modifiers
+
+Some archive images need vertical position adjustments to reveal more of the image content. Two files must always be updated together:
+
+1. **Image Vault** (`src/pages/ArchiveImagesPage.tsx`): `itemModifier(id)` returns a CSS class like `archive-images__item--shift-down`
+2. **Gallery** (`src/pages/GalleryPage.css`): per-item rules using `.gallery-masonry-item--{id} .glare-hover img`
+
+Shift levels (defined in both CSS files):
+
+| Class | translateY | Use |
+|-------|-----------|-----|
+| `--shift-down` | -8% | Standard upward shift |
+| `--shift-down-strong` | -14% | Moderate upward shift |
+| `--shift-down-max` | -22% | Maximum upward shift |
+
+**Invariant:** When adjusting image position, always update both `ArchiveImagesPage.tsx` + `ArchiveImagesPage.css` AND `GalleryPage.css`. A shift that only works in one view is incomplete.
 
 ## Critical: Asset Paths and GitHub Pages Base
 
