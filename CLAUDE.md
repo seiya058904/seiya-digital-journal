@@ -55,18 +55,27 @@ Always run `npm run lint` and `npm run build` before committing. The lint has ze
 ### Tech Stack
 
 **Frontend:**
-- React 19
-- TypeScript
-- Vite 8
-- Framer Motion (primary animation runtime)
+- React 19 (no StrictMode — intentional to avoid double-firing Supabase auth effects)
+- TypeScript 6 (`erasableSyntaxOnly: true` — no enums/namespaces; `verbatimModuleSyntax: true` — explicit `import type` required)
+- Vite 8 (Rolldown bundler)
+- Framer Motion (primary animation runtime, `reducedMotion="user"` at top level)
 - GSAP (for a few React Bits ports, loaded lazily)
 - Three.js (GridScan, Silk backgrounds)
 - `@supabase/supabase-js` (auth client)
+- `lucide-react` (icons)
 
 **Backend:**
 - Cloudflare Worker (`worker/src/index.ts`)
 - Supabase Auth (authentication)
 - Supabase PostgreSQL (database via PostgREST)
+
+**Shared validation (critical pattern):**
+The Worker directly imports frontend validation logic from `src/lib/`. This ensures client and server enforce identical rules:
+- `src/lib/interactions.ts` — target validation, comment body validation
+- `src/lib/profile.ts` — display name validation, avatar key validation, Content-Range parser
+- `src/worker/cors.ts` — CORS origin parsing
+
+The Worker's `tsconfig.json` explicitly includes these frontend files via relative paths. Any changes to these shared files must pass **both** frontend and Worker type-checking.
 
 **Deployment:**
 - GitHub Pages (frontend, via GitHub Actions)
@@ -384,6 +393,18 @@ Vite rewrites paths in `index.html` and ES module imports automatically, but doe
 
 **Service role key must NEVER be exposed to the frontend.** It is only used server-side in the Worker.
 
+**Comment limits:** `DEFAULT_LIMIT = 20`, `MAX_LIMIT = 50` for listing comments.
+
+**Rate limiting:** Comment creation is rate-limited to one comment per 10 seconds per user (`MIN_COMMENT_INTERVAL_MS = 10_000`), enforced by querying the user's most recent comment timestamp.
+
+**Count queries:** Uses `HEAD` requests with `Prefer: count=exact` to get counts via `Content-Range` header without transferring rows. The `extractExactCount()` function in `src/lib/profile.ts` parses this.
+
+**Idempotent inserts:** Both profile creation (`on_conflict=user_id`, `resolution=ignore-duplicates`) and like creation (`on_conflict=user_id,target_type,target_id`) use conflict-safe PostgREST headers.
+
+**DELETE like:** Accepts both JSON body and query parameters — checks `Content-Type` header and falls back to query params.
+
+**CORS:** Uses `Vary: Origin` header. Origin is echoed back rather than using `*` when allowed.
+
 ## Supabase
 
 **Linked project ref:** `fgeiygcycxjlqgbczrfs`
@@ -416,6 +437,14 @@ Tests use Node's built-in test runner with `--experimental-strip-types` for Type
 npm test                    # run all tests (currently 65 tests)
 node --experimental-strip-types --test src/data/content.test.ts  # single file
 ```
+
+**Important:** Test imports must use `.ts` extensions (e.g., `import { ... } from './interactions.ts'`) — `--experimental-strip-types` doesn't resolve extensionless TypeScript imports.
+
+All validation functions return `ValidResult<T> | InvalidResult<Code>` discriminated unions instead of throwing. The Worker converts these to HTTP errors; the frontend uses them for form validation. This pattern is used in `src/lib/interactions.ts`, `src/lib/profile.ts`, and `src/lib/authForm.ts`.
+
+**Linter:** `oxlint` with plugins `react`, `typescript`, `oxc`. Config at `.oxlintrc.json` — only two rules explicitly configured: `react/rules-of-hooks` (error) and `react/only-export-components` (warn, `allowConstantExport: true`).
+
+**CI pipeline** (`.github/workflows/deploy.yml`): `npm ci` → `npm test` → `npm run lint` → Worker `npm ci` + typecheck → Vite build → Deploy to GitHub Pages. Build secrets injected as env vars: `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `VITE_API_BASE_URL`.
 
 ## Git Workflow
 
