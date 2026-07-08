@@ -8,6 +8,9 @@ export const PROFILE_AVATAR_KEYS = [
   'avatar-07',
   'avatar-08',
   'avatar-09',
+  'avatar-10',
+  'avatar-11',
+  'avatar-12',
 ] as const
 
 export type ProfileAvatarKey = (typeof PROFILE_AVATAR_KEYS)[number]

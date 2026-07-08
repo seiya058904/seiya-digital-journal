@@ -7,6 +7,9 @@ import avatar06 from '../assets/profile-avatars/avatar-06.jpg'
 import avatar07 from '../assets/profile-avatars/avatar-07.jpg'
 import avatar08 from '../assets/profile-avatars/avatar-08.jpg'
 import avatar09 from '../assets/profile-avatars/avatar-09.jpg'
+import avatar10 from '../assets/profile-avatars/avatar-10.jpg'
+import avatar11 from '../assets/profile-avatars/avatar-11.jpg'
+import avatar12 from '../assets/profile-avatars/avatar-12.jpg'
 import {
   DEFAULT_PROFILE_AVATAR_KEY,
   PROFILE_AVATAR_KEYS,
@@ -29,6 +32,9 @@ const profileAvatarMap: Record<ProfileAvatarKey, ProfileAvatar> = {
   'avatar-07': { key: 'avatar-07', src: avatar07, label: 'Preset avatar 07' },
   'avatar-08': { key: 'avatar-08', src: avatar08, label: 'Preset avatar 08' },
   'avatar-09': { key: 'avatar-09', src: avatar09, label: 'Preset avatar 09' },
+  'avatar-10': { key: 'avatar-10', src: avatar10, label: 'Preset avatar 10' },
+  'avatar-11': { key: 'avatar-11', src: avatar11, label: 'Preset avatar 11' },
+  'avatar-12': { key: 'avatar-12', src: avatar12, label: 'Preset avatar 12' },
 }
 
 export const PROFILE_AVATAR_OPTIONS = PROFILE_AVATAR_KEYS.map((key) => profileAvatarMap[key])
