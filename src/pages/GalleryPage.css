@@ -131,9 +131,18 @@
 .gallery-masonry-item--illustration-010 .glare-hover img {
   transform: translateY(-8%) !important;
 }
+.gallery-masonry-item--editorial-021 .glare-hover:hover img,
+.gallery-masonry-item--editorial-022 .glare-hover:hover img,
+.gallery-masonry-item--editorial-023 .glare-hover:hover img,
+.gallery-masonry-item--illustration-010 .glare-hover:hover img {
+  transform: translateY(-8%) scale(1.025) !important;
+}
 
 .gallery-masonry-item--editorial-025 .glare-hover img {
   transform: scale(1.25) !important;
+}
+.gallery-masonry-item--editorial-025 .glare-hover:hover img {
+  transform: scale(1.275) !important;
 }
 
 /* ── Responsive ───────────────────────────────── */

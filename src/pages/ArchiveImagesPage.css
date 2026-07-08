@@ -148,10 +148,16 @@
 .archive-images__item--shift-down .glare-hover img {
   transform: translateY(-8%) !important;
 }
+.archive-images__item--shift-down .glare-hover:hover img {
+  transform: translateY(-8%) scale(1.025) !important;
+}
 
 /* Per-image zoom in (smaller visible area) */
 .archive-images__item--zoom-in .glare-hover img {
   transform: scale(1.25) !important;
+}
+.archive-images__item--zoom-in .glare-hover:hover img {
+  transform: scale(1.275) !important;
 }
 
 /* ── Footnote ─────────────────────────────────── */
