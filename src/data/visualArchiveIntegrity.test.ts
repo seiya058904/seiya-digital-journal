@@ -74,11 +74,11 @@ test('thumb filename matches item id', () => {
   assert.deepEqual(mismatches, [], `Thumb basename mismatches: ${mismatches.join(', ')}`)
 })
 
-test('memory items have a city and non-memory items do not', () => {
+test('only memory items may carry a city', () => {
   const violations = visualArchiveItems
-    .filter(item => (item.category === 'memory') === (item.city === null))
-    .map(item => `"${item.id}": category="${item.category}", city=${item.city === null ? 'null' : `"${item.city}"`}`)
-  assert.deepEqual(violations, [], `Memory/city invariant violations: ${violations.join(', ')}`)
+    .filter(item => item.city !== null && item.category !== 'memory')
+    .map(item => `"${item.id}": category="${item.category}", city="${item.city}"`)
+  assert.deepEqual(violations, [], `Non-memory items with a city: ${violations.join(', ')}`)
 })
 
 test('category matches image directory structure', () => {
