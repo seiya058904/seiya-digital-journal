@@ -16,7 +16,10 @@ If all entries are correct, output them unchanged.
 
 For each entry, output exactly this block. Fix any issues found, or output unchanged if correct:
 
+Each entry must be preceded by a Chinese filename comment for easy matching with source images:
+
 ```ts
+// 中文名：{图片的中文文件名，不含扩展名}
 {
   id: '{category}-{NNN}',
   category: '{category}',
@@ -33,6 +36,8 @@ For each entry, output exactly this block. Fix any issues found, or output uncha
   alt: '{alt}',
 },
 ```
+
+The `// 中文名：` comment is for the user to quickly match the entry to the source image file. It is NOT part of the data — it will be removed before adding to the codebase.
 
 If processing multiple entries, output all blocks consecutively with no text between them.
 
@@ -255,6 +260,7 @@ Before outputting each entry, verify:
 **Input:** User provides this entry for review:
 
 ```ts
+// 中文名：摄影｜可乐与夕阳
 {
   id: 'editorial-041',
   category: 'editorial',
@@ -272,4 +278,4 @@ Before outputting each entry, verify:
 },
 ```
 
-**Output:** Entry passes all checks — output unchanged.
+**Output:** Entry passes all checks — output unchanged (with the `// 中文名：` comment preserved).
