@@ -21,6 +21,9 @@ test('profile avatar keys stay stable and start with the default key', () => {
     'avatar-07',
     'avatar-08',
     'avatar-09',
+    'avatar-10',
+    'avatar-11',
+    'avatar-12',
   ])
   assert.equal(DEFAULT_PROFILE_AVATAR_KEY, 'avatar-01')
 })

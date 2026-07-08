@@ -245,11 +245,18 @@ function toErrorResponse(error: unknown, headers: Headers): Response {
 }
 
 async function readJsonBody(request: Request): Promise<Record<string, unknown>> {
+  let parsed: unknown
   try {
-    return await request.json()
+    parsed = await request.json()
   } catch {
     throw apiError('BAD_REQUEST', 'Request body must be valid JSON.', 400)
   }
+
+  if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
+    throw apiError('BAD_REQUEST', 'Request body must be a JSON object.', 400)
+  }
+
+  return parsed as Record<string, unknown>
 }
 
 function parseTarget(rawType: unknown, rawId: unknown) {
