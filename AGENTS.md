@@ -81,7 +81,7 @@ Conventional commits: `feat:`, `fix:`, `refactor:`, `perf:`, `style:`, `chore:`.
 - Commit, push, deploy, publish, release, and database operations require explicit authorization
 - Production, permissions, secrets, data integrity, signing, and billing changes require prior approval
 - Report test failures and verification gaps honestly; do not skip or suppress them
-- **Visual Archive images:** When adding images to the Visual Archive, always use the `adding-visual-archive-images` skill (`C:\Users\admin\.claude\skills\adding-visual-archive-images\SKILL.md`). Do not improvise the workflow — follow the skill's phases exactly (scan → analyze → generate entries → place files → compress → update data → verify).
+- **Visual Archive images:** When adding images, follow the `adding-visual-archive-images` skill. User provides folder, renames files to Chinese, and writes data entries. Agent reviews entries for format correctness, converts/places files, and updates `visualArchive.ts`. Agent does NOT read images.
 
 ## Pre-Commit Checklist
 

@@ -52,6 +52,11 @@ effects-library/
 
 # Session process artifacts (reports, audits, contact sheets)
 report/
+Report/
+
+# Local workspace and scripts
+work/
+scripts/
 
 # Visual candidate cache (conversion output, not accessioned assets)
 public/visual-candidates/

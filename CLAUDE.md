@@ -337,9 +337,9 @@ For glass tile components in the Archive Notes:
 
 When adding new images to the Visual Archive, **always use the `adding-visual-archive-images` skill** (`C:\Users\admin\.claude\skills\adding-visual-archive-images\SKILL.md`).
 
-The fixed workflow: scan source folder → read/analyze each image → determine category (editorial/memory/illustration/art/design) → generate data entries following exact format conventions (title, caption, note, tags, alt text) → place files (full image + thumbnail) → check file sizes → compress if needed → update `src/data/visualArchive.ts` → run lint + build.
+**Workflow:** User provides folder → User renames files to Chinese → User writes data entries → Agent reviews entries for format correctness → Agent converts to WebP, places files, generates thumbnails → Agent updates `visualArchive.ts` → Lint + Build.
 
-Do not improvise or skip steps. The skill contains all field conventions, naming patterns, and compression thresholds.
+The agent does NOT read images. User handles identification and entry writing; agent handles file conversion, placement, review, and code updates.
 
 ## Critical: Asset Paths and GitHub Pages Base
 
