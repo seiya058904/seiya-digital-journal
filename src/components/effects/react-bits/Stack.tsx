@@ -7,6 +7,7 @@ import {
 } from 'framer-motion'
 import { useEffect, useState, type PropsWithChildren, type ReactNode } from 'react'
 
+import { isStackClickEnabled } from './stackState'
 import './Stack.css'
 
 type CardRotateProps = PropsWithChildren<{
@@ -136,7 +137,7 @@ export function Stack({
   }, [autoplay, autoplayDelay, isMobile, isPaused, reducedMotion, stack.length])
 
   const disableDrag = Boolean(reducedMotion) || isMobile
-  const enableClick = !isMobile && (sendToBackOnClick || mobileClickOnly)
+  const enableClick = isStackClickEnabled(isMobile, sendToBackOnClick, mobileClickOnly)
 
   return (
     <div

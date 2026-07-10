@@ -1,11 +1,15 @@
 import assert from 'node:assert/strict'
-import { existsSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { basename, resolve } from 'node:path'
 import test from 'node:test'
 
-import { visualArchiveItems } from './visualArchive.ts'
+import {
+  getArchiveCardImageSources,
+  visualArchiveItems,
+} from './visualArchive.ts'
 
 const PUBLIC_DIR = resolve(import.meta.dirname, '../../public')
+const ROOT_DIR = resolve(import.meta.dirname, '../..')
 
 test('all item ids are unique', () => {
   const seen = new Map<string, number>()
@@ -90,4 +94,36 @@ test('category matches image directory structure', () => {
     })
     .map(item => `"${item.id}": category="${item.category}", path="${item.image}"`)
   assert.deepEqual(violations, [], `Category/path mismatches: ${violations.join(', ')}`)
+})
+
+test('archive grid cards offer thumbs at 1x and full images at 2x', () => {
+  const item = visualArchiveItems[0]
+  assert.deepEqual(getArchiveCardImageSources(item), {
+    src: `/visual-archive/thumbs/${item.id}-thumb.webp`,
+    srcSet: `/visual-archive/thumbs/${item.id}-thumb.webp 1x, /visual-archive/editorial/${item.id}.webp 2x`,
+  })
+})
+
+test('gallery keeps confirmed strong image shifts out of the standard shift group', () => {
+  const css = readFileSync(resolve(ROOT_DIR, 'src/pages/GalleryPage.css'), 'utf8')
+  const standardShiftGroup = css.slice(
+    css.indexOf('/* Per-image display adjustments */'),
+    css.indexOf('/* Per-image: stronger shift */'),
+  )
+  const strongShiftGroup = css.slice(
+    css.indexOf('/* Per-image: stronger shift */'),
+    css.indexOf('.gallery-masonry-item--editorial-025'),
+  )
+
+  for (const id of ['editorial-023', 'illustration-033']) {
+    assert.equal(standardShiftGroup.includes(id), false, `${id} still uses the standard shift`)
+    assert.equal(strongShiftGroup.includes(id), true, `${id} is missing the strong shift`)
+  }
+  assert.match(strongShiftGroup, /translateY\(-14%\)/)
+})
+
+test('Claude instructions reference the existing optimized archive spec', () => {
+  const claude = readFileSync(resolve(ROOT_DIR, 'CLAUDE.md'), 'utf8')
+  assert.equal(claude.includes('visual-archive-entry-spec.md'), false)
+  assert.equal(claude.includes('visual-archive-entry-spec-optimized.md'), true)
 })

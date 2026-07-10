@@ -137,7 +137,7 @@ supabase/
     deploy.yml       — GitHub Pages deployment workflow
 report/              — session completion reports (Markdown, dated filenames)
 docs/
-  visual-archive-entry-spec.md — format spec for writing/reviewing archive image entries
+  visual-archive-entry-spec-optimized.md — format spec for writing/reviewing archive image entries
 public/
   gallery/           — WebP images used by Motion Lab demos
   visual-archive/    — editorial, memory, illustration, art, design photos (with thumbs/ for previews)
@@ -344,7 +344,7 @@ When adding new images to the Visual Archive, **always use the `adding-visual-ar
 
 The agent does NOT read images. User handles identification and entry writing; agent handles file conversion, placement, review, and code updates.
 
-**Entry format spec:** `docs/visual-archive-entry-spec.md` — the format document given to other AIs for writing/reviewing archive entries. Covers all field rules, naming conventions, and the quality checklist.
+**Entry format spec:** `docs/visual-archive-entry-spec-optimized.md` — the format document given to other AIs for writing/reviewing archive entries. Covers all field rules, naming conventions, and the quality checklist.
 
 ### Per-Image Display Modifiers
 
