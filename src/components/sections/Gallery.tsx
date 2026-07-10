@@ -15,7 +15,7 @@ const CURATED_IDS = [
   'editorial-020',
   'editorial-021',
   'chongqing-001',
-  'chongqing-011',
+  'chongqing-010',
   'chengdu-002',
   'wuhan-005',
   'kaifeng-001',
