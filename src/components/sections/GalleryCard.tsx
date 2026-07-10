@@ -1,9 +1,10 @@
 import { BorderGlow } from '../effects/react-bits/BorderGlow'
 import { GlareHover } from '../effects/react-bits/GlareHover'
-import { archiveImageSrc } from '../../data/visualArchive'
+import { getArchiveCardImageSources } from '../../data/visualArchive'
 
 type GalleryCardItem = {
   image: string
+  thumb: string
   title: string
   caption: string
   note: string
@@ -23,6 +24,7 @@ export function GalleryCard({ item }: GalleryCardProps) {
   const label = item.theme ?? item.id ?? ''
   const aspect = item.aspect
   const altText = item.alt ?? `${label}: visual archive image`
+  const imageSources = getArchiveCardImageSources(item)
 
   const image = (
     <GlareHover
@@ -38,7 +40,8 @@ export function GalleryCard({ item }: GalleryCardProps) {
       transitionDuration={750}
     >
       <img
-        src={archiveImageSrc(item.image)}
+        src={imageSources.src}
+        srcSet={imageSources.srcSet}
         alt={altText}
         width={aspect === 'portrait' ? 1122 : aspect === 'square' ? 1254 : 1536}
         height={aspect === 'portrait' ? 1402 : aspect === 'square' ? 1254 : 1024}

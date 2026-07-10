@@ -35,6 +35,16 @@ export function itemThumbSrc(item: VisualArchiveItem): string {
   return archiveImageSrc(item.thumb)
 }
 
+export function getArchiveCardImageSources(
+  item: Pick<VisualArchiveItem, 'image' | 'thumb'>,
+) {
+  const src = archiveImageSrc(item.thumb)
+  return {
+    src,
+    srcSet: `${src} 1x, ${archiveImageSrc(item.image)} 2x`,
+  }
+}
+
 export const visualArchiveItems: VisualArchiveItem[] = [
   // ===== Editorial (12) =====
   {

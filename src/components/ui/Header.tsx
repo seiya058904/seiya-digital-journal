@@ -224,7 +224,6 @@ export function Header({ activePage = 'home' }: HeaderProps) {
           ) : (
             <a href="#/auth" onClick={handleSignIn}>Sign in</a>
           )}
-          <a href="#/lab" onClick={() => setOpen(false)}>Motion Lab</a>
         </div>
       </nav>
     </header>
