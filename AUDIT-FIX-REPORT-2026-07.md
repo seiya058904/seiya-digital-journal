@@ -13,9 +13,6 @@
 - `src/components/sections/GalleryCard.tsx`: production card images now use the existing thumb as the 1x source and full image as the 2x source.
 - `src/data/visualArchive.ts`: added the small source-selection helper reused by GalleryCard.
 - `src/pages/GalleryPage.css`: moved `editorial-023` and `illustration-033` from the `-8%` group to the `-14%` group.
-- `src/components/effects/react-bits/Stack.tsx`: uses the tested click-enablement condition without changing mobile drag behavior.
-- `src/components/effects/react-bits/stackState.ts`: contains the isolated click condition.
-- `src/components/effects/react-bits/stackState.test.ts`: covers desktop behavior and mobile `mobileClickOnly` behavior.
 - `src/data/visualArchiveIntegrity.test.ts`: covers card image sources, confirmed strong shifts, and the CLAUDE path invariant.
 - `CLAUDE.md`: replaced the two stale Visual Archive spec paths.
 - `AUDIT-FIX-REPORT-2026-07.md`: this report.
@@ -47,14 +44,7 @@ Their hover states retain the existing `scale(1.025)` behavior.
 
 `editorial-004` and `illustration-004` were inspected but not changed. `editorial-004` already has a global URL-based zoom rule. There was not enough evidence that `illustration-004` requires the same Gallery treatment, so the possible design difference was preserved.
 
-### 3. Mobile Stack interaction
-
-- Desktop behavior is unchanged: `sendToBackOnClick` and the existing `mobileClickOnly` desktop behavior still enable click.
-- Mobile drag remains disabled.
-- Mobile click is enabled when `mobileClickOnly` is true.
-- The homepage Stack remains wrapped by `DesktopOnly` and its props were not changed.
-
-### 4. CLAUDE path
+### 3. CLAUDE path
 
 Both references to the deleted `docs/visual-archive-entry-spec.md` were replaced with `docs/visual-archive-entry-spec-optimized.md`. The old reference count is now zero; no duplicate or restored document was created.
 
@@ -71,7 +61,7 @@ No Worker rate-limit architecture, Cloudflare binding, RPC, advisory lock, migra
 ## E. Validation
 
 - `npm ci`: passed; root audit reported 0 vulnerabilities
-- `npm test`: passed, 84/84
+- `npm test`: passed, 83/83
 - `npm run lint`: passed
 - `npm run build`: passed
 - `worker/npm ci`: passed; existing dev-only audit warnings unchanged
@@ -89,4 +79,3 @@ No Worker rate-limit architecture, Cloudflare binding, RPC, advisory lock, migra
 
 1. On a 4K display at 100% scaling, confirm 1x thumbnail candidates remain acceptably sharp. High-DPR scaling should select the full 2x candidate.
 2. In Gallery, confirm `editorial-023` and `illustration-033` match the Image Vault crop and keep their hover zoom.
-3. On a phone-sized viewport, open Motion Lab → Stack and confirm tapping advances a card while drag remains disabled.
