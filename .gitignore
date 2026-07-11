@@ -53,10 +53,13 @@ effects-library/
 # Session process artifacts (reports, audits, contact sheets)
 report/
 Report/
+AUDIT-REPORT-2026-07.md
+IMAGE-OPTIMIZATION-REPORT-2026-07.md
 
 # Local workspace and scripts
 work/
 scripts/
+.tmp/
 
 # Visual candidate cache (conversion output, not accessioned assets)
 public/visual-candidates/
