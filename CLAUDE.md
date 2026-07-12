@@ -30,17 +30,18 @@ If the user has uncommitted modifications:
 ## Commands
 
 ```powershell
+npm ci               # clean install from lockfile (preferred for CI/first setup)
 npm install          # install dependencies
-npm run dev          # start dev server at http://localhost:5173/
+npm run dev          # start dev server at http://localhost:5173/seiya-digital-journal/
 npm run lint         # run oxlint (no config file needed)
 npm run build        # tsc -b && vite build (outputs to dist/)
 npm test             # node --experimental-strip-types --test src/**/*.test.ts
 npm run preview      # preview production build locally
 ```
 
-Worker typecheck:
+Worker typecheck (run when Worker code or shared `src/lib/` validation code changes):
 ```powershell
-npx tsc -p worker/tsconfig.json --noEmit
+cd worker; npm ci; npm run typecheck
 ```
 
 Trailing whitespace check:
@@ -461,7 +462,7 @@ Vite rewrites paths in `index.html` and ES module imports automatically, but doe
 
 ## Testing
 
-Tests use Node's built-in test runner with `--experimental-strip-types` for TypeScript. 17 test files co-located with source as `*.test.ts`.
+Tests use Node's built-in test runner with `--experimental-strip-types` for TypeScript. 19 test files co-located with source as `*.test.ts`.
 
 ```powershell
 npm test                    # run all tests (currently 70 tests)
@@ -475,6 +476,10 @@ All validation functions return `ValidResult<T> | InvalidResult<Code>` discrimin
 **Linter:** `oxlint` with plugins `react`, `typescript`, `oxc`. Config at `.oxlintrc.json` — only two rules explicitly configured: `react/rules-of-hooks` (error) and `react/only-export-components` (warn, `allowConstantExport: true`).
 
 **CI pipeline** (`.github/workflows/deploy.yml`): `npm ci` → `npm test` → `npm run lint` → Worker `npm ci` + typecheck → Vite build → Deploy to GitHub Pages. Build secrets injected as env vars: `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `VITE_API_BASE_URL`.
+
+## Coding Style
+
+Two-space indentation, single quotes, no semicolons. React components use `PascalCase`; functions and variables use `camelCase`. Keep TypeScript strictness intact, avoid unused code, and preserve the current dark theme, reduced-motion behavior, touch support, and hash routes. Prefer colocated plain CSS and the dependencies already in the repo. Do not install dependencies, run auto-fixes, or format the whole repository without permission.
 
 ## Git Workflow
 
@@ -504,7 +509,7 @@ git log -5 --oneline
 
 `feat:`, `fix:`, `remove:`, `chore:`, `docs:`, `style:`, `refactor:`
 
-Each commit should be single-purpose with a short, clear summary.
+Each commit should be single-purpose with a short, clear summary. Include screenshots when a UI change needs visual review. Do not include `dist/`, `node_modules/`, logs, caches, temporary files, raw source-image folders, or unrelated changes.
 
 ### Restrictions
 
@@ -562,3 +567,8 @@ Before any remote write, re-verify:
 The following keywords must NEVER appear in source code:
 - `face-api`, `getUserMedia`, `modelsPath`, `DeviceOrientationEvent`, `enableWebcam`, `showPreview`
 - If a React Bits source file contains them, strip that code during porting.
+
+## Related Files
+
+- `AGENTS.md` — repository guidelines for agents (overlaps with this file; CLAUDE.md takes precedence where conflicts exist)
+- `README.md` — project overview and quick start for human developers

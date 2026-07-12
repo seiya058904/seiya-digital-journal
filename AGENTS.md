@@ -2,53 +2,62 @@
 
 ## Project Overview
 
-Seiya Digital Journal is a dark, client-side personal journal SPA. The frontend uses React 19, TypeScript, Vite 8, Framer Motion, GSAP, Three.js, and Supabase Auth. It is built to `dist/` and deployed to GitHub Pages at `/seiya-digital-journal/` by `.github/workflows/deploy.yml`. A separate Cloudflare Worker in `worker/` exposes the authenticated API; Supabase PostgreSQL is accessed by that Worker.
+Seiya Digital Journal is a client-side journal SPA built with React 19, TypeScript, Vite 8, Framer Motion, GSAP, Three.js, and Supabase Auth. The frontend entry points are `src/main.tsx` and `src/App.tsx`; hash-based routing maps views such as Home, Archive, Gallery, Auth, Profile, and Motion Lab. The app is built to `dist/` and deployed to GitHub Pages under `/seiya-digital-journal/`. A separate Cloudflare Worker in `worker/` serves the authenticated API and talks to Supabase PostgreSQL with server-side credentials.
 
 ## Project Structure & Module Organization
 
-- `src/main.tsx` and `src/App.tsx` — application entry and hash-based routing.
-- `src/pages/` — Home, Archive, Gallery, Auth, Profile, and Motion Lab pages.
-- `src/components/` — sections, shared UI, profile/project components, and visual effects.
-- `src/data/` — editable journal, project, link, avatar, effect, and Visual Archive metadata.
-- `src/auth/`, `src/profile/`, and `src/lib/` — auth/profile state, API clients, validation, and shared domain logic.
-- `public/` and `src/assets/` — static and imported assets.
-- `worker/src/index.ts` — Cloudflare Worker API entrypoint; `worker/` has its own package and typecheck.
-- `supabase/migrations/` — tracked SQL schema migrations.
-- `.github/workflows/deploy.yml` — GitHub Pages build and deploy workflow.
+- `src/pages/` - page-level views, including the hash-routed app screens.
+- `src/components/` - shared UI, effects, sections, profile pieces, and Motion Lab demos.
+- `src/data/` - editable journal, project, link, avatar, effect, and Visual Archive content.
+- `src/auth/`, `src/profile/`, `src/lib/`, and `src/worker/` - auth state, profile state, shared validation, API helpers, and worker-related helpers.
+- `public/` and `src/assets/` - static and imported assets used by the frontend.
+- `worker/src/index.ts` - Cloudflare Worker API entrypoint; `worker/` has its own package and typecheck.
+- `supabase/migrations/` - tracked schema migrations.
+- `.github/workflows/deploy.yml` - GitHub Pages build and deploy workflow.
+- `scripts/` - local helper scripts.
+- `docs/` - supporting project documentation.
 
 ## Architecture Notes
 
-There is no React Router. `App.tsx` maps URL hashes such as `#/`, `#/auth`, `#/profile`, `#/lab`, `#/archive/*`, and `#/gallery` to page components; preserve existing hashes when changing routes. The frontend uses `AuthProvider` and `ProfileProvider`, then calls the Worker API. The Worker validates the Supabase access token and performs database operations with server-side credentials. Never move those credentials into frontend code. Vite's base path is `/seiya-digital-journal/`; use `import.meta.env.BASE_URL` for public asset URLs.
+There is no React Router. `src/App.tsx` switches on `location.hash` and preserves existing hashes such as `#/`, `#/auth`, `#/profile`, `#/lab`, `#/archive/*`, and `#/gallery`. Keep those routes stable unless the user explicitly asks for a routing change. The frontend uses `AuthProvider` and `ProfileProvider`, then calls the Worker API. The Worker validates Supabase access tokens and performs database writes with server-side credentials; do not move those credentials into frontend code. Vite uses the base path `/seiya-digital-journal/`, so public URLs should use `import.meta.env.BASE_URL` where appropriate.
 
 ## Build, Test & Development Commands
 
 ```powershell
-npm ci                 # clean root install
-npm run dev            # Vite development server
-npm test               # Node built-in test runner
-npm run lint           # Oxlint
-npm run build          # TypeScript build check plus Vite production build
-npm run preview        # preview dist locally
+npm ci
+npm run dev
+npm test
+npm run lint
+npm run build
+npm run preview
 cd worker; npm ci; npm run typecheck
 ```
 
-The Worker also defines `npm run deploy` (`wrangler deploy`), but deployment, publish, migration, database writes, commit, push, release, and tag operations require explicit user authorization. GitHub Pages deployment is triggered by pushes to `main`; do not run it implicitly.
+- `npm ci` installs root dependencies from `package-lock.json`.
+- `npm run dev` starts the Vite development server.
+- `npm test` runs the Node built-in test runner against `src/**/*.test.ts`.
+- `npm run lint` runs Oxlint.
+- `npm run build` runs the TypeScript build check and Vite production build.
+- `npm run preview` previews the production build locally.
+- `cd worker; npm ci; npm run typecheck` validates the Worker project.
+
+Deployment, publish, migration, database write, commit, push, release, and tag operations require explicit user authorization. The GitHub Pages workflow in `.github/workflows/deploy.yml` runs on pushes to `main`; do not trigger it implicitly.
 
 ## Coding Style & Naming Conventions
 
-Follow adjacent code: two-space indentation, single quotes, no semicolons, React components in `PascalCase`, and functions/variables in `camelCase`. TypeScript is strict through `tsconfig.app.json`; keep unused-code checks passing. Use co-located plain CSS and existing dependencies. Preserve reduced-motion behavior, touch support, the dark theme, the Vite base path, and existing hash routes.
+Follow the existing code style: two-space indentation, single quotes, and no semicolons. React components use `PascalCase`; functions and variables use `camelCase`. Keep TypeScript strictness intact, avoid unused code, and preserve the current dark theme, reduced-motion behavior, touch support, and hash routes. Prefer colocated plain CSS and the dependencies already in the repo.
 
 ## Testing & Verification
 
-Tests are co-located as `*.test.ts` under `src/` and use Node's built-in `node:test` and `node:assert/strict`; there are currently 19 test files. For code changes, run `npm test`, `npm run lint`, and `npm run build`; run `cd worker; npm run typecheck` when Worker or shared Worker-imported code changes. For UI changes, manually check relevant routes and responsive/reduced-motion behavior; automated browser inspection is not part of the default workflow. Finish with `git status --short`, `git diff --stat`, and `git diff --check`.
+Tests live beside the code as `*.test.ts` files under `src/` and use Node's built-in `node:test` and `node:assert/strict`. There are 19 test files at the time of this guide. For code changes, run `npm test`, `npm run lint`, and `npm run build`; run the Worker typecheck when Worker code or shared Worker-imported code changes. For UI changes, manually check the relevant hash routes and responsive or reduced-motion behavior. Finish with `git status --short`, `git diff --stat`, and `git diff --check`.
 
 ## Commit & Pull Request Guidelines
 
-Use short Conventional Commit subjects such as `feat:`, `fix:`, `perf:`, `refactor:`, `docs:`, or `chore:`. Keep each commit focused. Describe behavior changes and verification in PRs; include screenshots when a UI change needs visual review. Do not include `dist/`, `node_modules/`, logs, caches, temporary files, raw source-image folders, or unrelated changes.
+Recent history uses short Conventional Commit subjects such as `feat:`, `fix:`, `perf:`, `refactor:`, `docs:`, and `chore:`. Keep each change focused on one purpose. PR or change notes should describe the behavior change and the verification performed. Include screenshots when a UI change needs visual review. Do not include `dist/`, `node_modules/`, logs, caches, temporary files, raw source-image folders, or unrelated changes.
 
 ## Security & Configuration
 
-Never read, print, commit, or copy values from `.env`, `.env.local`, `.dev.vars`, or other local environment files. Keep only safe example variable names in documentation. Never expose `SUPABASE_SERVICE_ROLE_KEY` or other Worker secrets to the client. Before changing auth, permissions, database schema/data, production configuration, signing, or billing, explain the risk and obtain authorization. Do not put secrets in code, reports, replies, or commit messages.
+Never read, print, commit, or copy values from `.env`, `.env.local`, `.dev.vars`, or other local environment files. Do not expose `SUPABASE_SERVICE_ROLE_KEY` or any other server-side secret to the client. Do not commit secrets, tokens, passwords, private keys, database connection strings, logs, caches, or generated artifacts. Before changing authentication, permissions, database schema or data, production configuration, signing, or billing, explain the risk and obtain authorization.
 
 ## Agent-Specific Instructions
 
@@ -56,8 +65,10 @@ Before editing, read the relevant files and state a brief plan. Make the smalles
 
 ## Pre-Commit Checklist
 
-- `git status --short` and `git diff --stat` show only intended files.
-- `git diff --check` reports no whitespace errors.
-- No secrets, debug logs, caches, temporary files, or generated artifacts are included.
-- Required tests, lint, build, and relevant Worker checks have run; skipped checks are stated.
-- The commit or push has explicit user authorization.
+- Check `git status --short`.
+- Check `git diff --stat`.
+- Check `git diff --check`.
+- Confirm only the intended files changed.
+- Confirm no secrets, debug logs, caches, or generated artifacts were added.
+- Confirm required tests and checks ran, or clearly state what was skipped.
+- Confirm commit or push only after explicit user authorization.
