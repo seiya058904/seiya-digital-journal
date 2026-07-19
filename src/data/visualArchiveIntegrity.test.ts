@@ -122,8 +122,8 @@ test('gallery keeps confirmed strong image shifts out of the standard shift grou
   assert.match(strongShiftGroup, /translateY\(-14%\)/)
 })
 
-test('Claude instructions reference the existing optimized archive spec', () => {
+test('Claude instructions reference the image rules', () => {
   const claude = readFileSync(resolve(ROOT_DIR, 'CLAUDE.md'), 'utf8')
   assert.equal(claude.includes('visual-archive-entry-spec.md'), false)
-  assert.equal(claude.includes('visual-archive-entry-spec-optimized.md'), true)
+  assert.equal(claude.includes('image-rules.md'), true)
 })

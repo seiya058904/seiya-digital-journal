@@ -27,7 +27,7 @@ If an entry is already valid, output it unchanged.
 ## 2. Exact Output Format
 
 ```ts
-// 中文名：{图片的中文文件名，不含扩展名}
+// 中文名：{原始中文文件名，或基于可见内容生成的临时中文名；均不含扩展名}
 {
   id: '{category}-{NNN}',
   category: '{category}',
@@ -47,12 +47,20 @@ If an entry is already valid, output it unchanged.
 
 Output rules:
 
-- Preserve the `// 中文名：` comment and source filename when available.
+- Every entry must include a filled-in Chinese `// 中文名：` comment.
 - Never add, remove, rename, or reorder fields.
 - Use single-quoted TypeScript strings; escape internal apostrophes as `\'`.
 - Keep trailing commas exactly as shown.
 - For multiple entries, output blocks consecutively with no text between them.
 - Output no explanations, warnings, headings, commentary, or Markdown fences.
+
+### `// 中文名：` comment
+
+- If the original Chinese filename is provided, copy its stem exactly (without the extension).
+- If no original filename is provided, generate a temporary 2–6 Chinese-character name grounded only in visible content. It is a display name, not a claimed source filename.
+- For a collage or contact sheet, generate one temporary Chinese name per requested panel when the original individual filenames are unavailable.
+- Never use an ID, path, upload name, grid position, sequence number, or placeholder as the Chinese name, including `image(324)-1`, `untitled`, `九宫格-1`, or `图片1`.
+- Do not add any explanation about whether the name is original or temporary; output the entry blocks only.
 
 ---
 
@@ -60,13 +68,14 @@ Output rules:
 
 ### `id`
 
-Format: `{category}-{NNN}`, where `NNN` is exactly three digits.
+`NNN` is always exactly three digits. Preserve every existing valid ID exactly.
 
-- Preserve any existing valid ID whose prefix matches the corrected `category`.
+- Non-`memory` IDs normally use `{category}-{NNN}`.
+- `memory` IDs may use an established legacy prefix such as `chongqing-001`, `wuhan-001`, or `growth-001`; do not normalize them to `memory-{NNN}`.
 - Never renumber a valid ID merely because the batch starts elsewhere.
-- Replace an ID only if missing, malformed, duplicated within the output batch, or incompatible with a corrected category.
-- Replacement placeholders start at `001` separately per category, increase in output order, and skip numbers already used in the batch.
-- Do not infer archive-wide numbering.
+- Replace an ID only if missing, malformed, or duplicated in the full archive or output batch.
+- Check `src/data/visualArchive.ts` before assigning a replacement ID. It, the output batch, full-image paths, and thumb paths must all remain unique.
+- Do not invent a new `memory` prefix from a visually inferred city. Use the established destination filename/ID supplied by the user or preserve the existing ID.
 
 ### `category`
 
@@ -92,7 +101,7 @@ Allowed values only:
 'Chongqing' | 'Chengdu' | 'Wuhan' | 'Kaifeng' | 'Tianjin' | 'Emeishan' | 'Venice' | null
 ```
 
-- `memory` requires one allowed non-null city.
+- Preserve `null` for an existing `memory` entry whose city is unknown. A new or reclassified `memory` entry requires an explicitly known allowed city.
 - Every non-`memory` entry requires `null`.
 - Never infer a city from vague resemblance.
 
@@ -123,7 +132,7 @@ Bad: `Yellow Duck in Pool`, `Panda Eating Bamboo`.
 
 ### `note`
 
-Use exactly one approved value; never invent new notes:
+Use exactly one note. Preserve an existing note exactly; the archive contains legacy valid notes beyond the preferred set below. For a new entry, select the closest preferred value and never invent a new label:
 
 | Note | Primary cue |
 |---|---|
@@ -229,9 +238,8 @@ Good: `Yellow rubber duck floats in a turquoise tiled pool with water ripples.`
 
 After correction, enforce all relationships:
 
-- `id` prefix = `category`
-- IDs unique within output batch
-- `memory` → allowed non-null `city`
+- existing IDs preserved; new/replacement IDs unique across the full archive and output batch
+- existing `memory` entries preserve their allowed city or `null`; new/reclassified `memory` entries require an explicitly known allowed city
 - non-`memory` → `city: null`
 - `image` derived from corrected `category`, `city`, and `id`
 - `thumb` derived from corrected `id`
@@ -248,7 +256,7 @@ Dependent fields must be updated whenever their source field changes.
 Before outputting, verify silently:
 
 - exact syntax, field order, comment, and trailing commas
-- valid category/city relationship and unique ID
+- valid category/city relationship and ID unique across the full archive and output batch
 - title: 2–4 words, Title Case, non-literal
 - caption: 10–20 words, one complete reflective sentence ending with `.`
 - approved note only
