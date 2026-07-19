@@ -125,37 +125,46 @@
 .gallery-masonry-item--square .gallery-card__image { aspect-ratio: 1; }
 
 /* Per-image display adjustments */
-.gallery-masonry-item--editorial-021 .glare-hover img,
-.gallery-masonry-item--editorial-022 .glare-hover img,
-.gallery-masonry-item--illustration-010 .glare-hover img,
 .gallery-masonry-item--editorial-033 .glare-hover img {
-  transform: translateY(-8%) !important;
+  object-position: center 58%;
 }
-.gallery-masonry-item--editorial-021 .glare-hover:hover img,
-.gallery-masonry-item--editorial-022 .glare-hover:hover img,
-.gallery-masonry-item--illustration-010 .glare-hover:hover img,
 .gallery-masonry-item--editorial-033 .glare-hover:hover img {
-  transform: translateY(-8%) scale(1.025) !important;
+  object-position: center 58%;
+  transform: scale(1.025) !important;
 }
 
 /* Per-image: stronger shift */
 .gallery-masonry-item--editorial-023 .glare-hover img,
-.gallery-masonry-item--illustration-033 .glare-hover img {
-  transform: translateY(-14%) !important;
+.gallery-masonry-item--illustration-033 .glare-hover img,
+.gallery-masonry-item--editorial-003 .glare-hover img,
+.gallery-masonry-item--editorial-014 .glare-hover img,
+.gallery-masonry-item--editorial-021 .glare-hover img,
+.gallery-masonry-item--editorial-022 .glare-hover img,
+.gallery-masonry-item--editorial-042 .glare-hover img,
+.gallery-masonry-item--illustration-010 .glare-hover img {
+  object-position: center 64%;
 }
 .gallery-masonry-item--editorial-023 .glare-hover:hover img,
-.gallery-masonry-item--illustration-033 .glare-hover:hover img {
-  transform: translateY(-14%) scale(1.025) !important;
+.gallery-masonry-item--illustration-033 .glare-hover:hover img,
+.gallery-masonry-item--editorial-003 .glare-hover:hover img,
+.gallery-masonry-item--editorial-014 .glare-hover:hover img,
+.gallery-masonry-item--editorial-021 .glare-hover:hover img,
+.gallery-masonry-item--editorial-022 .glare-hover:hover img,
+.gallery-masonry-item--editorial-042 .glare-hover:hover img,
+.gallery-masonry-item--illustration-010 .glare-hover:hover img {
+  object-position: center 64%;
+  transform: scale(1.025) !important;
 }
 
 /* Per-image: maximum shift */
 .gallery-masonry-item--editorial-049 .glare-hover img,
 .gallery-masonry-item--illustration-034 .glare-hover img {
-  transform: translateY(-22%) !important;
+  object-position: center 72%;
 }
 .gallery-masonry-item--editorial-049 .glare-hover:hover img,
 .gallery-masonry-item--illustration-034 .glare-hover:hover img {
-  transform: translateY(-22%) scale(1.025) !important;
+  object-position: center 72%;
+  transform: scale(1.025) !important;
 }
 
 .gallery-masonry-item--editorial-025 .glare-hover img {

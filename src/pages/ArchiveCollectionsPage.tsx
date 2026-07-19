@@ -11,6 +11,7 @@ const editorialItems = visualArchiveItems.filter(i => i.category === 'editorial'
 const memoryItems = visualArchiveItems.filter(i => i.category === 'memory')
 
 const cityGroups = [
+  { city: 'Beijing', items: visualArchiveItems.filter(i => i.city === 'Beijing') },
   { city: 'Chongqing', items: visualArchiveItems.filter(i => i.city === 'Chongqing') },
   { city: 'Chengdu', items: visualArchiveItems.filter(i => i.city === 'Chengdu') },
   { city: 'Wuhan', items: visualArchiveItems.filter(i => i.city === 'Wuhan') },

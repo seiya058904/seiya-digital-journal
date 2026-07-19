@@ -104,7 +104,7 @@ test('archive grid cards offer thumbs at 1x and full images at 2x', () => {
   })
 })
 
-test('gallery keeps confirmed strong image shifts out of the standard shift group', () => {
+test('gallery keeps confirmed lower-focused crops out of the standard crop group', () => {
   const css = readFileSync(resolve(ROOT_DIR, 'src/pages/GalleryPage.css'), 'utf8')
   const standardShiftGroup = css.slice(
     css.indexOf('/* Per-image display adjustments */'),
@@ -115,11 +115,20 @@ test('gallery keeps confirmed strong image shifts out of the standard shift grou
     css.indexOf('.gallery-masonry-item--editorial-025'),
   )
 
-  for (const id of ['editorial-023', 'illustration-033']) {
-    assert.equal(standardShiftGroup.includes(id), false, `${id} still uses the standard shift`)
-    assert.equal(strongShiftGroup.includes(id), true, `${id} is missing the strong shift`)
+  for (const id of [
+    'editorial-003',
+    'editorial-014',
+    'editorial-021',
+    'editorial-022',
+    'editorial-023',
+    'editorial-042',
+    'illustration-010',
+    'illustration-033',
+  ]) {
+    assert.equal(standardShiftGroup.includes(id), false, `${id} still uses the standard crop`)
+    assert.equal(strongShiftGroup.includes(id), true, `${id} is missing the strong lower crop`)
   }
-  assert.match(strongShiftGroup, /translateY\(-14%\)/)
+  assert.match(strongShiftGroup, /object-position: center 64%/)
 })
 
 test('Claude instructions reference the image rules', () => {

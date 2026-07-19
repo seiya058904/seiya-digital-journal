@@ -19,8 +19,12 @@ function itemModifier(id: string): string {
   if (id === 'editorial-004') return ' archive-images__item--zoomed'
   if (id === 'illustration-004') return ' archive-images__item--subtle-zoom'
   if (id === 'editorial-049' || id === 'illustration-034') return ' archive-images__item--shift-down-max'
-  if (id === 'illustration-033' || id === 'editorial-023') return ' archive-images__item--shift-down-strong'
-  if (id === 'editorial-022' || id === 'editorial-021' || id === 'illustration-010' || id === 'editorial-033')
+  if (
+    id === 'illustration-033' || id === 'editorial-023' || id === 'editorial-003' ||
+    id === 'editorial-014' || id === 'editorial-021' || id === 'editorial-022' ||
+    id === 'editorial-042' || id === 'illustration-010'
+  ) return ' archive-images__item--shift-down-strong'
+  if (id === 'editorial-033')
     return ' archive-images__item--shift-down'
   if (id === 'editorial-025') return ' archive-images__item--zoom-in'
   return ''
@@ -62,7 +66,7 @@ function CategoryTitle({ category }: { category: ImageCategory }) {
     },
     memory: {
       title: `Memory — ${memoryItems.length}`,
-      desc: 'Cities and places — Chongqing, Chengdu, Wuhan. What I saw while becoming.',
+      desc: 'Cities and places — Beijing, Chongqing, Chengdu, Wuhan. What I saw while becoming.',
     },
     city: {
       title: `City / Places — ${cities.length}`,
