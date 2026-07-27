@@ -6,6 +6,7 @@ import type { VisualArchiveCity } from '../data/visualArchive'
 import { GalleryCard } from '../components/sections/GalleryCard'
 import { FlowingMenu } from '../components/effects/react-bits/FlowingMenu'
 import { ScrollReveal } from '../components/motion/ScrollReveal'
+import { getArchiveImageCategoryFromHash, type ImageCategory } from './archiveImageRoute'
 import '../components/effects/react-bits/FlowingMenu.css'
 import './ArchiveImagesPage.css'
 
@@ -43,16 +44,6 @@ const flowingMenuItems = [
 ]
 
 const PREVIEW_COUNT = 4
-
-type ImageCategory = 'featured' | 'editorial' | 'memory' | 'city'
-
-function getCategoryFromHash(hash: string): ImageCategory | null {
-  if (hash === '#/archive/images/featured') return 'featured'
-  if (hash === '#/archive/images/editorial') return 'editorial'
-  if (hash === '#/archive/images/memory') return 'memory'
-  if (hash === '#/archive/images/city') return 'city'
-  return null
-}
 
 function CategoryTitle({ category }: { category: ImageCategory }) {
   const labels: Record<ImageCategory, { title: string; desc: string }> = {
@@ -303,11 +294,11 @@ function ImageVaultOverview() {
 /* ── Main component ─────────────────────────────────── */
 
 export function ArchiveImagesPage() {
-  const [category, setCategory] = useState<ImageCategory | null>(() => getCategoryFromHash(window.location.hash))
+  const [category, setCategory] = useState<ImageCategory | null>(() => getArchiveImageCategoryFromHash(window.location.hash))
 
   useEffect(() => {
     const onHashChange = () => {
-      const cat = getCategoryFromHash(window.location.hash)
+      const cat = getArchiveImageCategoryFromHash(window.location.hash)
       if (cat) window.scrollTo(0, 0)
       setCategory(cat)
     }
