@@ -49,7 +49,7 @@ Follow the existing code style: two-space indentation, single quotes, and no sem
 
 ## Testing & Verification
 
-Tests live beside the code as `*.test.ts` files under `src/` and use Node's built-in `node:test` and `node:assert/strict`. There are 19 test files at the time of this guide. For code changes, run `npm test`, `npm run lint`, and `npm run build`; run the Worker typecheck when Worker code or shared Worker-imported code changes. For UI changes, manually check the relevant hash routes and responsive or reduced-motion behavior. Finish with `git status --short`, `git diff --stat`, and `git diff --check`.
+Tests live beside the code as `*.test.ts` files under `src/` and use Node's built-in `node:test` and `node:assert/strict`. For code changes, run `npm test`, `npm run lint`, and `npm run build`; run the Worker typecheck when Worker code or shared Worker-imported code changes. For UI changes, manually check the relevant hash routes and responsive or reduced-motion behavior. Finish with `git status --short`, `git diff --stat`, and `git diff --check`.
 
 ## Commit & Pull Request Guidelines
 
