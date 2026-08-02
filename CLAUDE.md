@@ -177,6 +177,18 @@ Current routes:
 
 When adding or changing routes, also check navigation and legacy URL compatibility.
 
+## Accepted Engineering Trade-offs
+
+### Comment rate-limit concurrency (2026-08-02)
+
+The comment rate limit has a theoretical check-then-insert concurrency race: two nearly simultaneous requests can both pass the 10-second check before either insert completes. This was reviewed and is explicitly not fixed. A complete fix is too complex and provides insufficient benefit for this low-traffic personal journal: it would require PostgreSQL RPC, a migration, transaction or user-level locking, Worker error-contract changes, and coordinated production migration.
+
+It does not bypass permissions, leak data, or damage existing comments; the likely worst case is two comments from one user within 10 seconds. Do not implement atomic rate limiting again unless the user explicitly requests it, actual spam or duplicates are observed, traffic grows significantly, comments become security-sensitive, billed, or otherwise high-value, or the project already has reusable database atomic-operation infrastructure.
+
+### Hash route normalization
+
+Hash route parsing must tolerate extra trailing slashes. Add new routes through the shared `resolvePageFromHash()` parser in `src/appRoute.ts`; do not reintroduce scattered exact hash-string checks.
+
 ## Auth
 
 **AuthProvider** (`src/auth/AuthContext.tsx`):

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 
 import { ScrollReveal } from '../components/motion/ScrollReveal'
 import { BorderGlow } from '../components/effects/react-bits/BorderGlow'
+import { getNoteIdFromHash } from '../appRoute'
 import { getNoteById, notes, categoryInfo } from '../data/notes'
 import type { NoteDocument } from '../data/notes'
 import '../components/effects/react-bits/BorderGlow.css'
@@ -16,17 +17,11 @@ const categoryAccent: Record<string, { color: string; glowColor: string; glowCol
 
 const cardBg = 'oklch(21% 0.028 292 / 98%)'
 
-function getNoteIdFromHash(): string | null {
-  if (typeof window === 'undefined') return null
-  const match = window.location.hash.match(/^#\/archive\/notes\/(.+)$/)
-  return match ? match[1] : null
-}
-
 export function ArchiveNoteDetailPage() {
-  const [noteId, setNoteId] = useState<string | null>(() => getNoteIdFromHash())
+  const [noteId, setNoteId] = useState<string | null>(() => getNoteIdFromHash(window.location.hash))
 
   useEffect(() => {
-    const onHashChange = () => setNoteId(getNoteIdFromHash())
+    const onHashChange = () => setNoteId(getNoteIdFromHash(window.location.hash))
     window.addEventListener('hashchange', onHashChange)
     return () => window.removeEventListener('hashchange', onHashChange)
   }, [])

@@ -17,38 +17,18 @@ import { ArchiveNotesCategoryPage } from './pages/ArchiveNotesCategoryPage'
 import { GalleryPage } from './pages/GalleryPage'
 import { AuthPage } from './pages/AuthPage'
 import { ProfilePage } from './pages/ProfilePage'
+import { normalizeHashRoute, resolvePageFromHash, type Page } from './appRoute'
 
 const MotionLabPage = lazy(() => import('./pages/MotionLabPage').then(m => ({ default: m.MotionLabPage })))
-
-type Page = 'home' | 'lab' | 'archive' | 'archive-images' | 'archive-notes' | 'archive-notes-category' | 'archive-note-detail' | 'archive-projects' | 'gallery' | 'auth' | 'profile'
 
 function getPageFromHash(): Page {
   if (typeof window === 'undefined') return 'home'
   const hash = window.location.hash
-  if (hash === '#/auth') return 'auth'
-  if (hash === '#/profile') return 'profile'
-  if (hash === '#/lab' || hash === '#/motion-lab') return 'lab'
-  // Image vault sub-routes all render the same page component
-  if (hash === '#/archive/images' || hash.startsWith('#/archive/images/')) return 'archive-images'
-  // Notes root — handle both with and without trailing slash
-  if (hash === '#/archive/notes' || hash === '#/archive/notes/') return 'archive-notes'
-  // Note detail — #/archive/notes/:id (any segment after notes/ that isn't a known category)
-  if (hash.startsWith('#/archive/notes/')) {
-    const noteSegment = hash.replace('#/archive/notes/', '').split('/')[0]
-    if (noteSegment && noteSegment !== 'learning' && noteSegment !== 'thoughts' && noteSegment !== 'journal') {
-      return 'archive-note-detail'
-    }
-    return 'archive-notes-category'
-  }
-  if (hash === '#/archive/projects') return 'archive-projects'
   // Redirect legacy collections route
-  if (hash === '#/archive/collections') {
+  if (normalizeHashRoute(hash) === '#/archive/collections') {
     window.location.hash = '#/archive/images'
-    return 'archive-images'
   }
-  if (hash === '#/archive') return 'archive'
-  if (hash === '#/gallery') return 'gallery'
-  return 'home'
+  return resolvePageFromHash(hash)
 }
 
 export default function App() {
