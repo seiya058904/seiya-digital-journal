@@ -21,6 +21,8 @@ Seiya Digital Journal is a client-side journal SPA built with React 19, TypeScri
 
 There is no React Router. `src/App.tsx` switches on `location.hash` and preserves existing hashes such as `#/`, `#/auth`, `#/profile`, `#/lab`, `#/archive/*`, and `#/gallery`. Keep those routes stable unless the user explicitly asks for a routing change. The frontend uses `AuthProvider` and `ProfileProvider`, then calls the Worker API. The Worker validates Supabase access tokens and performs database writes with server-side credentials; do not move those credentials into frontend code. Vite uses the base path `/seiya-digital-journal/`, so public URLs should use `import.meta.env.BASE_URL` where appropriate.
 
+Before proposing database-level atomic comment rate limiting, read the accepted engineering trade-off in `CLAUDE.md`; it is intentionally deferred for this low-traffic personal project unless the user explicitly reopens it.
+
 ## Build, Test & Development Commands
 
 ```powershell
