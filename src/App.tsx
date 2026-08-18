@@ -4,8 +4,9 @@ import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { SiteBackground } from './components/effects/SiteBackground'
 import { AuthModal } from './components/auth/AuthModal'
 import { Header } from './components/ui/Header'
+import { useAuth } from './auth/AuthContext'
 import { useAuthModal } from './auth/useAuthModal'
-import { toggleBackgroundMode, type BackgroundMode } from './backgroundMode'
+import { readBackgroundMode, saveBackgroundMode, toggleBackgroundMode, type BackgroundMode } from './backgroundMode'
 import { HomePage } from './pages/HomePage'
 import { ArchivePage } from './pages/ArchivePage'
 import { ArchiveImagesPage } from './pages/ArchiveImagesPage'
@@ -19,6 +20,14 @@ import { ProfilePage } from './pages/ProfilePage'
 import { normalizeHashRoute, resolvePageFromHash, type Page } from './appRoute'
 
 const MotionLabPage = lazy(() => import('./pages/MotionLabPage').then(m => ({ default: m.MotionLabPage })))
+
+function getStoredBackgroundMode(): BackgroundMode {
+  try {
+    return typeof window === 'undefined' ? 'default' : readBackgroundMode(window.localStorage)
+  } catch {
+    return 'default'
+  }
+}
 
 function getPageFromHash(): Page {
   if (typeof window === 'undefined') return 'home'
@@ -36,9 +45,15 @@ function getPageFromHash(): Page {
 
 export default function App() {
   const [page, setPage] = useState<Page>(getPageFromHash)
-  const [backgroundMode, setBackgroundMode] = useState<BackgroundMode>('default')
+  const [backgroundMode, setBackgroundMode] = useState<BackgroundMode>(getStoredBackgroundMode)
   const prevPage = useRef(page)
+  const { clearPasswordRecovery, isPasswordRecovery } = useAuth()
   const { closeAuthModal, isOpen: isAuthModalOpen } = useAuthModal()
+
+  const handleAuthModalClose = () => {
+    clearPasswordRecovery()
+    closeAuthModal()
+  }
 
   useEffect(() => {
     function onHashChange() {
@@ -46,6 +61,7 @@ export default function App() {
       const prev = prevPage.current
       prevPage.current = p
       closeAuthModal()
+      clearPasswordRecovery()
       setPage(p)
       // Scroll to top on page switch — sub-routes that return the same page name (e.g.
       // #/archive/images and #/archive/images/featured both → 'archive-images') skip.
@@ -53,7 +69,15 @@ export default function App() {
     }
     window.addEventListener('hashchange', onHashChange)
     return () => window.removeEventListener('hashchange', onHashChange)
-  }, [closeAuthModal])
+  }, [clearPasswordRecovery, closeAuthModal])
+
+  useEffect(() => {
+    try {
+      if (typeof window !== 'undefined') saveBackgroundMode(window.localStorage, backgroundMode)
+    } catch {
+      // localStorage unavailable — keep the preference in memory
+    }
+  }, [backgroundMode])
 
   const handleBackgroundToggle = () => {
     if (page.startsWith('archive') || page === 'gallery') return
@@ -77,7 +101,10 @@ export default function App() {
         {page === 'profile' && <ProfilePage />}
         {page === 'home' && <HomePage />}
       </div>
-      <AuthModal open={isAuthModalOpen} onClose={closeAuthModal} />
+      <AuthModal
+        open={isAuthModalOpen || (isPasswordRecovery && page !== 'auth')}
+        onClose={handleAuthModalClose}
+      />
     </MotionConfig>
   )
 }

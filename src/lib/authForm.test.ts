@@ -29,6 +29,21 @@ test('signup validation rejects mismatched passwords', () => {
   )
 })
 
+test('reset validation requires a strong matching password pair', () => {
+  assert.deepEqual(
+    validateAuthForm('reset', {
+      displayName: '',
+      email: '',
+      password: 'short',
+      confirmPassword: 'different',
+    }),
+    {
+      password: 'Password must be at least 8 characters.',
+      confirmPassword: 'Passwords do not match.',
+    },
+  )
+})
+
 test('email masking keeps the address recognizable without exposing the full value', () => {
   assert.equal(maskEmailAddress('seiya@example.com'), 'se***@ex*****.com')
 })

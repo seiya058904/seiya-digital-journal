@@ -155,6 +155,15 @@
   text-align: center;
 }
 
+.auth-page--modal .auth-remember,
+.auth-page--modal .auth-forgot-button {
+  color: rgb(156 163 175);
+}
+
+.auth-page--modal .auth-forgot-button:hover {
+  color: #fff;
+}
+
 .auth-page--modal .auth-password-toggle,
 .auth-page--modal .auth-password-toggle:hover {
   background: transparent;

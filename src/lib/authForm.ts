@@ -1,7 +1,7 @@
 const MAX_DISPLAY_NAME_LENGTH = 40
 const MIN_PASSWORD_LENGTH = 8
 
-export type AuthMode = 'signin' | 'signup'
+export type AuthMode = 'signin' | 'signup' | 'forgot' | 'reset'
 export type AuthFieldName = 'displayName' | 'email' | 'password' | 'confirmPassword'
 
 export type AuthFormValues = {
@@ -52,7 +52,7 @@ export function validateAuthField(
     return null
   }
 
-  if (mode !== 'signup') return null
+  if (mode !== 'signup' && mode !== 'reset') return null
   if (!values.confirmPassword) return 'Confirm your password.'
   if (values.confirmPassword !== values.password) return 'Passwords do not match.'
   return null
@@ -61,7 +61,11 @@ export function validateAuthField(
 export function validateAuthForm(mode: AuthMode, values: AuthFormValues): AuthFieldErrors {
   const fields: AuthFieldName[] = mode === 'signup'
     ? ['displayName', 'email', 'password', 'confirmPassword']
-    : ['email', 'password']
+    : mode === 'reset'
+      ? ['password', 'confirmPassword']
+      : mode === 'forgot'
+        ? ['email']
+        : ['email', 'password']
 
   const errors: AuthFieldErrors = {}
   for (const field of fields) {

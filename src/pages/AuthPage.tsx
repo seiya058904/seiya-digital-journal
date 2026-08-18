@@ -18,7 +18,7 @@ import {
 } from '../lib/authRoutes'
 import './AuthPage.css'
 
-type AuthView = 'signin' | 'signup' | 'check-email'
+type AuthView = 'signin' | 'signup' | 'forgot-password' | 'reset-password' | 'check-email'
 type FeedbackTone = 'error' | 'success' | 'info'
 type AuthFeedback = {
   tone: FeedbackTone
@@ -54,10 +54,21 @@ const fieldItemVariants: Variants = {
 }
 
 export function AuthPage({ variant = 'page', onAuthenticated, onBack }: AuthPageProps) {
-  const { backendMessage, isAuthenticated, isConfigured, loading, signIn, signUp } = useAuth()
+  const {
+    backendMessage,
+    clearPasswordRecovery,
+    isAuthenticated,
+    isConfigured,
+    isPasswordRecovery,
+    loading,
+    resetPasswordForEmail,
+    signIn,
+    signUp,
+    updatePassword,
+  } = useAuth()
   const reduceMotion = useReducedMotion() ?? false
 
-  const [view, setView] = useState<AuthView>('signin')
+  const [view, setView] = useState<AuthView>(isPasswordRecovery ? 'reset-password' : 'signin')
   const [values, setValues] = useState(createEmptyAuthFormValues)
   const [fieldErrors, setFieldErrors] = useState<AuthFieldErrors>({})
   const [touchedFields, setTouchedFields] = useState<TouchedFields>({})
@@ -68,6 +79,8 @@ export function AuthPage({ variant = 'page', onAuthenticated, onBack }: AuthPage
   const [maskedEmail, setMaskedEmail] = useState('your email')
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [rememberMe, setRememberMe] = useState(false)
+  const [hasUpdatedPassword, setHasUpdatedPassword] = useState(false)
   const [isExiting, setIsExiting] = useState(false)
   const [isNavigatingBack, setIsNavigatingBack] = useState(false)
 
@@ -78,6 +91,8 @@ export function AuthPage({ variant = 'page', onAuthenticated, onBack }: AuthPage
   const feedbackId = useId()
 
   const isSignUp = view === 'signup'
+  const isForgotPassword = view === 'forgot-password'
+  const isResetPassword = view === 'reset-password'
   const disabled = loading || Boolean(submittingMode) || !isConfigured
   const shouldStaggerFields = isSignUp && !reduceMotion
 
@@ -88,7 +103,7 @@ export function AuthPage({ variant = 'page', onAuthenticated, onBack }: AuthPage
   }, [backendMessage])
 
   useEffect(() => {
-    if (loading || !isAuthenticated || view === 'check-email' || submittingMode || isExiting || isNavigatingBack) return
+    if (loading || !isAuthenticated || isPasswordRecovery || hasUpdatedPassword || view === 'check-email' || submittingMode || isExiting || isNavigatingBack) return
 
     if (onAuthenticated) {
       onAuthenticated()
@@ -101,7 +116,11 @@ export function AuthPage({ variant = 'page', onAuthenticated, onBack }: AuthPage
     }
 
     setIsExiting(true)
-  }, [isAuthenticated, loading, view, submittingMode, reduceMotion, isExiting, isNavigatingBack, onAuthenticated])
+  }, [hasUpdatedPassword, isAuthenticated, isPasswordRecovery, loading, view, submittingMode, reduceMotion, isExiting, isNavigatingBack, onAuthenticated])
+
+  useEffect(() => {
+    if (isPasswordRecovery) setView('reset-password')
+  }, [isPasswordRecovery])
 
   const switchView = (nextView: AuthView) => {
     setView(nextView)
@@ -136,7 +155,7 @@ export function AuthPage({ variant = 'page', onAuthenticated, onBack }: AuthPage
     }
     setValues(nextValues)
     if (feedback?.tone === 'error') setFeedback(null)
-    const mode: AuthMode = isSignUp ? 'signup' : 'signin'
+    const mode: AuthMode = isSignUp ? 'signup' : isForgotPassword ? 'forgot' : isResetPassword ? 'reset' : 'signin'
     updateFieldError(mode, field, nextValues)
     if (field === 'password' && isSignUp) {
       updateFieldError('signup', 'confirmPassword', nextValues)
@@ -148,7 +167,7 @@ export function AuthPage({ variant = 'page', onAuthenticated, onBack }: AuthPage
       ...current,
       [field]: true,
     }))
-    const mode: AuthMode = isSignUp ? 'signup' : 'signin'
+    const mode: AuthMode = isSignUp ? 'signup' : isForgotPassword ? 'forgot' : isResetPassword ? 'reset' : 'signin'
     const nextError = validateAuthField(mode, field, values)
     setFieldErrors((current) => {
       if (!nextError) {
@@ -179,7 +198,7 @@ export function AuthPage({ variant = 'page', onAuthenticated, onBack }: AuthPage
     event.preventDefault()
     setFeedback(null)
 
-    const mode: AuthMode = isSignUp ? 'signup' : 'signin'
+    const mode: AuthMode = isSignUp ? 'signup' : isForgotPassword ? 'forgot' : isResetPassword ? 'reset' : 'signin'
     const nextErrors = validateAuthForm(mode, values)
     setFieldErrors(nextErrors)
     setTouchedFields(mode === 'signup'
@@ -189,25 +208,35 @@ export function AuthPage({ variant = 'page', onAuthenticated, onBack }: AuthPage
           password: true,
           confirmPassword: true,
         }
-      : {
+      : mode === 'reset'
+        ? { password: true, confirmPassword: true }
+        : mode === 'forgot'
+          ? { email: true }
+          : {
           email: true,
           password: true,
-        })
+          })
 
     if (hasAuthFieldErrors(nextErrors)) {
       return
     }
 
     setSubmittingMode(mode)
-    const result = isSignUp
+    const result = isForgotPassword
+      ? await resetPasswordForEmail(values.email.trim())
+      : isResetPassword
+        ? await updatePassword(values.password)
+        : isSignUp
       ? await signUp({
           displayName: values.displayName.trim(),
           email: values.email.trim(),
           password: values.password,
+          rememberMe,
         })
       : await signIn({
           email: values.email.trim(),
           password: values.password,
+          rememberMe,
         })
     setSubmittingMode(null)
 
@@ -222,7 +251,24 @@ export function AuthPage({ variant = 'page', onAuthenticated, onBack }: AuthPage
       return
     }
 
-    const successOutcome = resolveAuthSuccessOutcome(mode, values.email, Boolean(result.requiresEmailConfirmation))
+    if (isForgotPassword) {
+      setFeedback({ tone: 'info', message: result.message ?? 'If an account exists for that email, a reset link is on its way.' })
+      return
+    }
+
+    if (isResetPassword) {
+      clearPasswordRecovery()
+      if (variant === 'modal') {
+        onAuthenticated?.()
+      } else {
+        setHasUpdatedPassword(true)
+        setFeedback({ tone: 'success', message: result.message ?? 'Password updated successfully.' })
+        setView('signin')
+      }
+      return
+    }
+
+    const successOutcome = resolveAuthSuccessOutcome(mode === 'forgot' ? 'signin' : mode, values.email, Boolean(result.requiresEmailConfirmation))
 
     if (successOutcome.kind === 'check-email') {
       setMaskedEmail(successOutcome.maskedEmail)
@@ -382,18 +428,28 @@ export function AuthPage({ variant = 'page', onAuthenticated, onBack }: AuthPage
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.18, ease: easeOut }}
                 >
-                  {variant === 'modal' ? (isSignUp ? 'Sign up' : 'Login') : isSignUp ? 'Create your account' : 'Welcome back'}
+                  {isForgotPassword
+                    ? 'Reset your password'
+                    : isResetPassword
+                      ? 'Choose a new password'
+                      : variant === 'modal'
+                        ? (isSignUp ? 'Sign up' : 'Login')
+                        : isSignUp ? 'Create your account' : 'Welcome back'}
                 </motion.h1>
-                {variant !== 'modal' ? (
+                {variant !== 'modal' || isForgotPassword || isResetPassword ? (
                   <motion.p
                     className="auth-copy"
                     initial={reduceMotion ? false : { opacity: 0, y: 2 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.2, delay: 0.03, ease: easeOut }}
                   >
-                    {isSignUp
-                      ? 'Join the journal with a simple identity.'
-                      : 'Sign in to continue.'}
+                    {isForgotPassword
+                      ? 'Enter your email and we will send you a reset link.'
+                      : isResetPassword
+                        ? 'Choose a new password for your account.'
+                        : isSignUp
+                          ? 'Join the journal with a simple identity.'
+                          : 'Sign in to continue.'}
                   </motion.p>
                 ) : null}
 
@@ -439,7 +495,7 @@ export function AuthPage({ variant = 'page', onAuthenticated, onBack }: AuthPage
                     </motion.div>
                   ) : null}
 
-                  <motion.div variants={shouldStaggerFields ? fieldItemVariants : undefined}>
+                  {!isResetPassword ? <motion.div variants={shouldStaggerFields ? fieldItemVariants : undefined}>
                     <AuthField
                       id={emailInputId}
                       label="Email"
@@ -452,9 +508,9 @@ export function AuthPage({ variant = 'page', onAuthenticated, onBack }: AuthPage
                       error={fieldErrors.email}
                       describedBy={feedback?.tone === 'error' ? feedbackId : undefined}
                     />
-                  </motion.div>
+                  </motion.div> : null}
 
-                  <motion.div variants={shouldStaggerFields ? fieldItemVariants : undefined}>
+                  {!isForgotPassword ? <motion.div variants={shouldStaggerFields ? fieldItemVariants : undefined}>
                     <AuthField
                       id={passwordInputId}
                       label="Password"
@@ -476,9 +532,9 @@ export function AuthPage({ variant = 'page', onAuthenticated, onBack }: AuthPage
                         />
                       }
                     />
-                  </motion.div>
+                  </motion.div> : null}
 
-                  {isSignUp ? (
+                  {isSignUp || isResetPassword ? (
                     <motion.div variants={shouldStaggerFields ? fieldItemVariants : undefined}>
                       <AuthField
                         id={confirmPasswordInputId}
@@ -503,29 +559,56 @@ export function AuthPage({ variant = 'page', onAuthenticated, onBack }: AuthPage
                     </motion.div>
                   ) : null}
 
+                  {!isForgotPassword && !isResetPassword ? (
+                    <label className="auth-remember">
+                      <input
+                        type="checkbox"
+                        checked={rememberMe}
+                        onChange={(event) => setRememberMe(event.target.checked)}
+                      />
+                      <span>Keep me signed in</span>
+                    </label>
+                  ) : null}
+
+                  {view === 'signin' ? (
+                    <button type="button" className="auth-forgot-button" onClick={() => switchView('forgot-password')}>
+                      Forgot password?
+                    </button>
+                  ) : null}
+
                   <motion.div variants={shouldStaggerFields ? fieldItemVariants : undefined}>
                     <button className="auth-submit" type="submit" disabled={disabled}>
                       {submittingMode ? (
                         <>
                           <LoaderCircle className="auth-spinner" size={16} aria-hidden="true" />
-                          <span>{submittingMode === 'signup' ? 'Creating account...' : 'Signing in...'}</span>
+                          <span>
+                            {submittingMode === 'signup'
+                              ? 'Creating account...'
+                              : submittingMode === 'forgot'
+                                ? 'Sending reset link...'
+                                : submittingMode === 'reset'
+                                  ? 'Updating password...'
+                                  : 'Signing in...'}
+                          </span>
                         </>
                       ) : (
-                        isSignUp ? 'Create account' : 'Sign in'
+                        isForgotPassword ? 'Send reset link' : isResetPassword ? 'Update password' : isSignUp ? 'Create account' : 'Sign in'
                       )}
                     </button>
                   </motion.div>
                 </motion.form>
 
                 <p className="auth-switch-copy">
-                  {isSignUp ? 'Already have an account?' : 'New here?'}
+                  {isForgotPassword || isResetPassword
+                    ? 'Remembered your password?'
+                    : isSignUp ? 'Already have an account?' : 'New here?'}
                   {' '}
                   <button
                     type="button"
                     className="auth-switch-button"
-                    onClick={() => switchView(isSignUp ? 'signin' : 'signup')}
+                    onClick={() => switchView(isSignUp || isForgotPassword || isResetPassword ? 'signin' : 'signup')}
                   >
-                    {isSignUp ? 'Sign in' : 'Create an account'}
+                    {isSignUp || isForgotPassword || isResetPassword ? 'Sign in' : 'Create an account'}
                   </button>
                 </p>
               </motion.div>

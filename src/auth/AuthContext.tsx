@@ -8,7 +8,7 @@ import {
 import type { Session, User } from '@supabase/supabase-js'
 
 import { readPublicEnv } from '../lib/env'
-import { getAuthRedirectUrl, getSupabaseClient } from '../lib/supabase'
+import { getAuthRedirectUrl, getSupabaseClient, setRememberedAuthSession } from '../lib/supabase'
 
 type AuthActionSuccess = {
   ok: true
@@ -27,11 +27,13 @@ type SignUpInput = {
   displayName: string
   email: string
   password: string
+  rememberMe: boolean
 }
 
 type SignInInput = {
   email: string
   password: string
+  rememberMe: boolean
 }
 
 type AuthContextValue = {
@@ -39,10 +41,14 @@ type AuthContextValue = {
   session: Session | null
   user: User | null
   isAuthenticated: boolean
+  isPasswordRecovery: boolean
   isConfigured: boolean
   backendMessage: string | null
   signUp: (input: SignUpInput) => Promise<AuthActionResult>
   signIn: (input: SignInInput) => Promise<AuthActionResult>
+  resetPasswordForEmail: (email: string) => Promise<AuthActionResult>
+  updatePassword: (password: string) => Promise<AuthActionResult>
+  clearPasswordRecovery: () => void
   signOut: () => Promise<AuthActionResult>
 }
 
@@ -62,6 +68,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const [loading, setLoading] = useState(Boolean(client))
   const [session, setSession] = useState<Session | null>(null)
   const [user, setUser] = useState<User | null>(null)
+  const [isPasswordRecovery, setIsPasswordRecovery] = useState(false)
 
   useEffect(() => {
     if (!client) {
@@ -85,9 +92,10 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
     const {
       data: { subscription },
-    } = client.auth.onAuthStateChange((_event, nextSession) => {
+    } = client.auth.onAuthStateChange((event, nextSession) => {
       setSession(nextSession)
       setUser(nextSession?.user ?? null)
+      if (event === 'PASSWORD_RECOVERY') setIsPasswordRecovery(true)
       setLoading(false)
     })
 
@@ -97,11 +105,12 @@ export function AuthProvider({ children }: PropsWithChildren) {
     }
   }, [client])
 
-  const signUp = async ({ displayName, email, password }: SignUpInput): Promise<AuthActionResult> => {
+  const signUp = async ({ displayName, email, password, rememberMe }: SignUpInput): Promise<AuthActionResult> => {
     if (!client) {
       return getDisplayableAuthError('Backend is not configured.')
     }
 
+    setRememberedAuthSession(rememberMe)
     const { data, error } = await client.auth.signUp({
       email,
       password,
@@ -131,11 +140,12 @@ export function AuthProvider({ children }: PropsWithChildren) {
     }
   }
 
-  const signIn = async ({ email, password }: SignInInput): Promise<AuthActionResult> => {
+  const signIn = async ({ email, password, rememberMe }: SignInInput): Promise<AuthActionResult> => {
     if (!client) {
       return getDisplayableAuthError('Backend is not configured.')
     }
 
+    setRememberedAuthSession(rememberMe)
     const { error } = await client.auth.signInWithPassword({
       email,
       password,
@@ -151,11 +161,32 @@ export function AuthProvider({ children }: PropsWithChildren) {
     }
   }
 
+  const resetPasswordForEmail = async (email: string): Promise<AuthActionResult> => {
+    if (!client) return getDisplayableAuthError('Backend is not configured.')
+
+    const { error } = await client.auth.resetPasswordForEmail(email, {
+      redirectTo: getAuthRedirectUrl(),
+    })
+    if (error) return getDisplayableAuthError('Unable to send a reset email right now.')
+    return { ok: true, message: 'If an account exists for that email, a reset link is on its way.' }
+  }
+
+  const updatePassword = async (password: string): Promise<AuthActionResult> => {
+    if (!client) return getDisplayableAuthError('Backend is not configured.')
+
+    const { error } = await client.auth.updateUser({ password })
+    if (error) return getDisplayableAuthError('Unable to update your password right now.')
+    return { ok: true, message: 'Password updated successfully.' }
+  }
+
+  const clearPasswordRecovery = () => setIsPasswordRecovery(false)
+
   const signOut = async (): Promise<AuthActionResult> => {
     if (!client) {
       return getDisplayableAuthError('Backend is not configured.')
     }
 
+    setRememberedAuthSession(false)
     const { error } = await client.auth.signOut()
     if (error) {
       return getDisplayableAuthError('Unable to sign out right now.')
@@ -174,10 +205,14 @@ export function AuthProvider({ children }: PropsWithChildren) {
         session,
         user,
         isAuthenticated: Boolean(user),
+        isPasswordRecovery,
         isConfigured: env.isSupabaseConfigured,
         backendMessage: env.isSupabaseConfigured ? null : 'Backend is not configured.',
         signUp,
         signIn,
+        resetPasswordForEmail,
+        updatePassword,
+        clearPasswordRecovery,
         signOut,
       }}
     >
