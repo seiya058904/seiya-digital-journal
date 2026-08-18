@@ -1,5 +1,7 @@
-export type BackgroundMode = 'default' | 'beams'
+export type BackgroundMode = 'default' | 'beams' | 'sliced-waves'
 
 export function toggleBackgroundMode(mode: BackgroundMode): BackgroundMode {
-  return mode === 'default' ? 'beams' : 'default'
+  if (mode === 'default') return 'beams'
+  if (mode === 'beams') return 'sliced-waves'
+  return 'default'
 }
