@@ -1527,31 +1527,92 @@ main {
 }
 
 .contact-support-btn {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 3rem;
+  gap: 4px;
   margin-top: clamp(1.5rem, 3vw, 2.25rem);
-  padding: 0.75rem 1.4rem;
-  border: 1px solid var(--color-border-strong);
-  border-radius: 999px;
-  background: var(--color-surface);
-  box-shadow: var(--shadow-glow);
+  padding: 16px 36px;
+  border: 4px solid transparent;
+  border-radius: 100px;
+  background-color: inherit;
+  box-shadow: 0 0 0 2px var(--color-cyan);
   color: var(--color-cyan);
   cursor: pointer;
-  font-size: 0.82rem;
+  overflow: hidden;
+  font-size: 16px;
   font-weight: 600;
-  letter-spacing: 0.04em;
-  transition:
-    background var(--duration-fast) var(--ease-out),
-    border-color var(--duration-fast) var(--ease-out),
-    color var(--duration-fast) var(--ease-out);
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.contact-support-btn svg {
+  position: absolute;
+  z-index: 9;
+  width: 24px;
+  fill: var(--color-cyan);
+  transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.contact-support-btn .arr-1 {
+  right: 16px;
+}
+
+.contact-support-btn .arr-2 {
+  left: -25%;
+}
+
+.contact-support-btn .circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-cyan);
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.contact-support-btn .text {
+  position: relative;
+  z-index: 1;
+  transform: translateX(-12px);
+  transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .contact-support-btn:hover {
-  border-color: var(--color-cyan);
-  background: var(--color-surface-strong);
-  color: var(--color-text);
+  border-radius: 12px;
+  box-shadow: 0 0 0 12px transparent;
+  color: var(--color-bg-deep);
+}
+
+.contact-support-btn:hover .arr-1 {
+  right: -25%;
+}
+
+.contact-support-btn:hover .arr-2 {
+  left: 16px;
+}
+
+.contact-support-btn:hover .text {
+  transform: translateX(12px);
+}
+
+.contact-support-btn:hover svg {
+  fill: var(--color-bg-deep);
+}
+
+.contact-support-btn:hover .circle {
+  width: 220px;
+  height: 220px;
+  opacity: 1;
+}
+
+.contact-support-btn:active {
+  scale: 0.95;
+  box-shadow: 0 0 0 4px var(--color-cyan);
 }
 
 .contact-support-btn:focus-visible {

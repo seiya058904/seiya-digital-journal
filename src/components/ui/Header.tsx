@@ -13,6 +13,7 @@ import { AccountMenu } from './AccountMenu'
 
 type HeaderProps = {
   activePage?: 'home' | 'lab' | 'archive' | 'archive-images' | 'archive-notes' | 'archive-notes-category' | 'archive-note-detail' | 'archive-projects' | 'gallery' | 'auth' | 'profile'
+  onBackgroundToggle?: () => void
 }
 
 const headerItems = [
@@ -57,7 +58,7 @@ const exploreItems: CardNavItem[] = [
   },
 ]
 
-export function Header({ activePage = 'home' }: HeaderProps) {
+export function Header({ activePage = 'home', onBackgroundToggle }: HeaderProps) {
   const [open, setOpen] = useState(false)
   const { isAuthenticated, loading, signOut, user } = useAuth()
   const { profile: accountProfile, loading: profileLoading, error: profileError } = useProfile()
@@ -140,6 +141,7 @@ export function Header({ activePage = 'home' }: HeaderProps) {
         logoAlt={`${profile.brand} home`}
         items={headerItems}
         activeHref={getActiveHref()}
+        onLogoClick={onBackgroundToggle}
         baseColor="rgba(18, 12, 35, 0.45)"
         pillColor="rgba(40, 28, 70, 0.55)"
         hoveredPillTextColor="#f3f6ff"

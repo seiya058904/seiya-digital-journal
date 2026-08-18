@@ -24,12 +24,22 @@
 }
 
 .site-background .aurora,
-.site-background .site-gridscan {
+.site-background .site-gridscan,
+.site-background .beams-container,
+.site-background__static {
   position: absolute;
   inset: 0;
   width: 100vw;
   height: 100vh;
   pointer-events: none;
+}
+
+.site-background__static {
+  background:
+    radial-gradient(circle at 76% 8%, rgb(83 133 255 / 32%), transparent 34rem),
+    radial-gradient(circle at 16% 55%, rgb(86 228 255 / 18%), transparent 39rem),
+    radial-gradient(circle at 68% 82%, rgb(140 117 255 / 17%), transparent 38rem),
+    linear-gradient(155deg, rgb(7 16 39 / 88%), rgb(3 8 22 / 72%) 48%, rgb(13 8 32 / 76%));
 }
 
 .site-background .aurora {

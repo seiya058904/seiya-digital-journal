@@ -1,12 +1,9 @@
 import { MotionConfig } from 'framer-motion'
 import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 
-import { ArchiveBackground } from './components/effects/ArchiveBackground'
-import { AuroraBackground } from './components/effects/AuroraBackground'
-
-import { DesktopGridScan } from './components/effects/react-bits/DesktopGridScan'
+import { SiteBackground } from './components/effects/SiteBackground'
 import { Header } from './components/ui/Header'
-import { PhoneOnly } from './components/ui/DesktopOnly'
+import { toggleBackgroundMode, type BackgroundMode } from './backgroundMode'
 import { HomePage } from './pages/HomePage'
 import { ArchivePage } from './pages/ArchivePage'
 import { ArchiveImagesPage } from './pages/ArchiveImagesPage'
@@ -33,6 +30,7 @@ function getPageFromHash(): Page {
 
 export default function App() {
   const [page, setPage] = useState<Page>(getPageFromHash)
+  const [backgroundMode, setBackgroundMode] = useState<BackgroundMode>('default')
   const prevPage = useRef(page)
 
   useEffect(() => {
@@ -49,43 +47,15 @@ export default function App() {
     return () => window.removeEventListener('hashchange', onHashChange)
   }, [])
 
+  const handleBackgroundToggle = () => {
+    setBackgroundMode(toggleBackgroundMode)
+  }
+
   return (
     <MotionConfig reducedMotion="user">
-      <div className="site-background" aria-hidden="true">
-        {page.startsWith('archive') || page === 'gallery' ? (
-          <PhoneOnly><AuroraBackground /></PhoneOnly>
-        ) : (
-          <AuroraBackground />
-        )}
-        {page === 'home' ? (
-          <DesktopGridScan
-            className="site-gridscan"
-            sensitivity={0.55}
-            lineThickness={1}
-            linesColor="#2F293A"
-            scanColor="#FF9FFC"
-            scanOpacity={0.4}
-            gridScale={0.1}
-            lineStyle="solid"
-            lineJitter={0.1}
-            scanDirection="pingpong"
-            enablePost
-            bloomIntensity={0.6}
-            chromaticAberration={0.002}
-            noiseIntensity={0.01}
-            scanGlow={0.5}
-            scanSoftness={2}
-            scanPhaseTaper={0.9}
-            scanDuration={2.0}
-            scanDelay={2.0}
-            scanOnClick
-            snapBackDelay={250}
-          />
-        ) : null}
-        <ArchiveBackground hidden={!page.startsWith('archive') && page !== 'gallery'} />
-      </div>
+      <SiteBackground page={page} mode={backgroundMode} />
       <div className="site-main">
-        <Header activePage={page} />
+        <Header activePage={page} onBackgroundToggle={handleBackgroundToggle} />
         {page === 'lab' && <Suspense fallback={null}><MotionLabPage /></Suspense>}
         {page === 'archive' && <ArchivePage />}
         {page === 'archive-images' && <ArchiveImagesPage />}

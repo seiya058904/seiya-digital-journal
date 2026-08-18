@@ -41,6 +41,9 @@
   border-radius: 50%;
   background: var(--base);
   box-shadow: inset 0 1px rgb(255 255 255 / 8%);
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
 }
 
 .pill-logo img {

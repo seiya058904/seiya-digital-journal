@@ -23,6 +23,7 @@ type PillNavProps = {
   pillTextColor?: string
   initialLoadAnimation?: boolean
   onItemClick?: (item: PillNavItem) => void
+  onLogoClick?: () => void
 }
 
 type PillNavStyles = CSSProperties & {
@@ -45,6 +46,7 @@ export function PillNav({
   pillTextColor = baseColor,
   initialLoadAnimation = true,
   onItemClick,
+  onLogoClick,
 }: PillNavProps) {
   const circleRefs = useRef<Array<HTMLSpanElement | null>>([])
   const timelineRefs = useRef<Array<gsap.core.Timeline | null>>([])
@@ -52,7 +54,7 @@ export function PillNav({
   const logoImgRef = useRef<HTMLImageElement | null>(null)
   const logoTweenRef = useRef<gsap.core.Tween | null>(null)
   const navItemsRef = useRef<HTMLDivElement | null>(null)
-  const logoRef = useRef<HTMLAnchorElement | null>(null)
+  const logoRef = useRef<HTMLAnchorElement | HTMLButtonElement | null>(null)
 
   useEffect(() => {
     const desktopMotion = window.matchMedia(
@@ -194,15 +196,32 @@ export function PillNav({
         aria-label="Primary navigation"
         style={styles}
       >
-        <a
-          className="pill-logo"
-          href={items[0]?.href ?? '#home'}
-          aria-label="Home"
-          onMouseEnter={handleLogoEnter}
-          ref={logoRef}
-        >
-          <img src={logo} alt={logoAlt} ref={logoImgRef} />
-        </a>
+        {onLogoClick ? (
+          <button
+            className="pill-logo"
+            type="button"
+            aria-label="Switch background"
+            onClick={onLogoClick}
+            onMouseEnter={handleLogoEnter}
+            ref={(element) => {
+              logoRef.current = element
+            }}
+          >
+            <img src={logo} alt={logoAlt} ref={logoImgRef} />
+          </button>
+        ) : (
+          <a
+            className="pill-logo"
+            href={items[0]?.href ?? '#home'}
+            aria-label="Home"
+            onMouseEnter={handleLogoEnter}
+            ref={(element) => {
+              logoRef.current = element
+            }}
+          >
+            <img src={logo} alt={logoAlt} ref={logoImgRef} />
+          </a>
+        )}
 
         <div className="pill-nav-items" ref={navItemsRef}>
           <ul className="pill-list">
