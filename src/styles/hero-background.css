@@ -90,3 +90,16 @@
     display: none;
   }
 }
+
+@media (max-width: 560px) {
+  .site-background .aurora,
+  .site-background__static {
+    background:
+      radial-gradient(circle at 76% 8%, rgb(37 57 112 / 14%), transparent 28rem),
+      radial-gradient(circle at 16% 55%, rgb(41 112 137 / 7%), transparent 32rem),
+      radial-gradient(circle at 68% 82%, rgb(75 58 128 / 8%), transparent 32rem),
+      linear-gradient(155deg, rgb(2 7 19 / 92%), rgb(1 4 12 / 97%) 48%, rgb(7 5 19 / 92%));
+  }
+
+  .site-background .aurora__orb { opacity: 0.18; }
+}

@@ -1,11 +1,12 @@
 import { ArrowDown, Images } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { motion, useInView } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
 
 import avatarSeiya from '../../assets/avatar-seiya.webp'
 import { profile } from '../../data/profile'
 import { ProfileCard } from '../effects/react-bits/ProfileCard'
-import GradientText from '../effects/text/GradientText'
 import ShinyText from '../effects/text/ShinyText'
+import StrokeText from '../effects/text/StrokeText'
 import { RotatingText } from '../effects/text/RotatingText'
 import { TextReveal } from '../motion/TextReveal'
 import { ActionLink } from '../ui/ActionLink'
@@ -14,30 +15,29 @@ import { DesktopOnly } from '../ui/DesktopOnly'
 const identityWords = ['Learning', 'Creating', 'Remembering', 'Becoming']
 
 export function Hero() {
+  const heroRef = useRef<HTMLElement>(null)
+  const isInView = useInView(heroRef, { once: false, amount: 0.2 })
+  const wasInView = useRef(false)
+  const [animationKey, setAnimationKey] = useState(0)
+
+  useEffect(() => {
+    if (isInView && !wasInView.current) setAnimationKey((key) => key + 1)
+    wasInView.current = isInView
+  }, [isInView])
+
   return (
-    <section id="home" className="hero section">
+    <section ref={heroRef} id="home" className="hero section">
       <div className="hero__copy">
         <h1>
-          <TextReveal delay={0.08} className="hero__title-line">
-            <GradientText
-              colors={['#f3f6ff', '#56e4ff', '#a78bfa', '#f0abfc', '#f3f6ff']}
-              animationSpeed={7}
-              direction="horizontal"
-            >
-              {profile.hero.title[0].text}{profile.hero.title[0].accent}
-            </GradientText>
+          <TextReveal key={`title-1-${animationKey}`} delay={0.08} className="hero__title-line">
+            <StrokeText text={`${profile.hero.title[0].text}${profile.hero.title[0].accent}`} strokeColor="#A78BFA" fillColor="#F3F6FF" fontSize={96} fontWeight={430} />
           </TextReveal>
-          <TextReveal delay={0.17} className="hero__title-line">
-            <GradientText
-              colors={['#f3f6ff', '#56e4ff', '#a78bfa', '#f0abfc', '#f3f6ff']}
-              animationSpeed={7}
-              direction="horizontal"
-            >
-              {profile.hero.title[1].text}{profile.hero.title[1].accent}
-            </GradientText>
+          <TextReveal key={`title-2-${animationKey}`} delay={0.17} className="hero__title-line">
+            <StrokeText text={`${profile.hero.title[1].text}${profile.hero.title[1].accent}`} strokeColor="#A78BFA" fillColor="#F3F6FF" fontSize={96} fontWeight={430} />
           </TextReveal>
         </h1>
         <motion.p
+          key={`subtitle-${animationKey}`}
           className="hero__subtitle"
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -46,6 +46,7 @@ export function Hero() {
           <ShinyText text={profile.hero.subtitle} speed={2} spread={120} shineColor="#e0e8ff" />
         </motion.p>
         <motion.p
+          key={`chinese-${animationKey}`}
           className="hero__chinese"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -54,6 +55,7 @@ export function Hero() {
           {profile.hero.chinese}
         </motion.p>
         <motion.p
+          key={`identity-${animationKey}`}
           className="hero__identity-words"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -70,6 +72,7 @@ export function Hero() {
           />
         </motion.p>
         <motion.div
+          key={`actions-${animationKey}`}
           className="hero__actions"
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -85,6 +88,7 @@ export function Hero() {
 
       <DesktopOnly>
         <motion.div
+          key={`portrait-${animationKey}`}
           className="hero__portrait-wrap"
           initial={{ opacity: 0, scale: 0.96, y: 18 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -103,6 +107,7 @@ export function Hero() {
       </DesktopOnly>
 
       <motion.a
+        key={`scroll-cue-${animationKey}`}
         className="scroll-cue"
         href="#about"
         aria-label="Scroll to About"
