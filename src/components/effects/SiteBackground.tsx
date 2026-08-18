@@ -79,11 +79,14 @@ function DesktopSlicedWaves() {
 }
 
 export function SiteBackground({ page, mode }: SiteBackgroundProps) {
-  const showArchiveBackground = page.startsWith('archive') || page === 'gallery'
+  const isArchiveArea = page.startsWith('archive') || page === 'gallery'
+  const showArchiveBackground = isArchiveArea
 
   return (
     <div className="site-background" aria-hidden="true">
-      {mode === 'beams' ? (
+      {isArchiveArea ? (
+        <PhoneOnly><AuroraBackground /></PhoneOnly>
+      ) : mode === 'beams' ? (
         <DesktopBeams />
       ) : mode === 'sliced-waves' ? (
         <DesktopSlicedWaves />

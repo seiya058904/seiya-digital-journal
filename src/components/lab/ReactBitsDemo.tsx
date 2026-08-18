@@ -103,7 +103,7 @@ const cardNavItems = [
     textColor: '#e0e8ff',
     links: [
       { label: 'Thoughts', href: '#/' },
-      { label: 'Gallery', href: '#/gallery' },
+      { label: 'Gallery', href: '#/archive/images/gallery' },
     ],
   },
   {
@@ -119,7 +119,7 @@ const cardNavItems = [
 
 const flowingMenuItems = [
   { link: '#/', text: 'Journal', image: `${base}gallery/aurora.webp` },
-  { link: '#/gallery', text: 'Gallery', image: `${base}gallery/horizon.webp` },
+  { link: '#/archive/images/gallery', text: 'Gallery', image: `${base}gallery/horizon.webp` },
   { link: '#/archive', text: 'Archive', image: `${base}gallery/geometry.webp` },
 ]
 

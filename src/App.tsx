@@ -25,6 +25,10 @@ function getPageFromHash(): Page {
   if (normalizeHashRoute(hash) === '#/archive/collections') {
     window.location.hash = '#/archive/images'
   }
+  // Redirect the legacy standalone gallery route into the Archive namespace
+  if (normalizeHashRoute(hash) === '#/gallery') {
+    window.location.hash = '#/archive/images/gallery'
+  }
   return resolvePageFromHash(hash)
 }
 
@@ -48,6 +52,7 @@ export default function App() {
   }, [])
 
   const handleBackgroundToggle = () => {
+    if (page.startsWith('archive') || page === 'gallery') return
     setBackgroundMode(toggleBackgroundMode)
   }
 

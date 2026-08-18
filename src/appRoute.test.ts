@@ -11,6 +11,7 @@ test('resolvePageFromHash normalizes supported hash routes', () => {
     ['#/profile', 'profile'],
     ['#/profile/', 'profile'],
     ['#/gallery///', 'gallery'],
+    ['#/archive/images/gallery/', 'gallery'],
     ['#/archive/', 'archive'],
     ['#/archive/projects/', 'archive-projects'],
     ['#/archive/images/featured/', 'archive-images'],

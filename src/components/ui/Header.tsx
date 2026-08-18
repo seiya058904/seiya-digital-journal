@@ -94,6 +94,7 @@ export function Header({ activePage = 'home', onBackgroundToggle }: HeaderProps)
       case 'archive-notes':
       case 'archive-notes-category': return '#/archive/notes'
       case 'archive-projects': return '#/archive/projects'
+      case 'gallery': return '#/archive/images/gallery'
       default: return `#/${activePage}`
     }
   }

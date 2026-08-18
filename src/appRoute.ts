@@ -10,6 +10,7 @@ export function resolvePageFromHash(hash: string): Page {
   if (path === '#/auth') return 'auth'
   if (path === '#/profile') return 'profile'
   if (path === '#/lab' || path === '#/motion-lab') return 'lab'
+  if (path === '#/archive/images/gallery') return 'gallery'
   if (path === '#/archive/images' || path.startsWith('#/archive/images/')) return 'archive-images'
   if (path === '#/archive/notes') return 'archive-notes'
   if (path.startsWith('#/archive/notes/')) {
