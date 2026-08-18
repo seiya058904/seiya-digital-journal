@@ -2,12 +2,12 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { useEffect, useId, useRef, useState, type ChangeEvent } from 'react'
 
 import { useAuth } from '../../../auth/AuthContext'
+import { useAuthModal } from '../../../auth/useAuthModal'
 import { createComment } from '../../../lib/api'
 import {
   COMMENT_SUCCESS_FADE_MS,
   scheduleCommentSuccessLifecycle,
 } from '../../../lib/commentSuccess'
-import { navigateToAuth } from '../../../lib/authRoutes'
 import { ARCHIVE_STEPPER_TARGET } from '../../../lib/interactions'
 import Stepper, { Step } from './Stepper'
 
@@ -31,6 +31,7 @@ function save(key: string, value: unknown) {
 
 export function JournalStepperDemo() {
   const { backendMessage, isAuthenticated, isConfigured } = useAuth()
+  const { openAuthModal } = useAuthModal()
   const reduceMotion = useReducedMotion()
   const [thought, setThought] = useState(() => loadSaved<string>(THOUGHT_KEY, ''))
   const [status, setStatus] = useState<string | null>(null)
@@ -157,7 +158,7 @@ export function JournalStepperDemo() {
               <p className="stepper-demo__hint">
                 Sign in to publish this comment. <a href="#/auth" onClick={(event) => {
                   event.preventDefault()
-                  navigateToAuth()
+                  openAuthModal()
                 }}
                 >Sign in</a>
               </p>

@@ -5,7 +5,8 @@ import { useAuth } from '../../auth/AuthContext'
 import profileLogo from '../../assets/brand-icon.webp'
 import { profile } from '../../data/profile'
 import { getProfileAvatar } from '../../data/profileAvatars'
-import { clearAuthReturnTarget, getPreSignOutRoute, navigateToAuth } from '../../lib/authRoutes'
+import { clearAuthReturnTarget, getPreSignOutRoute } from '../../lib/authRoutes'
+import { useAuthModal } from '../../auth/useAuthModal'
 import { useProfile } from '../../profile/ProfileContext'
 import { CardNav, type CardNavItem } from '../effects/react-bits/CardNav'
 import { PillNav } from '../effects/react-bits/PillNav'
@@ -61,6 +62,7 @@ const exploreItems: CardNavItem[] = [
 export function Header({ activePage = 'home', onBackgroundToggle }: HeaderProps) {
   const [open, setOpen] = useState(false)
   const { isAuthenticated, loading, signOut, user } = useAuth()
+  const { openAuthModal } = useAuthModal()
   const { profile: accountProfile, loading: profileLoading, error: profileError } = useProfile()
 
   const isHashPage = activePage !== 'home'
@@ -126,7 +128,7 @@ export function Header({ activePage = 'home', onBackgroundToggle }: HeaderProps)
   const handleSignIn = (event: MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault()
     setOpen(false)
-    navigateToAuth()
+    openAuthModal()
   }
 
   const handleProfileNavigation = () => {

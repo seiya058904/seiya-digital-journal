@@ -1,6 +1,7 @@
 import { createRoot } from 'react-dom/client'
 
 import { AuthProvider } from './auth/AuthContext'
+import { AuthModalProvider } from './auth/AuthModalProvider'
 import { ProfileProvider } from './profile/ProfileContext'
 import App from './App'
 import './styles/tokens.css'
@@ -10,7 +11,9 @@ import './styles/hero-background.css'
 createRoot(document.getElementById('root')!).render(
   <AuthProvider>
     <ProfileProvider>
-      <App />
+      <AuthModalProvider>
+        <App />
+      </AuthModalProvider>
     </ProfileProvider>
   </AuthProvider>,
 )

@@ -26,6 +26,12 @@ type AuthFeedback = {
 } | null
 type TouchedFields = Partial<Record<AuthFieldName, boolean>>
 
+type AuthPageProps = {
+  variant?: 'page' | 'modal'
+  onAuthenticated?: () => void
+  onBack?: () => void
+}
+
 const easeOut = [0.22, 1, 0.36, 1] as const
 
 const fieldContainerVariants: Variants = {
@@ -47,7 +53,7 @@ const fieldItemVariants: Variants = {
   },
 }
 
-export function AuthPage() {
+export function AuthPage({ variant = 'page', onAuthenticated, onBack }: AuthPageProps) {
   const { backendMessage, isAuthenticated, isConfigured, loading, signIn, signUp } = useAuth()
   const reduceMotion = useReducedMotion() ?? false
 
@@ -84,13 +90,18 @@ export function AuthPage() {
   useEffect(() => {
     if (loading || !isAuthenticated || view === 'check-email' || submittingMode || isExiting || isNavigatingBack) return
 
+    if (onAuthenticated) {
+      onAuthenticated()
+      return
+    }
+
     if (reduceMotion) {
       window.location.hash = consumeAuthReturnTarget()
       return
     }
 
     setIsExiting(true)
-  }, [isAuthenticated, loading, view, submittingMode, reduceMotion, isExiting, isNavigatingBack])
+  }, [isAuthenticated, loading, view, submittingMode, reduceMotion, isExiting, isNavigatingBack, onAuthenticated])
 
   const switchView = (nextView: AuthView) => {
     setView(nextView)
@@ -152,6 +163,11 @@ export function AuthPage() {
   }
 
   const handleBack = () => {
+    if (onBack) {
+      onBack()
+      return
+    }
+
     if (reduceMotion) {
       window.location.hash = consumeAuthReturnTarget()
       return
@@ -262,7 +278,7 @@ export function AuthPage() {
 
   return (
     <motion.main
-      className="auth-page"
+      className={`auth-page auth-page--${variant}`}
       initial={reduceMotion ? false : { opacity: 0, y: 16, scale: 0.99 }}
       animate={pageAnimate}
       transition={{ duration: reduceMotion ? 0 : isNavigatingBack ? 0.2 : 0.4, ease: easeOut }}
@@ -366,18 +382,20 @@ export function AuthPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.18, ease: easeOut }}
                 >
-                  {isSignUp ? 'Create your account' : 'Welcome back'}
+                  {variant === 'modal' ? (isSignUp ? 'Sign up' : 'Login') : isSignUp ? 'Create your account' : 'Welcome back'}
                 </motion.h1>
-                <motion.p
-                  className="auth-copy"
-                  initial={reduceMotion ? false : { opacity: 0, y: 2 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.2, delay: 0.03, ease: easeOut }}
-                >
-                  {isSignUp
-                    ? 'Join the journal with a simple identity.'
-                    : 'Sign in to continue.'}
-                </motion.p>
+                {variant !== 'modal' ? (
+                  <motion.p
+                    className="auth-copy"
+                    initial={reduceMotion ? false : { opacity: 0, y: 2 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.2, delay: 0.03, ease: easeOut }}
+                  >
+                    {isSignUp
+                      ? 'Join the journal with a simple identity.'
+                      : 'Sign in to continue.'}
+                  </motion.p>
+                ) : null}
 
                 <div className="auth-feedback-slot" aria-live="polite">
                   <AnimatePresence mode="wait">

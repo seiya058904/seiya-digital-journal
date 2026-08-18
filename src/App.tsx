@@ -2,7 +2,9 @@ import { MotionConfig } from 'framer-motion'
 import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 
 import { SiteBackground } from './components/effects/SiteBackground'
+import { AuthModal } from './components/auth/AuthModal'
 import { Header } from './components/ui/Header'
+import { useAuthModal } from './auth/useAuthModal'
 import { toggleBackgroundMode, type BackgroundMode } from './backgroundMode'
 import { HomePage } from './pages/HomePage'
 import { ArchivePage } from './pages/ArchivePage'
@@ -36,12 +38,14 @@ export default function App() {
   const [page, setPage] = useState<Page>(getPageFromHash)
   const [backgroundMode, setBackgroundMode] = useState<BackgroundMode>('default')
   const prevPage = useRef(page)
+  const { closeAuthModal, isOpen: isAuthModalOpen } = useAuthModal()
 
   useEffect(() => {
     function onHashChange() {
       const p = getPageFromHash()
       const prev = prevPage.current
       prevPage.current = p
+      closeAuthModal()
       setPage(p)
       // Scroll to top on page switch — sub-routes that return the same page name (e.g.
       // #/archive/images and #/archive/images/featured both → 'archive-images') skip.
@@ -49,7 +53,7 @@ export default function App() {
     }
     window.addEventListener('hashchange', onHashChange)
     return () => window.removeEventListener('hashchange', onHashChange)
-  }, [])
+  }, [closeAuthModal])
 
   const handleBackgroundToggle = () => {
     if (page.startsWith('archive') || page === 'gallery') return
@@ -73,6 +77,7 @@ export default function App() {
         {page === 'profile' && <ProfilePage />}
         {page === 'home' && <HomePage />}
       </div>
+      <AuthModal open={isAuthModalOpen} onClose={closeAuthModal} />
     </MotionConfig>
   )
 }
