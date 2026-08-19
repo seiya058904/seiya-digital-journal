@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ArrowUpRight } from 'lucide-react'
+import type { MouseEvent as ReactMouseEvent } from 'react'
 
 import './CardNav.css'
 
@@ -25,6 +26,7 @@ type CardNavProps = {
   ease?: string
   baseColor?: string
   menuColor?: string
+  onLinkClick?: (link: CardNavLink, event: ReactMouseEvent<HTMLAnchorElement>) => void
 }
 
 function CardNavComponent({
@@ -33,6 +35,7 @@ function CardNavComponent({
   ease = 'power3.out',
   baseColor = 'rgba(5, 10, 24, 0.88)',
   menuColor = '#9ca6bb',
+  onLinkClick,
 }: CardNavProps) {
   const [isHamburgerOpen, setIsHamburgerOpen] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
@@ -228,6 +231,7 @@ function CardNavComponent({
                     target={lnk.target}
                     rel={lnk.rel}
                     tabIndex={isExpanded ? undefined : -1}
+                    onClick={(event) => onLinkClick?.(lnk, event)}
                   >
                     <ArrowUpRight className="nav-card-link-icon" aria-hidden="true" size={14} strokeWidth={1.6} />
                     {lnk.label}

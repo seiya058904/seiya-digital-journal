@@ -1,6 +1,6 @@
 import { gsap } from 'gsap'
 import { useEffect, useRef } from 'react'
-import type { CSSProperties } from 'react'
+import type { CSSProperties, MouseEvent } from 'react'
 
 import './PillNav.css'
 
@@ -22,7 +22,7 @@ type PillNavProps = {
   hoveredPillTextColor?: string
   pillTextColor?: string
   initialLoadAnimation?: boolean
-  onItemClick?: (item: PillNavItem) => void
+  onItemClick?: (item: PillNavItem, event: MouseEvent<HTMLAnchorElement>) => void
   onLogoClick?: () => void
 }
 
@@ -232,7 +232,7 @@ export function PillNav({
                   className={`pill${activeHref === item.href ? ' is-active' : ''}`}
                   aria-label={item.ariaLabel ?? item.label}
                   aria-current={activeHref === item.href ? 'page' : undefined}
-                  onClick={() => onItemClick?.(item)}
+                  onClick={(event) => onItemClick?.(item, event)}
                   onMouseEnter={() => handleEnter(index)}
                   onMouseLeave={() => handleLeave(index)}
                   onFocus={() => handleEnter(index)}

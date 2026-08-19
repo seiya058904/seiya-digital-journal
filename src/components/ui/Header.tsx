@@ -69,9 +69,10 @@ export function Header({ activePage = 'home', onBackgroundToggle }: HeaderProps)
 
   const isHashPage = activePage !== 'home'
 
-  const handleNavigation = (href: string) => {
+  const handleNavigation = (href: string, event: MouseEvent<HTMLAnchorElement>) => {
     setOpen(false)
     if (href.startsWith('#/')) return
+    event.preventDefault()
 
     if (isHashPage) {
       window.location.hash = '#/'
@@ -153,7 +154,7 @@ export function Header({ activePage = 'home', onBackgroundToggle }: HeaderProps)
         pillColor="rgba(40, 28, 70, 0.55)"
         hoveredPillTextColor="#f3f6ff"
         pillTextColor="#d0d8e8"
-        onItemClick={(item) => handleNavigation(item.href)}
+        onItemClick={(item, event) => handleNavigation(item.href, event)}
       />
       <div className="header-auth header-auth--desktop">
         {isAuthenticated ? (
@@ -178,6 +179,7 @@ export function Header({ activePage = 'home', onBackgroundToggle }: HeaderProps)
         items={exploreItems}
         baseColor="rgba(5, 10, 24, 0.25)"
         menuColor="#9ca6bb"
+        onLinkClick={(link, event) => handleNavigation(link.href, event)}
       />
       <nav className="nav-shell header-mobile-nav" aria-label="Primary navigation">
         <a
@@ -205,7 +207,7 @@ export function Header({ activePage = 'home', onBackgroundToggle }: HeaderProps)
               className={
                 (activePage === 'home' && item.href === '#home') ? 'is-active' : ''
               }
-              onClick={() => handleNavigation(item.href)}
+              onClick={(event) => handleNavigation(item.href, event)}
             >
               {item.label}
             </a>
