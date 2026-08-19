@@ -71,6 +71,7 @@
 
 .gallery-hero-item {
   min-width: 0;
+  content-visibility: auto;
 }
 
 .gallery-hero-item--editorial-005 { grid-area: 1 / 1 / auto / span 4; }
@@ -118,6 +119,7 @@
 .gallery-masonry-item {
   break-inside: avoid;
   margin-bottom: clamp(0.75rem, 1.5vw, 1.2rem);
+  content-visibility: auto;
 }
 
 .gallery-masonry-item--portrait .gallery-card__image { aspect-ratio: 4 / 5; }

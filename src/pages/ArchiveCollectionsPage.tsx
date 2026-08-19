@@ -40,7 +40,7 @@ export function ArchiveCollectionsPage() {
         <p className="archive-collections__section-desc">
           The images that stand out — selected for mood, composition, or meaning.
         </p>
-        <div className="archive-collections__strip">
+        <div className="archive-collections__strip" data-lenis-prevent>
           {featuredItems.map((item) => (
             <a key={item.id} href="#/archive/images" className="archive-collections__card">
               <img
@@ -63,7 +63,7 @@ export function ArchiveCollectionsPage() {
         <p className="archive-collections__section-desc">
           Constructed visuals — illustration, graphic, abstract. Expression, not documentation.
         </p>
-        <div className="archive-collections__strip">
+        <div className="archive-collections__strip" data-lenis-prevent>
           {editorialItems.slice(0, 6).map((item) => (
             <a key={item.id} href="#/archive/images" className="archive-collections__card">
               <img
@@ -86,7 +86,7 @@ export function ArchiveCollectionsPage() {
         <p className="archive-collections__section-desc">
           Cities and places — what I saw while becoming.
         </p>
-        <div className="archive-collections__strip">
+        <div className="archive-collections__strip" data-lenis-prevent>
           {memoryItems.slice(0, 6).map((item) => (
             <a key={item.id} href="#/archive/images" className="archive-collections__card">
               <img
@@ -110,7 +110,7 @@ export function ArchiveCollectionsPage() {
           <p className="archive-collections__section-desc">
             {group.items.length} {group.items.length === 1 ? 'image' : 'images'} from {group.city}.
           </p>
-          <div className="archive-collections__strip">
+          <div className="archive-collections__strip" data-lenis-prevent>
             {group.items.map((item) => (
               <a key={item.id} href="#/archive/images" className="archive-collections__card">
                 <img

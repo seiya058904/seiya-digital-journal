@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { AuthProvider } from './auth/AuthContext'
 import { AuthModalProvider } from './auth/AuthModalProvider'
 import { ProfileProvider } from './profile/ProfileContext'
+import { SmoothScrollProvider } from './scroll/SmoothScrollProvider'
 import App from './App'
 import './styles/tokens.css'
 import './styles/global.css'
@@ -12,7 +13,9 @@ createRoot(document.getElementById('root')!).render(
   <AuthProvider>
     <ProfileProvider>
       <AuthModalProvider>
-        <App />
+        <SmoothScrollProvider>
+          <App />
+        </SmoothScrollProvider>
       </AuthModalProvider>
     </ProfileProvider>
   </AuthProvider>,

@@ -100,7 +100,7 @@ export function ImageTrail({ items, className = '', threshold = 80 }: ImageTrail
     <div className={`image-trail ${className}`.trim()} ref={rootRef}>
       {items.map((src) => (
         <div className="image-trail__item" key={src}>
-          <img src={src} alt="" />
+          <img src={src} alt="" loading="lazy" decoding="async" />
         </div>
       ))}
       <span>Move through the frame</span>
