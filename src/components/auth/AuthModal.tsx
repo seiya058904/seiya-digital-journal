@@ -72,6 +72,7 @@ export function AuthModal({ open, onClose }: AuthModalProps) {
       {open ? (
         <motion.div
           className="auth-modal"
+          data-lenis-prevent
           initial={reduceMotion ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={reduceMotion ? undefined : { opacity: 0 }}

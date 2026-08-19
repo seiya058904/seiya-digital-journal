@@ -8,6 +8,7 @@ import { getProfileAvatar } from '../../data/profileAvatars'
 import { clearAuthReturnTarget, getPreSignOutRoute } from '../../lib/authRoutes'
 import { useAuthModal } from '../../auth/useAuthModal'
 import { useProfile } from '../../profile/ProfileContext'
+import { useSmoothScroll } from '../../scroll/SmoothScrollProvider'
 import { CardNav, type CardNavItem } from '../effects/react-bits/CardNav'
 import { PillNav } from '../effects/react-bits/PillNav'
 import { AccountMenu } from './AccountMenu'
@@ -64,6 +65,7 @@ export function Header({ activePage = 'home', onBackgroundToggle }: HeaderProps)
   const { isAuthenticated, loading, signOut, user } = useAuth()
   const { openAuthModal } = useAuthModal()
   const { profile: accountProfile, loading: profileLoading, error: profileError } = useProfile()
+  const { scrollTo } = useSmoothScroll()
 
   const isHashPage = activePage !== 'home'
 
@@ -75,14 +77,16 @@ export function Header({ activePage = 'home', onBackgroundToggle }: HeaderProps)
       window.location.hash = '#/'
       requestAnimationFrame(() => {
         setTimeout(() => {
-          document.getElementById(href.slice(1))?.scrollIntoView({ behavior: 'smooth' })
+          const target = document.getElementById(href.slice(1))
+          if (target) scrollTo(target)
         }, 60)
       })
       return
     }
 
     requestAnimationFrame(() => {
-      document.getElementById(href.slice(1))?.scrollIntoView({ behavior: 'smooth' })
+      const target = document.getElementById(href.slice(1))
+      if (target) scrollTo(target)
     })
   }
 

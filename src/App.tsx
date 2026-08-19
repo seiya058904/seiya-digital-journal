@@ -18,6 +18,7 @@ import { GalleryPage } from './pages/GalleryPage'
 import { AuthPage } from './pages/AuthPage'
 import { ProfilePage } from './pages/ProfilePage'
 import { normalizeHashRoute, resolvePageFromHash, type Page } from './appRoute'
+import { useSmoothScroll } from './scroll/SmoothScrollProvider'
 
 const MotionLabPage = lazy(() => import('./pages/MotionLabPage').then(m => ({ default: m.MotionLabPage })))
 
@@ -49,6 +50,7 @@ export default function App() {
   const prevPage = useRef(page)
   const { clearPasswordRecovery, isPasswordRecovery } = useAuth()
   const { closeAuthModal, isOpen: isAuthModalOpen } = useAuthModal()
+  const { scrollTo } = useSmoothScroll()
 
   const handleAuthModalClose = () => {
     clearPasswordRecovery()
@@ -65,11 +67,11 @@ export default function App() {
       setPage(p)
       // Scroll to top on page switch — sub-routes that return the same page name (e.g.
       // #/archive/images and #/archive/images/featured both → 'archive-images') skip.
-      if (p !== prev && p !== 'home') window.scrollTo(0, 0)
+      if (p !== prev && p !== 'home') scrollTo(0, { immediate: true })
     }
     window.addEventListener('hashchange', onHashChange)
     return () => window.removeEventListener('hashchange', onHashChange)
-  }, [clearPasswordRecovery, closeAuthModal])
+  }, [clearPasswordRecovery, closeAuthModal, scrollTo])
 
   useEffect(() => {
     try {

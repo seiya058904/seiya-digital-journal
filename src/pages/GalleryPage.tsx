@@ -1,6 +1,6 @@
 import { ArrowLeft } from 'lucide-react'
 
-import { visualArchiveItems, itemImageSrc } from '../data/visualArchive'
+import { visualArchiveItems, itemThumbSrc } from '../data/visualArchive'
 import { ImageTrail } from '../components/effects/react-bits/ImageTrail'
 import { GalleryCard } from '../components/sections/GalleryCard'
 import { ScrollReveal } from '../components/motion/ScrollReveal'
@@ -12,7 +12,7 @@ const trailImages = visualArchiveItems
   .filter(item => item.category !== 'memory')
   .filter((_, index) => index % 9 === 0)
   .slice(0, 8)
-  .map(itemImageSrc)
+  .map(itemThumbSrc)
 
 export function GalleryPage() {
   return (
