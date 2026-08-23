@@ -55,32 +55,27 @@ Tests live beside the code as `*.test.ts` files under `src/` and use Node's buil
 
 ## Browser Testing
 
-For any task that changes web UI, routing, interaction, responsive behavior, or runtime behavior, perform real browser verification before declaring the work complete.
+For changes affecting web UI, routing, interaction, responsiveness, or runtime behavior, perform real browser verification before declaring completion.
 
-- Use the built-in browser for normal localhost checks, visual inspection, navigation, and exploratory testing.
-- Use Playwright for repeatable user flows, regressions, assertions, multi-page behavior, and important end-to-end paths.
-- Use the Chrome extension only when the real user Chrome profile is required, such as existing sessions, cookies, extensions, or logged-in state.
-- Use Chrome DevTools when investigating console errors, failed requests, missing assets, rendering issues, memory problems, slow interactions, scrolling, or performance regressions.
-- Use Computer Use only when the workflow requires native OS interaction outside normal browser automation.
+Use the most appropriate tool:
 
-Test the real user path whenever practical. Do not replace end-to-end verification with direct state injection, DOM modification, hidden routes, fixtures, or manually edited storage unless those are used only for diagnosis.
+- **Browser plugin** — preferred for routine localhost checks, navigation, visual inspection, and exploratory testing.
+- **Playwright** — use for repeatable E2E flows, regression tests, assertions, and important user paths.
+- **Chrome plugin** — use when the real Chrome profile, cookies, sessions, extensions, or logged-in state are required.
+- **Chrome DevTools** — use for console, network, rendering, memory, scrolling, or performance diagnosis.
+- **Computer Use** — use only when native OS interaction is required.
 
-For relevant changes, verify:
+Prefer real user flows over injected state, modified storage, hidden routes, or DOM manipulation.
 
-- the affected user flow;
-- navigation, refresh, Back/Forward, and routing when applicable;
-- representative desktop and mobile viewports;
-- console errors and unhandled runtime failures;
-- network or asset loading when relevant;
-- the deployed site when the issue may differ from localhost.
+When relevant, verify the affected flow, routing/refresh behavior, representative desktop and mobile sizes, console errors, failed resources, and the deployed site when localhost may differ from production.
 
-A successful build, passing unit tests, or correct-looking code does not prove browser behavior is correct.
+A successful build or passing unit tests do not prove browser behavior is correct.
 
-If a browser issue is found, reproduce it, identify the cause, fix it, and rerun the original failing path. Add or update a Playwright regression test when the failure is important enough to prevent recurrence.
+If a bug is found, reproduce it, fix the root cause, and rerun the failing path. Add a Playwright regression test when recurrence would be costly.
 
-Keep verification proportional to risk. Do not run every browser tool for every change.
+Keep testing proportional to risk; do not run every browser tool unnecessarily.
 
-Never claim browser verification passed if the browser could not be launched, the target page could not be reached, or the required flow was not actually executed. Clearly distinguish verified behavior from code-based inference.
+Never claim browser verification passed unless the required flow was actually executed successfully.
 
 ## Commit & Pull Request Guidelines
 
