@@ -1,5 +1,8 @@
 # Seiya — Digital Growth Journal
 
+<img width="1254" height="1254" alt="Seiya Digital Journal" src="https://github.com/user-attachments/assets/a4ef3c33-0630-4b84-9cb0-4dd551daaf99" />
+
+
 A dark, editorial personal digital journal. Built with React, TypeScript, Framer Motion, Three.js, and Supabase — deployed to GitHub Pages with a Cloudflare Worker API backend.
 
 <https://seiya058904.github.io/seiya-digital-journal/>
