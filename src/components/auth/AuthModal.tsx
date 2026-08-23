@@ -1,11 +1,12 @@
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { X } from 'lucide-react'
-import { useEffect, useRef, type KeyboardEvent as ReactKeyboardEvent } from 'react'
+import { lazy, Suspense, useEffect, useRef, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { createPortal } from 'react-dom'
 
 import { getWrappedFocusTarget } from '../profile/focusTrap'
-import { AuthPage } from '../../pages/AuthPage'
 import './AuthModal.css'
+
+const AuthPage = lazy(() => import('../../pages/AuthPage').then(m => ({ default: m.AuthPage })))
 
 type AuthModalProps = {
   open: boolean
@@ -98,7 +99,9 @@ export function AuthModal({ open, onClose }: AuthModalProps) {
             >
               <X aria-hidden="true" size={18} />
             </button>
-            <AuthPage variant="modal" onAuthenticated={onClose} onBack={onClose} />
+            <Suspense fallback={null}>
+              <AuthPage variant="modal" onAuthenticated={onClose} onBack={onClose} />
+            </Suspense>
           </motion.div>
         </motion.div>
       ) : null}

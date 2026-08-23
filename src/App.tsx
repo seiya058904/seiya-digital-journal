@@ -8,19 +8,23 @@ import { useAuth } from './auth/AuthContext'
 import { useAuthModal } from './auth/useAuthModal'
 import { readBackgroundMode, saveBackgroundMode, toggleBackgroundMode, type BackgroundMode } from './backgroundMode'
 import { HomePage } from './pages/HomePage'
-import { ArchivePage } from './pages/ArchivePage'
-import { ArchiveImagesPage } from './pages/ArchiveImagesPage'
-import { ArchiveNoteDetailPage } from './pages/ArchiveNoteDetailPage'
-import { ArchiveNotesPage } from './pages/ArchiveNotesPage'
-import { ArchiveProjectsPage } from './pages/ArchiveProjectsPage'
-import { ArchiveNotesCategoryPage } from './pages/ArchiveNotesCategoryPage'
-import { GalleryPage } from './pages/GalleryPage'
-import { AuthPage } from './pages/AuthPage'
-import { ProfilePage } from './pages/ProfilePage'
 import { normalizeHashRoute, resolvePageFromHash, type Page } from './appRoute'
 import { useSmoothScroll } from './scroll/SmoothScrollProvider'
 
+const ArchivePage = lazy(() => import('./pages/ArchivePage').then(m => ({ default: m.ArchivePage })))
+const ArchiveImagesPage = lazy(() => import('./pages/ArchiveImagesPage').then(m => ({ default: m.ArchiveImagesPage })))
+const ArchiveNoteDetailPage = lazy(() => import('./pages/ArchiveNoteDetailPage').then(m => ({ default: m.ArchiveNoteDetailPage })))
+const ArchiveNotesPage = lazy(() => import('./pages/ArchiveNotesPage').then(m => ({ default: m.ArchiveNotesPage })))
+const ArchiveProjectsPage = lazy(() => import('./pages/ArchiveProjectsPage').then(m => ({ default: m.ArchiveProjectsPage })))
+const ArchiveNotesCategoryPage = lazy(() => import('./pages/ArchiveNotesCategoryPage').then(m => ({ default: m.ArchiveNotesCategoryPage })))
+const GalleryPage = lazy(() => import('./pages/GalleryPage').then(m => ({ default: m.GalleryPage })))
+const AuthPage = lazy(() => import('./pages/AuthPage').then(m => ({ default: m.AuthPage })))
+const ProfilePage = lazy(() => import('./pages/ProfilePage').then(m => ({ default: m.ProfilePage })))
 const MotionLabPage = lazy(() => import('./pages/MotionLabPage').then(m => ({ default: m.MotionLabPage })))
+
+const pageLoadingFallback = (
+  <div className="page-lazy-fallback" role="status" aria-label="Loading page" />
+)
 
 function getStoredBackgroundMode(): BackgroundMode {
   try {
@@ -91,17 +95,19 @@ export default function App() {
       <SiteBackground page={page} mode={backgroundMode} />
       <div className="site-main">
         <Header activePage={page} onBackgroundToggle={handleBackgroundToggle} />
-        {page === 'lab' && <Suspense fallback={null}><MotionLabPage /></Suspense>}
-        {page === 'archive' && <ArchivePage />}
-        {page === 'archive-images' && <ArchiveImagesPage />}
-        {page === 'archive-notes' && <ArchiveNotesPage />}
-        {page === 'archive-note-detail' && <ArchiveNoteDetailPage />}
-        {page === 'archive-notes-category' && <ArchiveNotesCategoryPage />}
-        {page === 'archive-projects' && <ArchiveProjectsPage />}
-        {page === 'gallery' && <GalleryPage />}
-        {page === 'auth' && <AuthPage />}
-        {page === 'profile' && <ProfilePage />}
-        {page === 'home' && <HomePage />}
+        <Suspense fallback={pageLoadingFallback}>
+          {page === 'lab' && <MotionLabPage />}
+          {page === 'archive' && <ArchivePage />}
+          {page === 'archive-images' && <ArchiveImagesPage />}
+          {page === 'archive-notes' && <ArchiveNotesPage />}
+          {page === 'archive-note-detail' && <ArchiveNoteDetailPage />}
+          {page === 'archive-notes-category' && <ArchiveNotesCategoryPage />}
+          {page === 'archive-projects' && <ArchiveProjectsPage />}
+          {page === 'gallery' && <GalleryPage />}
+          {page === 'auth' && <AuthPage />}
+          {page === 'profile' && <ProfilePage />}
+          {page === 'home' && <HomePage />}
+        </Suspense>
       </div>
       <AuthModal
         open={isAuthModalOpen || (isPasswordRecovery && page !== 'auth')}

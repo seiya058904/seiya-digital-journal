@@ -485,6 +485,27 @@ main {
   position: relative;
 }
 
+.page-lazy-fallback {
+  display: grid;
+  place-items: center;
+  min-height: 100svh;
+  padding: 7rem var(--space-page);
+}
+
+.page-lazy-fallback::before {
+  width: 1.15rem;
+  height: 1.15rem;
+  border: 1px solid rgb(255 255 255 / 18%);
+  border-top-color: var(--color-cyan);
+  border-radius: 50%;
+  content: '';
+  animation: page-lazy-spin 0.85s linear infinite;
+}
+
+@keyframes page-lazy-spin {
+  to { transform: rotate(360deg); }
+}
+
 .section {
   position: relative;
   width: min(100%, var(--content-max));
