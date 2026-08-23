@@ -53,6 +53,35 @@ Follow the existing code style: two-space indentation, single quotes, and no sem
 
 Tests live beside the code as `*.test.ts` files under `src/` and use Node's built-in `node:test` and `node:assert/strict`. For code changes, run `npm test`, `npm run lint`, and `npm run build`; run the Worker typecheck when Worker code or shared Worker-imported code changes. For UI changes, manually check the relevant hash routes and responsive or reduced-motion behavior. Finish with `git status --short`, `git diff --stat`, and `git diff --check`.
 
+## Browser Testing
+
+For any task that changes web UI, routing, interaction, responsive behavior, or runtime behavior, perform real browser verification before declaring the work complete.
+
+- Use the built-in browser for normal localhost checks, visual inspection, navigation, and exploratory testing.
+- Use Playwright for repeatable user flows, regressions, assertions, multi-page behavior, and important end-to-end paths.
+- Use the Chrome extension only when the real user Chrome profile is required, such as existing sessions, cookies, extensions, or logged-in state.
+- Use Chrome DevTools when investigating console errors, failed requests, missing assets, rendering issues, memory problems, slow interactions, scrolling, or performance regressions.
+- Use Computer Use only when the workflow requires native OS interaction outside normal browser automation.
+
+Test the real user path whenever practical. Do not replace end-to-end verification with direct state injection, DOM modification, hidden routes, fixtures, or manually edited storage unless those are used only for diagnosis.
+
+For relevant changes, verify:
+
+- the affected user flow;
+- navigation, refresh, Back/Forward, and routing when applicable;
+- representative desktop and mobile viewports;
+- console errors and unhandled runtime failures;
+- network or asset loading when relevant;
+- the deployed site when the issue may differ from localhost.
+
+A successful build, passing unit tests, or correct-looking code does not prove browser behavior is correct.
+
+If a browser issue is found, reproduce it, identify the cause, fix it, and rerun the original failing path. Add or update a Playwright regression test when the failure is important enough to prevent recurrence.
+
+Keep verification proportional to risk. Do not run every browser tool for every change.
+
+Never claim browser verification passed if the browser could not be launched, the target page could not be reached, or the required flow was not actually executed. Clearly distinguish verified behavior from code-based inference.
+
 ## Commit & Pull Request Guidelines
 
 Recent history uses short Conventional Commit subjects such as `feat:`, `fix:`, `perf:`, `refactor:`, `docs:`, and `chore:`. Keep each change focused on one purpose. PR or change notes should describe the behavior change and the verification performed. Include screenshots when a UI change needs visual review. Do not include `dist/`, `node_modules/`, logs, caches, temporary files, raw source-image folders, or unrelated changes.
