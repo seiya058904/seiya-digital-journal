@@ -3,11 +3,17 @@ import test from 'node:test'
 
 import {
   BACKGROUND_MODE_STORAGE_KEY,
+  DEFAULT_BACKGROUND_MODE,
   readBackgroundMode,
   saveBackgroundMode,
   toggleBackgroundMode,
   type BackgroundMode,
 } from './backgroundMode.ts'
+
+test('uses sliced waves when no saved background preference exists', () => {
+  assert.equal(DEFAULT_BACKGROUND_MODE, 'sliced-waves')
+  assert.equal(readBackgroundMode(null), 'sliced-waves')
+})
 
 test('toggleBackgroundMode cycles through the three site backgrounds', () => {
   const modes: BackgroundMode[] = ['default', 'beams', 'sliced-waves']
@@ -27,7 +33,7 @@ test('readBackgroundMode restores only valid saved modes', () => {
 
   assert.equal(readBackgroundMode(storage), 'beams')
   values.set(BACKGROUND_MODE_STORAGE_KEY, 'unknown')
-  assert.equal(readBackgroundMode(storage), 'default')
+  assert.equal(readBackgroundMode(storage), 'sliced-waves')
 })
 
 test('background mode persistence degrades when storage is unavailable', () => {
@@ -40,6 +46,6 @@ test('background mode persistence degrades when storage is unavailable', () => {
     },
   }
 
-  assert.equal(readBackgroundMode(storage), 'default')
+  assert.equal(readBackgroundMode(storage), 'sliced-waves')
   assert.doesNotThrow(() => saveBackgroundMode(storage, 'sliced-waves'))
 })

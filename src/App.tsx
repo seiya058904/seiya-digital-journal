@@ -6,7 +6,7 @@ import { AuthModal } from './components/auth/AuthModal'
 import { Header } from './components/ui/Header'
 import { useAuth } from './auth/AuthContext'
 import { useAuthModal } from './auth/useAuthModal'
-import { readBackgroundMode, saveBackgroundMode, toggleBackgroundMode, type BackgroundMode } from './backgroundMode'
+import { DEFAULT_BACKGROUND_MODE, readBackgroundMode, saveBackgroundMode, toggleBackgroundMode, type BackgroundMode } from './backgroundMode'
 import { HomePage } from './pages/HomePage'
 import { normalizeHashRoute, resolvePageFromHash, type Page } from './appRoute'
 import { useSmoothScroll } from './scroll/SmoothScrollProvider'
@@ -28,9 +28,9 @@ const pageLoadingFallback = (
 
 function getStoredBackgroundMode(): BackgroundMode {
   try {
-    return typeof window === 'undefined' ? 'default' : readBackgroundMode(window.localStorage)
+    return typeof window === 'undefined' ? DEFAULT_BACKGROUND_MODE : readBackgroundMode(window.localStorage)
   } catch {
-    return 'default'
+    return DEFAULT_BACKGROUND_MODE
   }
 }
 
