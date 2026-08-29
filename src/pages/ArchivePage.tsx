@@ -199,15 +199,15 @@ export function ArchivePage() {
       <ScrollReveal className="archive-page__community">
         <section className="archive-page__community-shell" aria-labelledby="archive-comments-title">
           <div className="archive-page__community-head">
-            <div className="archive-page__community-label" aria-label="Visitor comments section">
+            <div className="archive-page__community-label" aria-label="Archive notes section">
               <span>02</span>
               <span aria-hidden="true" />
-              <span>Visitor comments</span>
+              <span>Archive notes</span>
             </div>
             <div className="archive-page__community-intro">
               <h2 id="archive-comments-title" className="archive-page__community-title">Thoughts left in the archive</h2>
               <p className="archive-page__community-subtitle">
-                Notes left by visitors through the journal stepper above.
+                Example notes for the community section.
               </p>
             </div>
             <div className="archive-page__community-actions">

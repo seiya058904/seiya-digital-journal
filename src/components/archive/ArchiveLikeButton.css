@@ -164,4 +164,15 @@
   .archive-like__count-value {
     transition: none;
   }
+
+  .archive-like__count-value--entering {
+    animation: none;
+    transform: translateY(0);
+  }
+
+  .archive-like__count-value--leaving {
+    animation: none;
+    visibility: hidden;
+    transform: translateY(-100%);
+  }
 }

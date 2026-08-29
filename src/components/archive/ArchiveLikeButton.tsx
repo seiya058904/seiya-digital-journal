@@ -70,8 +70,7 @@ export function ArchiveLikeButton() {
       type="button"
       className={`archive-like${liked ? ' archive-like--active' : ''}`}
       onClick={handleClick}
-      aria-pressed={liked}
-      aria-label={`Like Archive — ${count ?? 0} likes`}
+      aria-label={`Add a Like to the Archive — ${count ?? 0} likes`}
       disabled={pending}
     >
       <svg
