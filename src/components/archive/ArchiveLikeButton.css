@@ -41,7 +41,8 @@
 
 .archive-like--active .archive-like__icon {
   fill: #fc4e4e;
-  animation: archive-like-enlarge 0.2s ease-out 1;
+  animation: archive-like-heart-pop 0.55s cubic-bezier(0.16, 1, 0.3, 1) 1;
+  transform-origin: center;
 }
 
 .archive-like__text {
@@ -50,16 +51,20 @@
   font-size: 0.98rem;
 }
 
+.archive-like__divider {
+  width: 1px;
+  height: 1.25rem;
+  flex: 0 0 auto;
+  background: #4e4e4e;
+}
+
 .archive-like__count {
-  position: absolute;
-  top: 0;
-  right: 0;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 3.2rem;
-  height: 100%;
-  border-left: 2px solid #4e4e4e;
+  height: 1.25rem;
   color: #717070;
   font-size: 0.98rem;
   overflow: hidden;
@@ -70,48 +75,70 @@
 }
 
 .archive-like__count-value {
+  position: absolute;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  line-height: 1.25rem;
+  will-change: transform;
 }
 
-.archive-like__count-value--in {
-  animation: archive-like-count-in 0.55s ease-out;
+.archive-like__count-value--active {
+  transform: translateY(0);
 }
 
-.archive-like__count-value--out {
-  position: absolute;
-  inset: 0;
-  animation: archive-like-count-out 0.55s ease-out forwards;
+.archive-like__count-value--below {
+  transform: translateY(100%);
 }
 
-@keyframes archive-like-enlarge {
+.archive-like__count-value--entering {
+  animation: archive-like-count-enter 0.5s ease-out both;
+}
+
+.archive-like__count-value--leaving {
+  animation: archive-like-count-leave 0.5s ease-out both;
+}
+
+@keyframes archive-like-heart-pop {
   0% {
-    transform: scale(0.5);
+    transform: scale(0.82);
+    filter: drop-shadow(0 0 0 rgb(252 78 78 / 0%));
+  }
+
+  38% {
+    transform: scale(1.22);
+    filter: drop-shadow(0 0 0.55rem rgb(252 78 78 / 55%));
+  }
+
+  68% {
+    transform: scale(0.96);
+    filter: drop-shadow(0 0 0.3rem rgb(252 78 78 / 28%));
   }
 
   100% {
     transform: scale(1.2);
+    filter: drop-shadow(0 0 0 rgb(252 78 78 / 0%));
   }
 }
 
-@keyframes archive-like-count-in {
-  0% {
-    transform: translateY(2.5rem);
+@keyframes archive-like-count-enter {
+  from {
+    transform: translate3d(0, 100%, 0);
   }
 
-  100% {
-    transform: translateY(0);
+  to {
+    transform: translate3d(0, 0, 0);
   }
 }
 
-@keyframes archive-like-count-out {
-  0% {
-    transform: translateY(0);
+@keyframes archive-like-count-leave {
+  from {
+    transform: translate3d(0, 0, 0);
   }
 
-  100% {
-    transform: translateY(-2.5rem);
+  to {
+    transform: translate3d(0, -100%, 0);
   }
 }
 
@@ -132,13 +159,9 @@
     animation: none;
   }
 
-  .archive-like__count-value--in,
-  .archive-like__count-value--out {
-    animation: none;
-  }
-
   .archive-like__icon,
-  .archive-like__count {
+  .archive-like__count,
+  .archive-like__count-value {
     transition: none;
   }
 }

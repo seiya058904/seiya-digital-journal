@@ -197,15 +197,22 @@ export function ArchivePage() {
 
       {/* ── Visitor comments + Like ─────────────── */}
       <ScrollReveal className="archive-page__community">
-        <section aria-labelledby="archive-comments-title">
+        <section className="archive-page__community-shell" aria-labelledby="archive-comments-title">
           <div className="archive-page__community-head">
+            <div className="archive-page__community-label" aria-label="Visitor comments section">
+              <span>02</span>
+              <span aria-hidden="true" />
+              <span>Visitor comments</span>
+            </div>
             <div className="archive-page__community-intro">
-              <h2 id="archive-comments-title" className="archive-page__section-title">Visitor comments</h2>
+              <h2 id="archive-comments-title" className="archive-page__community-title">Thoughts left in the archive</h2>
               <p className="archive-page__community-subtitle">
-                Thoughts left by visitors through the journal stepper above.
+                Notes left by visitors through the journal stepper above.
               </p>
             </div>
-            <ArchiveLikeButton />
+            <div className="archive-page__community-actions">
+              <ArchiveLikeButton />
+            </div>
           </div>
           <ArchiveVisitorComments />
         </section>

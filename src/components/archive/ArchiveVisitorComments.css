@@ -1,15 +1,21 @@
 .archive-comments {
-  margin-top: 1.75rem;
+  margin-top: 0;
 }
 
 .archive-comments__status {
   margin: 0;
   padding: 1.1rem 1.4rem;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-surface);
+  border: 1px solid rgb(255 255 255 / 12%);
+  border-radius: 0.9rem;
+  background: #09090b;
   color: var(--color-muted);
   font-size: 0.95rem;
+}
+
+.archive-comments__notice {
+  margin: 0 0 0.75rem;
+  color: #a1a1aa;
+  font-size: 0.82rem;
 }
 
 .archive-comments__retry {
@@ -21,64 +27,79 @@
   cursor: pointer;
 }
 
-.archive-comments__retry:focus-visible {
+.archive-comments__retry:focus-visible,
+.archive-comments__more:focus-visible {
   outline: 2px solid var(--color-focus);
-  outline-offset: 2px;
-  border-radius: 4px;
+  outline-offset: 3px;
+}
+
+.archive-comments__panel {
+  position: relative;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  overflow: hidden;
+  border: 1px solid #242428;
+  border-radius: 1rem;
+  background: #09090b;
 }
 
 .archive-comments__grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1rem;
-}
-
-@media (min-width: 820px) {
-  .archive-comments__grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.15rem;
-  }
-}
-
-@media (min-width: 1080px) {
-  .archive-comments__grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
 }
 
 .archive-comments__card {
   display: flex;
+  min-height: 16rem;
   flex-direction: column;
-  padding: 1.6rem;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-surface);
+  padding: clamp(1.25rem, 2.5vw, 2rem);
+  border: 1px solid #27272a;
+  border-radius: 1rem;
+  background: rgb(39 39 42 / 50%);
   transition: transform var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out);
 }
 
+.archive-comments__card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+}
+
 .archive-comments__card:hover {
-  transform: translateY(-4px);
-  border-color: var(--color-border-strong);
+  transform: translateY(-3px);
+  border-color: #3f3f46;
 }
 
 .archive-comments__card--featured {
-  border-color: var(--color-border-strong);
-  background: linear-gradient(180deg, var(--color-surface-strong), var(--color-bg) 130%);
+  border-color: #3f3f46;
+  background: linear-gradient(180deg, rgb(39 39 42 / 70%), #09090b);
 }
 
 .archive-comments__quote {
-  margin-bottom: 0.9rem;
-  color: var(--color-faint);
+  margin-bottom: 0;
+  color: #52525b;
   font-family: var(--font-editorial);
-  font-size: 2.6rem;
-  line-height: 0.6;
+  font-size: clamp(2.5rem, 4vw, 3.25rem);
+  font-weight: 300;
+  line-height: 0.55;
   user-select: none;
+}
+
+.archive-comments__avatar {
+  width: 3.5rem;
+  height: 3.5rem;
+  border: 1px solid rgb(255 255 255 / 10%);
+  border-radius: 0.75rem;
+  object-fit: cover;
+  filter: grayscale(1);
 }
 
 .archive-comments__body {
   margin: 0;
-  color: var(--color-text);
-  font-size: 1.02rem;
+  color: #d4d4d8;
+  font-size: clamp(1rem, 1.3vw, 1.15rem);
   line-height: 1.65;
   overflow-wrap: anywhere;
 }
@@ -86,22 +107,21 @@
 .archive-comments__meta {
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
-  margin-top: 1.4rem;
+  gap: 0.25rem;
+  margin-top: auto;
+  padding-top: 1.5rem;
 }
 
 .archive-comments__author {
-  color: var(--color-text);
-  font-size: 0.92rem;
+  color: #e4e4e7;
+  font-size: 0.88rem;
   font-weight: 600;
 }
 
 .archive-comments__date {
-  color: var(--color-faint);
-  font-size: 0.8rem;
+  color: #71717a;
+  font-size: 0.78rem;
 }
-
-/* See More — animated pill CTA (ported from the selected reference) */
 
 .archive-comments__more {
   position: relative;
@@ -110,24 +130,22 @@
   justify-content: center;
   min-width: 11rem;
   height: 3rem;
-  margin: 1.9rem auto 0;
-  padding: 0 1.6rem;
-  border: 1px solid var(--color-border-strong);
+  margin: 1.5rem 0 0;
+  padding: 0 1.5rem;
+  border: 1px solid rgb(255 255 255 / 15%);
   border-radius: 999px;
   background: rgb(255 255 255 / 5%);
-  color: var(--color-muted);
+  color: #d4d4d8;
   font-family: var(--font-sans);
-  font-size: 0.98rem;
-  letter-spacing: 0.01em;
+  font-size: 0.95rem;
   cursor: pointer;
   overflow: hidden;
-  transition: transform 1s cubic-bezier(0.15, 0.83, 0.66, 1), color 0.4s var(--ease-out);
+  transition: transform 0.7s cubic-bezier(0.15, 0.83, 0.66, 1), color 0.4s var(--ease-out);
 }
 
-.archive-comments__more:hover,
-.archive-comments__more:focus-visible {
+.archive-comments__more:hover {
   transform: translateY(-3px);
-  color: var(--color-text);
+  color: #fff;
 }
 
 .archive-comments__more-front,
@@ -167,7 +185,6 @@
   left: 50%;
   width: 70%;
   height: 1px;
-  border-radius: 999px;
   background: linear-gradient(90deg, transparent, rgb(255 255 255 / 70%), transparent);
   transform: translateX(-50%);
   opacity: 0.7;
@@ -175,17 +192,27 @@
   pointer-events: none;
 }
 
-.archive-comments__more:focus-visible {
-  outline: 2px solid var(--color-focus);
-  outline-offset: 3px;
+@media (max-width: 1080px) {
+  .archive-comments__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .archive-comments__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .archive-comments__card {
+    min-height: 0;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .archive-comments__card,
   .archive-comments__card:hover,
   .archive-comments__more,
-  .archive-comments__more:hover,
-  .archive-comments__more:focus-visible {
+  .archive-comments__more:hover {
     transform: none;
     transition: none;
   }
@@ -193,19 +220,5 @@
   .archive-comments__more-front,
   .archive-comments__more-behind {
     transition: none;
-  }
-
-  .archive-comments__more:hover .archive-comments__more-front,
-  .archive-comments__more:focus-visible .archive-comments__more-front {
-    opacity: 0;
-    transform: none;
-    filter: none;
-  }
-
-  .archive-comments__more:hover .archive-comments__more-behind,
-  .archive-comments__more:focus-visible .archive-comments__more-behind {
-    opacity: 1;
-    transform: none;
-    filter: none;
   }
 }
