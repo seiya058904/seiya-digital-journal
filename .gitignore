@@ -30,6 +30,7 @@ supabase/.temp/
 *.njsproj
 *.sln
 *.sw?
+*.bak
 
 # Design review cache
 .impeccable/

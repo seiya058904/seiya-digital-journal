@@ -1,0 +1,144 @@
+/* Heart Like button — ported from the selected reference (Uiverse heart like),
+   converted to a controlled React component with real server-backed state. */
+
+.archive-like {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 3rem;
+  min-width: 8.5rem;
+  padding: 0;
+  border: none;
+  border-radius: 1rem;
+  background: #1d1d1d;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow:
+    inset -2px -2px 5px rgb(255 255 255 / 20%),
+    inset 2px 2px 5px rgb(0 0 0 / 10%),
+    4px 4px 10px rgb(0 0 0 / 40%),
+    -2px -2px 8px rgb(255 255 255 / 10%);
+}
+
+.archive-like:disabled {
+  cursor: default;
+  opacity: 0.75;
+}
+
+.archive-like:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+.archive-like__icon {
+  height: 1.75rem;
+  width: 1.75rem;
+  margin-left: 1.05rem;
+  fill: #505050;
+  transition: fill 0.2s ease-out;
+}
+
+.archive-like--active .archive-like__icon {
+  fill: #fc4e4e;
+  animation: archive-like-enlarge 0.2s ease-out 1;
+}
+
+.archive-like__text {
+  margin: 0 0.8rem 0 0.55rem;
+  color: #fcfcfc;
+  font-size: 0.98rem;
+}
+
+.archive-like__count {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.2rem;
+  height: 100%;
+  border-left: 2px solid #4e4e4e;
+  color: #717070;
+  font-size: 0.98rem;
+  overflow: hidden;
+}
+
+.archive-like--active .archive-like__count {
+  color: #fcfcfc;
+}
+
+.archive-like__count-value {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.archive-like__count-value--in {
+  animation: archive-like-count-in 0.55s ease-out;
+}
+
+.archive-like__count-value--out {
+  position: absolute;
+  inset: 0;
+  animation: archive-like-count-out 0.55s ease-out forwards;
+}
+
+@keyframes archive-like-enlarge {
+  0% {
+    transform: scale(0.5);
+  }
+
+  100% {
+    transform: scale(1.2);
+  }
+}
+
+@keyframes archive-like-count-in {
+  0% {
+    transform: translateY(2.5rem);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes archive-like-count-out {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(-2.5rem);
+  }
+}
+
+.archive-like__live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  clip-path: inset(50%);
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .archive-like--active .archive-like__icon {
+    animation: none;
+  }
+
+  .archive-like__count-value--in,
+  .archive-like__count-value--out {
+    animation: none;
+  }
+
+  .archive-like__icon,
+  .archive-like__count {
+    transition: none;
+  }
+}

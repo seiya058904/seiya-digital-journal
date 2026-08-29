@@ -12,6 +12,7 @@
   },
   "include": [
     "src/**/*.ts",
+    "test/**/*.ts",
     "../src/lib/interactions.ts",
     "../src/lib/profile.ts",
     "../src/worker/cors.ts"

@@ -39,9 +39,9 @@ npm test             # node --experimental-strip-types --test src/**/*.test.ts
 npm run preview      # preview production build locally
 ```
 
-Worker typecheck (run when Worker code or shared `src/lib/` validation code changes):
+Worker typecheck and runtime tests (run when Worker code or shared `src/lib/` validation code changes; tests use `@cloudflare/vitest-pool-workers` with mocked Supabase upstream):
 ```powershell
-cd worker; npm ci; npm run typecheck
+cd worker; npm ci; npm run typecheck; npm test
 ```
 
 Trailing whitespace check:
@@ -419,9 +419,7 @@ Vite rewrites paths in `index.html` and ES module imports automatically, but doe
 | `POST` | `/api/comments` | Yes | Create comment |
 | `DELETE` | `/api/comments/:id` | Yes | Delete own comment |
 | `GET` | `/api/likes/count` | No | Get like count (query: `targetType`, `targetId`) |
-| `GET` | `/api/likes/me` | Yes | Check if current user liked (query: `targetType`, `targetId`) |
-| `PUT` | `/api/likes` | Yes | Add like |
-| `DELETE` | `/api/likes` | Yes | Remove like |
+| `POST` | `/api/likes` | No | Atomically increment the public Archive Like counter |
 | `GET` | `/api/profile/me` | Yes | Get current user's profile + stats |
 | `PATCH` | `/api/profile/me` | Yes | Update display name and avatar key |
 
@@ -432,6 +430,7 @@ Vite rewrites paths in `index.html` and ES module imports automatically, but doe
 - `SUPABASE_URL`
 - `SUPABASE_PUBLISHABLE_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
+- `SUPABASE_SECRET_KEY` (optional — newer `sb_secret_` format; takes precedence when the binding exists; legacy key keeps working)
 - `ALLOWED_ORIGINS`
 
 **Service role key must NEVER be exposed to the frontend.** It is only used server-side in the Worker.
@@ -442,9 +441,7 @@ Vite rewrites paths in `index.html` and ES module imports automatically, but doe
 
 **Count queries:** Uses `HEAD` requests with `Prefer: count=exact` to get counts via `Content-Range` header without transferring rows. The `extractExactCount()` function in `src/lib/profile.ts` parses this.
 
-**Idempotent inserts:** Both profile creation (`on_conflict=user_id`, `resolution=ignore-duplicates`) and like creation (`on_conflict=user_id,target_type,target_id`) use conflict-safe PostgREST headers.
-
-**DELETE like:** Accepts both JSON body and query parameters — checks `Content-Type` header and falls back to query params.
+**Like counter:** Archive Like increments use the `increment_like_counter` database function so concurrent clicks are applied atomically. The legacy `likes` table remains unchanged for existing profile statistics and is not used by the public Archive counter.
 
 **CORS:** Uses `Vary: Origin` header. Origin is echoed back rather than using `*` when allowed.
 
@@ -477,7 +474,7 @@ Vite rewrites paths in `index.html` and ES module imports automatically, but doe
 Tests use Node's built-in test runner with `--experimental-strip-types` for TypeScript. 19 test files co-located with source as `*.test.ts`.
 
 ```powershell
-npm test                    # run all tests (currently 70 tests)
+npm test                    # run all tests (currently 97 tests)
 node --experimental-strip-types --test src/data/content.test.ts  # single file
 ```
 

@@ -46,6 +46,10 @@ jobs:
         working-directory: worker
         run: npm run typecheck
 
+      - name: Run Worker tests
+        working-directory: worker
+        run: npm test
+
       - name: Build
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}

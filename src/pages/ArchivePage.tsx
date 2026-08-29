@@ -2,6 +2,8 @@ import { ArrowLeft } from 'lucide-react'
 
 import { visualArchiveItems } from '../data/visualArchive'
 import { ScrollReveal } from '../components/motion/ScrollReveal'
+import { ArchiveLikeButton } from '../components/archive/ArchiveLikeButton'
+import { ArchiveVisitorComments } from '../components/archive/ArchiveVisitorComments'
 import { Folder } from '../components/effects/react-bits/Folder'
 import { BorderGlow } from '../components/effects/react-bits/BorderGlow'
 import { CountUp } from '../components/effects/react-bits/CountUp'
@@ -191,6 +193,22 @@ export function ArchivePage() {
             </div>
           </BorderGlow>
         </div>
+      </ScrollReveal>
+
+      {/* ── Visitor comments + Like ─────────────── */}
+      <ScrollReveal className="archive-page__community">
+        <section aria-labelledby="archive-comments-title">
+          <div className="archive-page__community-head">
+            <div className="archive-page__community-intro">
+              <h2 id="archive-comments-title" className="archive-page__section-title">Visitor comments</h2>
+              <p className="archive-page__community-subtitle">
+                Thoughts left by visitors through the journal stepper above.
+              </p>
+            </div>
+            <ArchiveLikeButton />
+          </div>
+          <ArchiveVisitorComments />
+        </section>
       </ScrollReveal>
     </main>
   )

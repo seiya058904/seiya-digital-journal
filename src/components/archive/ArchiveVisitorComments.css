@@ -1,0 +1,211 @@
+.archive-comments {
+  margin-top: 1.75rem;
+}
+
+.archive-comments__status {
+  margin: 0;
+  padding: 1.1rem 1.4rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-muted);
+  font-size: 0.95rem;
+}
+
+.archive-comments__retry {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--color-cyan);
+  font: inherit;
+  cursor: pointer;
+}
+
+.archive-comments__retry:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.archive-comments__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 820px) {
+  .archive-comments__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.15rem;
+  }
+}
+
+@media (min-width: 1080px) {
+  .archive-comments__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.archive-comments__card {
+  display: flex;
+  flex-direction: column;
+  padding: 1.6rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  transition: transform var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out);
+}
+
+.archive-comments__card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-border-strong);
+}
+
+.archive-comments__card--featured {
+  border-color: var(--color-border-strong);
+  background: linear-gradient(180deg, var(--color-surface-strong), var(--color-bg) 130%);
+}
+
+.archive-comments__quote {
+  margin-bottom: 0.9rem;
+  color: var(--color-faint);
+  font-family: var(--font-editorial);
+  font-size: 2.6rem;
+  line-height: 0.6;
+  user-select: none;
+}
+
+.archive-comments__body {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 1.02rem;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+.archive-comments__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin-top: 1.4rem;
+}
+
+.archive-comments__author {
+  color: var(--color-text);
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.archive-comments__date {
+  color: var(--color-faint);
+  font-size: 0.8rem;
+}
+
+/* See More — animated pill CTA (ported from the selected reference) */
+
+.archive-comments__more {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 11rem;
+  height: 3rem;
+  margin: 1.9rem auto 0;
+  padding: 0 1.6rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 5%);
+  color: var(--color-muted);
+  font-family: var(--font-sans);
+  font-size: 0.98rem;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 1s cubic-bezier(0.15, 0.83, 0.66, 1), color 0.4s var(--ease-out);
+}
+
+.archive-comments__more:hover,
+.archive-comments__more:focus-visible {
+  transform: translateY(-3px);
+  color: var(--color-text);
+}
+
+.archive-comments__more-front,
+.archive-comments__more-behind {
+  position: relative;
+  z-index: 1;
+  transition: transform 0.5s var(--ease-out), opacity 0.5s var(--ease-out), filter 0.5s var(--ease-out);
+}
+
+.archive-comments__more-behind {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(-2rem);
+}
+
+.archive-comments__more:hover .archive-comments__more-front,
+.archive-comments__more:focus-visible .archive-comments__more-front {
+  opacity: 0;
+  transform: translateY(2rem);
+  filter: blur(6px);
+}
+
+.archive-comments__more:hover .archive-comments__more-behind,
+.archive-comments__more:focus-visible .archive-comments__more-behind {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+
+.archive-comments__more-glow {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 70%;
+  height: 1px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 70%), transparent);
+  transform: translateX(-50%);
+  opacity: 0.7;
+  filter: blur(2px);
+  pointer-events: none;
+}
+
+.archive-comments__more:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .archive-comments__card,
+  .archive-comments__card:hover,
+  .archive-comments__more,
+  .archive-comments__more:hover,
+  .archive-comments__more:focus-visible {
+    transform: none;
+    transition: none;
+  }
+
+  .archive-comments__more-front,
+  .archive-comments__more-behind {
+    transition: none;
+  }
+
+  .archive-comments__more:hover .archive-comments__more-front,
+  .archive-comments__more:focus-visible .archive-comments__more-front {
+    opacity: 0;
+    transform: none;
+    filter: none;
+  }
+
+  .archive-comments__more:hover .archive-comments__more-behind,
+  .archive-comments__more:focus-visible .archive-comments__more-behind {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}

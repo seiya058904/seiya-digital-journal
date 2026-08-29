@@ -16,6 +16,12 @@ type Env = {
   SUPABASE_URL: string
   SUPABASE_PUBLISHABLE_KEY: string
   SUPABASE_SERVICE_ROLE_KEY: string
+  /**
+   * Optional newer-format Supabase server secret (sb_secret_...). When set it
+   * takes precedence; the legacy service-role key keeps working until the
+   * owner rotates bindings. Never exposed to the frontend either way.
+   */
+  SUPABASE_SECRET_KEY?: string
   ALLOWED_ORIGINS: string
 }
 
@@ -159,39 +165,40 @@ export default {
         return json({ ok: true, data: { count } }, 200, cors.headers)
       }
 
-      if (request.method === 'GET' && url.pathname === '/api/likes/me') {
-        const user = await requireUser(request, env)
-        const target = parseTarget(url.searchParams.get('targetType'), url.searchParams.get('targetId'))
-        const liked = await getLikeState(env, user.id, target)
-        return json({ ok: true, data: { liked } }, 200, cors.headers)
-      }
-
-      if (request.method === 'PUT' && url.pathname === '/api/likes') {
-        const user = await requireUser(request, env)
+      if (request.method === 'POST' && url.pathname === '/api/likes') {
         const body = await readJsonBody(request)
         const target = parseTarget(body.targetType, body.targetId)
-        await ensureLike(env, user.id, target)
-        return json({ ok: true, data: { liked: true } }, 200, cors.headers)
-      }
-
-      if (request.method === 'DELETE' && url.pathname === '/api/likes') {
-        const user = await requireUser(request, env)
-        const body = request.headers.get('Content-Type')?.includes('application/json')
-          ? await readJsonBody(request)
-          : {
-              targetType: url.searchParams.get('targetType'),
-              targetId: url.searchParams.get('targetId'),
-            }
-        const target = parseTarget(body.targetType, body.targetId)
-        await deleteLike(env, user.id, target)
-        return json({ ok: true, data: { liked: false } }, 200, cors.headers)
+        const count = await incrementLikeCounter(env, target)
+        return json({ ok: true, data: { count } }, 200, cors.headers)
       }
 
       throw apiError('NOT_FOUND', 'Route not found.', 404)
     } catch (error) {
+      logUnexpected(request, error)
       return toErrorResponse(error, cors.headers)
     }
   },
+}
+
+/**
+ * Structured log for genuinely unexpected failures only. Expected API errors
+ * (validation, auth, rate limits) are already mapped responses. Never logs
+ * tokens, authorization headers, comment bodies, or request payloads.
+ */
+function logUnexpected(request: Request, error: unknown): void {
+  if (isKnownApiError(error)) return
+
+  const url = new URL(request.url)
+  const detail = error instanceof Error
+    ? { name: error.name, message: error.message.slice(0, 200) }
+    : { name: 'UnknownError', message: '' }
+
+  console.error(JSON.stringify({
+    event: 'unhandled_error',
+    method: request.method,
+    route: url.pathname,
+    ...detail,
+  }))
 }
 
 function getCorsHeaders(origin: string | null, allowedOriginsValue: string) {
@@ -223,16 +230,19 @@ function apiError(code: ErrorCode, message: string, status: number) {
   return { code, message, status }
 }
 
-function toErrorResponse(error: unknown, headers: Headers): Response {
-  if (
+function isKnownApiError(error: unknown): error is ReturnType<typeof apiError> {
+  return (
     typeof error === 'object' &&
     error !== null &&
     'code' in error &&
     'message' in error &&
     'status' in error
-  ) {
-    const known = error as { code: ErrorCode, message: string, status: number }
-    return json({ ok: false, error: { code: known.code, message: known.message } }, known.status, headers)
+  )
+}
+
+function toErrorResponse(error: unknown, headers: Headers): Response {
+  if (isKnownApiError(error)) {
+    return json({ ok: false, error: { code: error.code, message: error.message } }, error.status, headers)
   }
 
   return json({
@@ -242,6 +252,15 @@ function toErrorResponse(error: unknown, headers: Headers): Response {
       message: 'Something went wrong.',
     },
   }, 500, headers)
+}
+
+/**
+ * Server-side Supabase key. Prefers the newer sb_secret_... key when the
+ * binding exists; falls back to the legacy service-role key. Used only here —
+ * never sent to the frontend.
+ */
+function getSupabaseServerKey(env: Env): string {
+  return env.SUPABASE_SECRET_KEY ?? env.SUPABASE_SERVICE_ROLE_KEY
 }
 
 async function readJsonBody(request: Request): Promise<Record<string, unknown>> {
@@ -490,65 +509,39 @@ async function deleteComment(env: Env, commentId: string, userId: string): Promi
 }
 
 async function getLikesCount(env: Env, target: typeof ARCHIVE_STEPPER_TARGET): Promise<number> {
-  const params = new URLSearchParams({
-    select: 'id',
-    target_type: `eq.${target.targetType}`,
-    target_id: `eq.${target.targetId}`,
-  })
-
-  return getExactCount(env, `/likes?${params.toString()}`, 'Unable to load likes.')
+  return getLikeCounter(env, target)
 }
 
-async function getLikeState(
-  env: Env,
-  userId: string,
-  target: typeof ARCHIVE_STEPPER_TARGET,
-): Promise<boolean> {
+async function incrementLikeCounter(env: Env, target: typeof ARCHIVE_STEPPER_TARGET): Promise<number> {
+  const response = await restFetch<Array<{ count: number }>>(env, '/rpc/increment_like_counter', {
+    method: 'POST',
+    body: {
+      p_target_type: target.targetType,
+      p_target_id: target.targetId,
+    },
+  })
+
+  const count = response[0]?.count
+  if (!Number.isInteger(count) || count < 1) {
+    throw apiError('INTERNAL_ERROR', 'Unable to increment likes.', 500)
+  }
+  return count
+}
+
+async function getLikeCounter(env: Env, target: typeof ARCHIVE_STEPPER_TARGET): Promise<number> {
   const params = new URLSearchParams({
-    select: 'id',
-    user_id: `eq.${userId}`,
+    select: 'count',
     target_type: `eq.${target.targetType}`,
     target_id: `eq.${target.targetId}`,
     limit: '1',
   })
 
-  const rows = await restFetch<Array<{ id: string }>>(env, `/likes?${params.toString()}`)
-  return rows.length > 0
-}
-
-async function ensureLike(
-  env: Env,
-  userId: string,
-  target: typeof ARCHIVE_STEPPER_TARGET,
-): Promise<void> {
-  if (await getLikeState(env, userId, target)) return
-
-  await restFetch(env, '/likes?on_conflict=user_id,target_type,target_id', {
-    method: 'POST',
-    prefer: 'resolution=ignore-duplicates,return=minimal',
-    body: {
-      user_id: userId,
-      target_type: target.targetType,
-      target_id: target.targetId,
-    },
-  })
-}
-
-async function deleteLike(
-  env: Env,
-  userId: string,
-  target: typeof ARCHIVE_STEPPER_TARGET,
-): Promise<void> {
-  const params = new URLSearchParams({
-    user_id: `eq.${userId}`,
-    target_type: `eq.${target.targetType}`,
-    target_id: `eq.${target.targetId}`,
-  })
-
-  await restFetch(env, `/likes?${params.toString()}`, {
-    method: 'DELETE',
-    prefer: 'return=minimal',
-  })
+  const rows = await restFetch<Array<{ count: number }>>(env, `/like_counters?${params.toString()}`)
+  const count = rows[0]?.count
+  if (!Number.isInteger(count) || count < 0) {
+    throw apiError('INTERNAL_ERROR', 'Unable to load likes.', 500)
+  }
+  return count
 }
 
 async function restFetch<T>(
@@ -560,11 +553,12 @@ async function restFetch<T>(
     body?: unknown
   },
 ): Promise<T> {
+  const serverKey = getSupabaseServerKey(env)
   const response = await fetch(`${env.SUPABASE_URL}/rest/v1${path}`, {
     method: options?.method ?? 'GET',
     headers: {
-      'apikey': env.SUPABASE_SERVICE_ROLE_KEY,
-      'Authorization': `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
+      'apikey': serverKey,
+      'Authorization': `Bearer ${serverKey}`,
       'Content-Type': 'application/json',
       ...(options?.prefer ? { 'Prefer': options.prefer } : {}),
     },
@@ -580,11 +574,12 @@ async function restFetch<T>(
 }
 
 async function getExactCount(env: Env, path: string, errorMessage: string): Promise<number> {
+  const serverKey = getSupabaseServerKey(env)
   const response = await fetch(`${env.SUPABASE_URL}/rest/v1${path}`, {
     method: 'HEAD',
     headers: {
-      'apikey': env.SUPABASE_SERVICE_ROLE_KEY,
-      'Authorization': `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
+      'apikey': serverKey,
+      'Authorization': `Bearer ${serverKey}`,
       'Prefer': 'count=exact',
     },
   })

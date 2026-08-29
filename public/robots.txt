@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://seiya058904.github.io/seiya-digital-journal/sitemap.xml

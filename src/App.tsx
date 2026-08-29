@@ -48,6 +48,20 @@ function getPageFromHash(): Page {
   return resolvePageFromHash(hash)
 }
 
+const PAGE_TITLES: Record<Page, string> = {
+  home: 'Seiya — Digital Growth Journal',
+  lab: 'Motion Lab — Seiya',
+  archive: 'The Archive — Seiya',
+  'archive-images': 'Image Vault — Seiya',
+  'archive-notes': 'Notes Vault — Seiya',
+  'archive-notes-category': 'Notes Vault — Seiya',
+  'archive-note-detail': 'Note — Seiya',
+  'archive-projects': 'Project Vault — Seiya',
+  gallery: 'Gallery — Seiya',
+  auth: 'Sign in — Seiya',
+  profile: 'Personal Space — Seiya',
+}
+
 export default function App() {
   const [page, setPage] = useState<Page>(getPageFromHash)
   const [backgroundMode, setBackgroundMode] = useState<BackgroundMode>(getStoredBackgroundMode)
@@ -84,6 +98,11 @@ export default function App() {
       // localStorage unavailable — keep the preference in memory
     }
   }, [backgroundMode])
+
+  // Route-aware browser history/share titles; no head-management dependency.
+  useEffect(() => {
+    document.title = PAGE_TITLES[page]
+  }, [page])
 
   const handleBackgroundToggle = () => {
     if (page.startsWith('archive') || page === 'gallery') return

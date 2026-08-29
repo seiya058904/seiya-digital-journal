@@ -1,9 +1,7 @@
-import Lenis from 'lenis'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import type Lenis from 'lenis'
 import { createContext, useCallback, useContext, useEffect, useRef, type PropsWithChildren } from 'react'
 
 import { getSmoothScrollMode, type SmoothScrollTarget, type SmoothScrollOptions } from './smoothScroll'
-import 'lenis/dist/lenis.css'
 
 type SmoothScrollApi = {
   scrollTo: (target: SmoothScrollTarget, options?: SmoothScrollOptions) => void
@@ -30,19 +28,23 @@ function scrollNative(target: SmoothScrollTarget, immediate: boolean, reducedMot
 
 export function SmoothScrollProvider({ children }: PropsWithChildren) {
   const lenisRef = useRef<Lenis | null>(null)
+  const destroyLenisRef = useRef<(() => void) | null>(null)
   const modeRef = useRef<'lenis' | 'native'>('native')
   const reducedMotionRef = useRef(false)
+  const syncTokenRef = useRef(0)
 
   useEffect(() => {
     const finePointer = window.matchMedia(FINE_POINTER_QUERY)
     const reducedMotion = window.matchMedia(REDUCED_MOTION_QUERY)
+    let disposed = false
 
     function destroyLenis() {
-      lenisRef.current?.destroy()
+      destroyLenisRef.current?.()
+      destroyLenisRef.current = null
       lenisRef.current = null
     }
 
-    function syncMode() {
+    async function syncMode() {
       reducedMotionRef.current = reducedMotion.matches
       const mode = getSmoothScrollMode({
         finePointer: finePointer.matches,
@@ -51,24 +53,50 @@ export function SmoothScrollProvider({ children }: PropsWithChildren) {
       modeRef.current = mode
       destroyLenis()
 
-      if (mode !== 'lenis') return
+      if (mode !== 'lenis' || disposed) return
 
-      const lenis = new Lenis({
-        autoRaf: true,
-        smoothWheel: true,
-        syncTouch: false,
-        anchors: false,
-        prevent: node => node.hasAttribute('data-lenis-prevent'),
-      })
-      lenis.on('scroll', ScrollTrigger.update)
-      lenisRef.current = lenis
+      // Token guards against races: media queries can flip while the imports
+      // are in flight, and an older sync must never instantiate Lenis.
+      const token = ++syncTokenRef.current
+
+      try {
+        const [lenisModule, scrollTriggerModule] = await Promise.all([
+          import('lenis'),
+          import('gsap/ScrollTrigger'),
+          import('lenis/dist/lenis.css'),
+        ])
+        if (disposed || token !== syncTokenRef.current) return
+
+        const LenisConstructor = lenisModule.default
+        const { ScrollTrigger: ScrollTriggerModule } = scrollTriggerModule
+        const lenis = new LenisConstructor({
+          autoRaf: true,
+          smoothWheel: true,
+          syncTouch: false,
+          anchors: false,
+          prevent: node => node.hasAttribute('data-lenis-prevent'),
+        })
+        const onScroll = () => ScrollTriggerModule.update()
+        lenis.on('scroll', onScroll)
+        lenisRef.current = lenis
+        destroyLenisRef.current = () => {
+          lenis.off('scroll', onScroll)
+          lenis.destroy()
+        }
+      } catch {
+        // Dynamic import failed (e.g. offline chunk fetch): native scrolling
+        // keeps working because modeRef only gates on the live instance.
+        modeRef.current = 'native'
+      }
     }
 
-    syncMode()
+    void syncMode()
     finePointer.addEventListener('change', syncMode)
     reducedMotion.addEventListener('change', syncMode)
 
     return () => {
+      disposed = true
+      syncTokenRef.current += 1
       finePointer.removeEventListener('change', syncMode)
       reducedMotion.removeEventListener('change', syncMode)
       destroyLenis()
