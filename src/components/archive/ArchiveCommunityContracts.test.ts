@@ -18,6 +18,11 @@ test('archive like button uses action semantics instead of pressed toggle semant
   assert.doesNotMatch(likeButton, /aria-pressed=/)
 })
 
+test('archive like label distinguishes an unknown count from a known count', () => {
+  assert.match(likeButton, /count === null \? 'Add a Like to the Archive' : `Add a Like to the Archive — \$\{count\} likes`/)
+  assert.doesNotMatch(likeButton, /count \?\? 0/)
+})
+
 test('archive like count slots settle without animation for reduced-motion users', () => {
   assert.match(likeStyles, /\.archive-like__count-value--entering\s*\{[^}]*animation:\s*none;[^}]*transform:\s*translateY\(0\)/s)
   assert.match(likeStyles, /\.archive-like__count-value--leaving\s*\{[^}]*animation:\s*none;[^}]*visibility:\s*hidden/s)

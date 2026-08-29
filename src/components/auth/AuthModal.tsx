@@ -23,7 +23,9 @@ export function AuthModal({ open, onClose }: AuthModalProps) {
 
     previousFocusRef.current = document.activeElement as HTMLElement | null
     const previousOverflow = document.body.style.overflow
+    const previousRootOverflow = document.documentElement.style.overflow
     document.body.style.overflow = 'hidden'
+    document.documentElement.style.overflow = 'hidden'
 
     const focusFirstControl = window.setTimeout(() => {
       panelRef.current?.querySelector<HTMLElement>('input, button')?.focus()
@@ -38,6 +40,7 @@ export function AuthModal({ open, onClose }: AuthModalProps) {
       window.clearTimeout(focusFirstControl)
       window.removeEventListener('keydown', handleEscape)
       document.body.style.overflow = previousOverflow
+      document.documentElement.style.overflow = previousRootOverflow
       previousFocusRef.current?.focus()
     }
   }, [onClose, open])
@@ -99,9 +102,11 @@ export function AuthModal({ open, onClose }: AuthModalProps) {
             >
               <X aria-hidden="true" size={18} />
             </button>
-            <Suspense fallback={null}>
-              <AuthPage variant="modal" onAuthenticated={onClose} onBack={onClose} />
-            </Suspense>
+            <div className="auth-modal__content">
+              <Suspense fallback={null}>
+                <AuthPage variant="modal" onAuthenticated={onClose} onBack={onClose} />
+              </Suspense>
+            </div>
           </motion.div>
         </motion.div>
       ) : null}

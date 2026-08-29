@@ -173,58 +173,6 @@
   background: rgb(10 17 37 / 92%);
 }
 
-.profile-stats {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-  align-items: stretch;
-  gap: 1.6rem;
-  margin-top: 4rem;
-  padding: clamp(1.5rem, 4vw, 2.3rem);
-  border: 1px solid var(--color-border-strong);
-  border-radius: 2rem;
-  background:
-    linear-gradient(160deg, rgb(11 19 38 / 92%), rgb(4 8 19 / 96%)),
-    radial-gradient(circle at top, rgb(86 228 255 / 8%), transparent 40%);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.05),
-    var(--shadow-soft);
-}
-
-.profile-stat {
-  display: grid;
-  justify-items: center;
-  align-content: center;
-  gap: 0.7rem;
-  min-height: 10rem;
-  transition:
-    background var(--duration-fast) var(--ease-out),
-    transform var(--duration-fast) var(--ease-out);
-}
-
-.profile-stat:hover {
-  transform: translateY(-1px);
-}
-
-.profile-stat__value {
-  font-family: var(--font-editorial);
-  font-size: clamp(3rem, 6vw, 4.2rem);
-  letter-spacing: -0.06em;
-  line-height: 0.92;
-}
-
-.profile-stat__label {
-  color: var(--color-muted);
-  font-size: 0.82rem;
-  letter-spacing: 0.11em;
-  text-transform: uppercase;
-}
-
-.profile-stats__divider {
-  width: 1px;
-  min-height: 100%;
-  background: linear-gradient(180deg, transparent, rgb(169 193 255 / 38%), transparent);
-}
-
 .profile-loading,
 .profile-empty-state {
   width: min(100%, 46rem);
@@ -254,19 +202,6 @@
 .profile-loading__line--name { width: min(16rem, 70%); height: 1.25rem; }
 .profile-loading__line--email { width: min(14rem, 58%); }
 .profile-loading__line--meta { width: min(11rem, 45%); }
-
-.profile-loading__stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  margin-top: 2rem;
-}
-
-.profile-loading__stats div {
-  min-height: 8rem;
-  border-radius: 1.5rem;
-  background: linear-gradient(90deg, rgb(255 255 255 / 5%), rgb(255 255 255 / 9%), rgb(255 255 255 / 5%));
-}
 
 .profile-empty-state {
   text-align: center;
@@ -511,19 +446,6 @@
 @media (max-width: 820px) {
   .profile-page {
     padding-top: 7rem;
-  }
-
-  .profile-stats {
-    grid-template-columns: 1fr;
-    gap: 0;
-  }
-
-  .profile-stats__divider {
-    width: 100%;
-    height: 1px;
-    min-height: 1px;
-    margin: 0.25rem 0;
-    background: linear-gradient(90deg, transparent, rgb(169 193 255 / 38%), transparent);
   }
 
   .profile-edit-surface {

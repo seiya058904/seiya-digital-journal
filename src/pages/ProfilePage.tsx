@@ -3,7 +3,6 @@ import { ArrowLeft } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { useAuth } from '../auth/AuthContext'
-import { ActivityStats } from '../components/profile/ActivityStats'
 import { EditProfileSurface } from '../components/profile/EditProfileSurface'
 import { ProfileHero } from '../components/profile/ProfileHero'
 import { getProfileAvatar } from '../data/profileAvatars'
@@ -17,7 +16,6 @@ export function ProfilePage() {
   const { isAuthenticated, loading: authLoading } = useAuth()
   const {
     profile,
-    stats,
     loading,
     error,
     refresh,
@@ -135,7 +133,7 @@ export function ProfilePage() {
     )
   }
 
-  if (loading || !profile || !stats) {
+  if (loading || !profile) {
     return <ProfileLoading />
   }
 
@@ -175,7 +173,6 @@ export function ProfilePage() {
             setEditOpen(true)
           }}
         />
-        <ActivityStats comments={stats.comments} likes={stats.likes} />
       </div>
 
       <EditProfileSurface
@@ -216,10 +213,6 @@ function ProfileLoading() {
           <div className="profile-loading__line profile-loading__line--name" />
           <div className="profile-loading__line profile-loading__line--email" />
           <div className="profile-loading__line profile-loading__line--meta" />
-          <div className="profile-loading__stats">
-            <div />
-            <div />
-          </div>
         </section>
       </div>
     </main>

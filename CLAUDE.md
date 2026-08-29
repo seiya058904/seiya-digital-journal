@@ -105,7 +105,7 @@ src/
   components/
     sections/        — Hero, About, Interests, Gallery, GalleryCard, Thoughts, Journey, Contact
     ui/              — Header, AccountMenu, Chapter, ActionLink (stable reusable UI atoms)
-    profile/         — ProfileHero, ActivityStats, EditProfileSurface, focusTrap
+    profile/         — ProfileHero, EditProfileSurface, focusTrap
     motion/          — ScrollReveal, TextReveal (Framer Motion wrappers)
     effects/
       react-bits/    — ported React Bits components (GlareHover, BorderGlow, Stack,
@@ -216,7 +216,7 @@ Hash route parsing must tolerate extra trailing slashes. Add new routes through 
 
 **ProfilePage** (`src/pages/ProfilePage.tsx`):
 - Protected route (`#/profile`)
-- Shows: ProfileHero, ActivityStats, EditProfileSurface
+- Shows: ProfileHero, EditProfileSurface
 - Back button: `history.back()` with `#/` fallback when `history.length` is insufficient (simple history behavior, not a same-origin security guard)
 - Member since: formatted from `user.created_at`
 

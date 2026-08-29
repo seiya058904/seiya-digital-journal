@@ -4,7 +4,11 @@
   z-index: 1000;
   display: grid;
   place-items: center;
-  padding: 1rem;
+  padding:
+    max(1rem, env(safe-area-inset-top, 0px))
+    max(1rem, env(safe-area-inset-right, 0px))
+    max(1rem, env(safe-area-inset-bottom, 0px))
+    max(1rem, env(safe-area-inset-left, 0px));
   background: rgb(2 5 13 / 45%);
   backdrop-filter: blur(12px);
   overflow-y: auto;
@@ -19,7 +23,10 @@
 .auth-modal__panel {
   position: relative;
   width: min(100%, 28rem);
-  min-height: min(35rem, calc(100svh - 2rem));
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100svh - 2rem);
+  max-height: calc(100dvh - 2rem);
   overflow: hidden;
   border: 2px solid rgb(148 163 184 / 22%);
   border-radius: 1.4rem;
@@ -34,6 +41,13 @@
     0 0 3.5rem rgb(124 58 237 / 14%),
     inset 0 1px 0 rgb(255 255 255 / 10%);
   transform: translateZ(0);
+}
+
+.auth-modal__content {
+  width: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .auth-modal__close {
@@ -62,7 +76,7 @@
   outline-offset: 3px;
 }
 
-.auth-page--modal {
+.auth-modal .auth-page--modal {
   min-height: 0;
   display: block;
   padding: 0;
@@ -171,12 +185,6 @@
 }
 
 @media (max-width: 560px) {
-  .auth-modal {
-    align-items: start;
-    padding: 1rem;
-    padding-top: max(1rem, 10svh);
-  }
-
   .auth-page--modal .auth-panel {
     padding: 2.5rem 1.5rem 2rem;
   }
