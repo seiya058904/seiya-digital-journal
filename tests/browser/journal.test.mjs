@@ -30,7 +30,7 @@ for (const viewport of [{ width: 1280, height: 900 }, { width: 390, height: 844 
           return route.abort()
         })
         await page.goto(base + '#/auth')
-        assert.equal(await page.getByLabel('Remember me').isChecked(), false)
+        assert.equal(await page.getByLabel('Keep me signed in').isChecked(), false)
         await page.getByLabel('Email', { exact: true }).fill(user.email)
         await page.getByLabel('Password', { exact: true }).fill('synthetic-password')
         await page.getByRole('button', { name: 'Sign in', exact: true }).click()
