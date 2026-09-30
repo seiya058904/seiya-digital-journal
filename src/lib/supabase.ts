@@ -1,11 +1,12 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 
-import { createAuthStorage, setRememberMe } from '../auth/authPersistence'
+import { createAuthStorage, type AuthStorage } from '../auth/authPersistence'
 import { readPublicEnv } from './env'
 import { buildBrowserSiteUrl } from './site'
 
 let cachedClient: SupabaseClient | null | undefined
 let browserAuthStorage: Storage | null | undefined
+let authStorage: AuthStorage | undefined
 
 function getBrowserAuthStorage() {
   if (browserAuthStorage !== undefined) return browserAuthStorage
@@ -26,14 +27,14 @@ export function getSupabaseClient(): SupabaseClient | null {
     return cachedClient
   }
 
-  const storage = getBrowserAuthStorage()
+  authStorage ??= createAuthStorage(getBrowserAuthStorage())
 
   cachedClient = createClient(env.supabaseUrl!, env.supabasePublishableKey!, {
     auth: {
       persistSession: true,
       autoRefreshToken: true,
       detectSessionInUrl: true,
-      ...(storage ? { storage: createAuthStorage(storage) } : {}),
+      storage: authStorage,
     },
   })
 
@@ -41,8 +42,8 @@ export function getSupabaseClient(): SupabaseClient | null {
 }
 
 export function setRememberedAuthSession(remember: boolean) {
-  const storage = getBrowserAuthStorage()
-  if (storage) setRememberMe(storage, remember)
+  authStorage ??= createAuthStorage(getBrowserAuthStorage())
+  authStorage.setRememberMe(remember)
 }
 
 export function getAuthRedirectUrl(): string {
