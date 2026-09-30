@@ -111,8 +111,9 @@ export function JournalStepperDemo() {
     try {
       cleanupRef.current = scheduleCommentSuccessLifecycle(
         {
-          setTimeout,
-          clearTimeout,
+          // Native Window timers reject the scheduler object as their receiver.
+          setTimeout: (callback, delay) => setTimeout(callback, delay),
+          clearTimeout: (handle) => clearTimeout(handle),
         },
         {
           onFadeStart: () => {

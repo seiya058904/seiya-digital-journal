@@ -9,8 +9,14 @@ globalThis.IS_REACT_ACT_ENVIRONMENT = true
 const values = new Map(), timers = new Map()
 let timerId = 0, posts = 0, result = { ok: true }
 globalThis.sessionStorage = { getItem: key => values.get(key) ?? null, setItem: (key, value) => values.set(key, value) }
-globalThis.setTimeout = (fn, ms) => { timers.set(++timerId, { fn, ms }); return timerId }
-globalThis.clearTimeout = id => timers.delete(id)
+globalThis.setTimeout = function (fn, ms) {
+  assert.ok(this === undefined || this === globalThis, "Window timers reject an arbitrary receiver")
+  timers.set(++timerId, { fn, ms }); return timerId
+}
+globalThis.clearTimeout = function (id) {
+  assert.ok(this === undefined || this === globalThis, "Window timers reject an arbitrary receiver")
+  timers.delete(id)
+}
 globalThis.__createComment = async () => { posts++; return result }
 let tree
 const mount = async () => { await act(() => { tree = create(React.createElement(JournalStepperDemo)) }) }
