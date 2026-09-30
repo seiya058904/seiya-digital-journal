@@ -33,6 +33,7 @@
     "@types/three": "^0.185.0",
     "@vitejs/plugin-react": "^6.0.3",
     "oxlint": "^1.71.0",
+    "react-test-renderer": "19.2.7",
     "typescript": "~6.0.2",
     "vite": "^8.1.1"
   }

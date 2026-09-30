@@ -56,6 +56,7 @@ export default function Stepper({
   const [currentStep, setCurrentStep] = useState(initialStep)
   const [direction, setDirection] = useState(0)
   const [isCompleting, setIsCompleting] = useState(false)
+  const completingRef = useRef(false)
   const stepsArray = Children.toArray(children)
   const totalSteps = stepsArray.length
   const isCompleted = currentStep > totalSteps
@@ -75,6 +76,7 @@ export default function Stepper({
   }
 
   const goToStep = (newStep: number) => {
+    if (completingRef.current) return
     setDirection(newStep > currentStep ? 1 : -1)
     updateStep(newStep)
   }
@@ -88,9 +90,12 @@ export default function Stepper({
   }
 
   const handleComplete = async () => {
+    if (completingRef.current) return
+    completingRef.current = true
     setDirection(1)
     setIsCompleting(true)
     const result = await runFinalStepCompletion(onFinalStepCompleted)
+    completingRef.current = false
     setIsCompleting(false)
     if (result === false) return
     onStepChange(totalSteps + 1)
@@ -116,7 +121,7 @@ export default function Stepper({
                 ) : (
                   <StepIndicator
                     step={stepNumber}
-                    disableStepIndicators={disableStepIndicators}
+                    disableStepIndicators={disableStepIndicators || isCompleting}
                     currentStep={currentStep}
                     onClickStep={goToStep}
                   />
