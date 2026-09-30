@@ -67,3 +67,65 @@ test('full SDK sign-up requiring confirmation and password recovery preserve tem
   assert.equal((await client.getSession()).data.session, null)
   client.stopAutoRefresh()
 })
+
+test('SDK automatic refresh ticker reads and updates the temporary session', async (context) => {
+  const storage = createAuthStorage(memoryStorage())
+  let tick: (() => Promise<void>) | undefined
+  context.mock.method(globalThis, 'setInterval', (callback: () => Promise<void>) => {
+    tick = callback
+    return { unref() {} }
+  })
+  context.mock.method(globalThis, 'clearInterval', () => {})
+  let refreshes = 0
+  const client = new GoTrueClient({ url: 'https://auth.example.invalid', storageKey: 'automatic-refresh', storage, persistSession: true, autoRefreshToken: false, detectSessionInUrl: false,
+    fetch: async input => {
+      const refresh = String(input).includes('grant_type=refresh_token')
+      if (refresh) refreshes++
+      return Response.json({ ...session(), access_token: refresh ? 'synthetic-refreshed' : 'synthetic-access' })
+    } })
+  await client.initialize()
+  await client.signInWithPassword({ email: user.email, password: 'synthetic-password' })
+  const current = JSON.parse(storage.getItem('automatic-refresh')!)
+  storage.setItem('automatic-refresh', JSON.stringify({ ...current, expires_at: Math.floor(Date.now() / 1000) + 60 }))
+  await client.startAutoRefresh()
+  assert.ok(tick)
+  await tick()
+  assert.equal(refreshes, 1)
+  assert.equal((await client.getSession()).data.session?.access_token, 'synthetic-refreshed')
+  await client.stopAutoRefresh()
+})
+
+for (const type of ['signup', 'recovery']) {
+  test(`full SDK initializes ${type} URL callbacks into readable temporary sessions`, async () => {
+    // Browser-location/document interfaces are synthetic; URL parsing, user
+    // verification, session storage and auth event delivery are the real SDK.
+    const descriptors = new Map(['window', 'document', 'BroadcastChannel'].map(key => [key, Object.getOwnPropertyDescriptor(globalThis, key)]))
+    const location = new URL(`https://journal.example.invalid/#access_token=synthetic-url&refresh_token=synthetic-refresh&expires_in=3600&token_type=bearer&type=${type}`)
+    Object.defineProperty(globalThis, 'window', { configurable: true, value: { location } })
+    Object.defineProperty(globalThis, 'document', { configurable: true, value: {} })
+    Object.defineProperty(globalThis, 'BroadcastChannel', { configurable: true, value: undefined })
+    try {
+      const persistent = memoryStorage()
+      const storage = createAuthStorage(persistent)
+      const events: string[] = []
+      const client = new GoTrueClient({ url: 'https://auth.example.invalid', storageKey: `callback-${type}`, storage, persistSession: true, autoRefreshToken: false, detectSessionInUrl: true,
+        fetch: async () => Response.json(user) })
+      const { data: { subscription } } = client.onAuthStateChange(event => { events.push(event) })
+      assert.equal((await client.initialize()).error, null)
+      await new Promise(resolve => setTimeout(resolve, 10))
+      assert.equal((await client.getSession()).data.session?.user.id, user.id)
+      assert.equal((await client.getSession()).data.session?.access_token, 'synthetic-url')
+      assert.ok(events.includes(type === 'recovery' ? 'PASSWORD_RECOVERY' : 'SIGNED_IN'))
+      assert.equal(location.hash, '')
+      assert.equal(persistent.getItem(`callback-${type}`), null)
+      assert.equal(createAuthStorage(persistent).getItem(`callback-${type}`), null)
+      subscription.unsubscribe()
+      await client.stopAutoRefresh()
+    } finally {
+      for (const [key, descriptor] of descriptors) {
+        if (descriptor) Object.defineProperty(globalThis, key, descriptor)
+        else Reflect.deleteProperty(globalThis, key)
+      }
+    }
+  })
+}
