@@ -1,42 +1,71 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-
-import {
-  REMEMBER_ME_STORAGE_KEY,
-  createAuthStorage,
-  setRememberMe,
-} from './authPersistence.ts'
+import { REMEMBER_ME_STORAGE_KEY, createAuthStorage } from './authPersistence.ts'
 
 function createMemoryStorage() {
   const values = new Map<string, string>()
-  return {
-    values,
-    getItem: (key: string) => values.get(key) ?? null,
-    setItem: (key: string, value: string) => values.set(key, value),
-    removeItem: (key: string) => values.delete(key),
-  }
+  return { values, getItem: (key: string) => values.get(key) ?? null,
+    setItem: (key: string, value: string) => { values.set(key, value) },
+    removeItem: (key: string) => { values.delete(key) } }
 }
 
-test('remember me persists auth storage only when enabled', () => {
+test('temporary session is readable on this page but never on a new page', () => {
   const storage = createMemoryStorage()
-  const authStorage = createAuthStorage(storage)
-
-  authStorage.setItem('auth-token', 'session')
-  assert.equal(storage.values.has('auth-token'), false)
-
-  setRememberMe(storage, true)
-  authStorage.setItem('auth-token', 'session')
-  assert.equal(storage.values.get('auth-token'), 'session')
-  assert.equal(storage.values.get(REMEMBER_ME_STORAGE_KEY), 'true')
+  const auth = createAuthStorage(storage)
+  auth.setItem('auth-token', 'session')
+  assert.equal(auth.getItem('auth-token'), 'session')
+  assert.equal(storage.getItem('auth-token'), null)
+  assert.equal(createAuthStorage(storage).getItem('auth-token'), null)
 })
 
-test('remember me storage ignores persisted sessions when disabled', () => {
+test('remembered session restores and mode changes migrate only the current session', () => {
   const storage = createMemoryStorage()
-  setRememberMe(storage, true)
-  storage.setItem('auth-token', 'session')
-  setRememberMe(storage, false)
+  const auth = createAuthStorage(storage)
+  auth.setRememberMe(true)
+  auth.setItem('auth-token', 'account-A')
+  assert.equal(storage.getItem(REMEMBER_ME_STORAGE_KEY), 'true')
+  const restored = createAuthStorage(storage)
+  assert.equal(restored.getItem('auth-token'), 'account-A')
+  restored.setRememberMe(false)
+  assert.equal(restored.getItem('auth-token'), 'account-A')
+  assert.equal(storage.getItem('auth-token'), null)
+  restored.setItem('auth-token', 'account-B')
+  restored.setRememberMe(true)
+  assert.equal(createAuthStorage(storage).getItem('auth-token'), 'account-B')
+  restored.removeItem('auth-token')
+  restored.setRememberMe(false)
+  restored.setRememberMe(true)
+  assert.equal(restored.getItem('auth-token'), null)
+  assert.equal(createAuthStorage(storage).getItem('auth-token'), null)
+})
 
-  const authStorage = createAuthStorage(storage)
-  assert.equal(authStorage.getItem('auth-token'), null)
-  assert.equal(storage.values.has(REMEMBER_ME_STORAGE_KEY), false)
+test('disabled persistence removes stale sessions before later enabling it', () => {
+  const storage = createMemoryStorage()
+  storage.setItem('auth-token', 'old-account')
+  const auth = createAuthStorage(storage)
+  assert.equal(auth.getItem('auth-token'), null)
+  auth.setRememberMe(true)
+  assert.equal(auth.getItem('auth-token'), null)
+  assert.equal(storage.getItem('auth-token'), null)
+})
+
+test('unavailable storage and quota failures keep a readable temporary session', () => {
+  for (const storage of [null, {getItem(){ throw Error('denied') },setItem(){ throw Error('denied') },removeItem(){ throw Error('denied') }},
+    {getItem(){ return null },setItem(){ throw Error('quota') },removeItem(){ throw Error('denied') }}]) {
+    const auth = createAuthStorage(storage)
+    auth.setRememberMe(true)
+    auth.setItem('auth-token', 'session')
+    assert.equal(auth.getItem('auth-token'), 'session')
+    auth.removeItem('auth-token')
+    assert.equal(auth.getItem('auth-token'), null)
+  }
+})
+
+test('remembered mode observes external storage updates instead of stale cached sessions', () => {
+  const storage = createMemoryStorage()
+  const auth = createAuthStorage(storage)
+  auth.setRememberMe(true)
+  auth.setItem('auth-token', 'session')
+  storage.removeItem('auth-token')
+  assert.equal(auth.getItem('auth-token'), null)
 })

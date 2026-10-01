@@ -186,12 +186,14 @@ export function AuthProvider({ children }: PropsWithChildren) {
       return getDisplayableAuthError('Backend is not configured.')
     }
 
-    setRememberedAuthSession(false)
-    const { error } = await client.auth.signOut()
-    if (error) {
+    try {
+      const { error } = await client.auth.signOut()
+      if (error) return getDisplayableAuthError('Unable to sign out right now.')
+    } catch {
       return getDisplayableAuthError('Unable to sign out right now.')
     }
 
+    setRememberedAuthSession(false)
     return {
       ok: true,
       message: 'Signed out.',

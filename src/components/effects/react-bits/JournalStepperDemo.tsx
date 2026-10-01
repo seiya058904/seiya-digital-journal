@@ -13,6 +13,11 @@ import Stepper, { Step } from './Stepper'
 
 const STEP_KEY = 'archive-stepper-step'
 const THOUGHT_KEY = 'archive-stepper-thought'
+const INPUT_STEPS = 4
+
+function resumableStep(step: number) {
+  return Number.isInteger(step) && step >= 1 && step <= INPUT_STEPS ? step : 1
+}
 
 function loadSaved<T>(key: string, fallback: T): T {
   try {
@@ -39,21 +44,33 @@ export function JournalStepperDemo() {
   const [isStatusVisible, setIsStatusVisible] = useState(false)
   const [stepperKey, setStepperKey] = useState(0)
 
-  const savedStep = loadSaved<number>(STEP_KEY, 1)
+  const savedStep = resumableStep(loadSaved<number>(STEP_KEY, 1))
   const inputId = useId()
   const cleanupRef = useRef<(() => void) | null>(null)
+  const mountedRef = useRef(true)
 
   const clearSuccessLifecycle = () => {
     cleanupRef.current?.()
     cleanupRef.current = null
   }
 
-  useEffect(() => () => {
-    clearSuccessLifecycle()
+  useEffect(() => {
+    mountedRef.current = true
+    return () => {
+      mountedRef.current = false
+      clearSuccessLifecycle()
+    }
   }, [])
 
   const handleStepChange = (step: number) => {
-    save(STEP_KEY, step)
+    if (!mountedRef.current) return
+    if (step <= INPUT_STEPS) {
+      clearSuccessLifecycle()
+      setStatus(null)
+      setIsStatusVisible(false)
+    }
+    // Completion is transient feedback, never a resumable input step.
+    save(STEP_KEY, resumableStep(step))
   }
 
   const handleFinalCompleted = async () => {
@@ -78,6 +95,8 @@ export function JournalStepperDemo() {
       body: thought,
     })
 
+    if (!mountedRef.current) return false
+
     if (!result.ok) {
       setError(result.error.message)
       return false
@@ -92,14 +111,16 @@ export function JournalStepperDemo() {
     try {
       cleanupRef.current = scheduleCommentSuccessLifecycle(
         {
-          setTimeout,
-          clearTimeout,
+          // Native Window timers reject the scheduler object as their receiver.
+          setTimeout: (callback, delay) => setTimeout(callback, delay),
+          clearTimeout: (handle) => clearTimeout(handle),
         },
         {
           onFadeStart: () => {
             setIsStatusVisible(false)
           },
           onReset: () => {
+            save(STEP_KEY, 1)
             setStatus(null)
             setStepperKey((current) => current + 1)
           },

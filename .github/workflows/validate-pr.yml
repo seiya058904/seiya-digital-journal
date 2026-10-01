@@ -1,0 +1,36 @@
+name: Validate pull request
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run lint
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - name: Browser regressions with synthetic services
+        env:
+          VITE_SUPABASE_URL: https://synthetic.supabase.co
+          VITE_SUPABASE_PUBLISHABLE_KEY: synthetic-public-key
+          VITE_API_BASE_URL: https://api.example.invalid
+        run: |
+          npm run dev -- --host 127.0.0.1 --port 4178 >/tmp/journal-preview.log 2>&1 &
+          preview_pid=$!
+          trap 'kill "$preview_pid" 2>/dev/null || true' EXIT
+          for _ in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:4178/seiya-digital-journal/ >/dev/null; then break; fi
+            sleep 1
+          done
+          npm run test:browser
