@@ -32,30 +32,38 @@ export function createAuthStorage(storage: StorageLike | null): AuthStorage {
         try {
           if (storage && !unpersisted.has(key)) memory.set(key, storage.getItem(key))
         } catch { /* use the last readable session */ }
-      } else {
-        // Remove sessions left by earlier remembered logins, never resurrect
-        // them when the user later enables Remember me for another account.
-        removePersisted(key)
       }
+      // Temporary reads are non-destructive: another tab may have just
+      // published a remembered session, so plain reads never delete from the
+      // shared store. Persistent cleanup happens only in owned transitions
+      // (setRememberMe, remembered-mode removals).
       if (!memory.has(key)) memory.set(key, null)
       return memory.get(key) ?? null
     },
     setItem: (key, value) => {
       memory.set(key, value)
       if (remember) persist(key, value)
-      else removePersisted(key)
     },
     removeItem: (key) => {
       memory.set(key, null)
-      removePersisted(key)
+      // A temporary page owns no persisted copy: removing its in-memory
+      // session must not delete another tab's remembered session.
+      if (remember) removePersisted(key)
+      else unpersisted.delete(key)
     },
     setRememberMe: (nextRemember) => {
+      const previous = remember
       // Capture the latest persisted values before turning persistence off.
-      if (remember) for (const key of memory.keys()) adapter.getItem(key)
+      if (previous) for (const key of memory.keys()) adapter.getItem(key)
       remember = nextRemember
-      for (const [key, value] of memory) {
-        if (remember) persist(key, value)
-        else removePersisted(key)
+      // Mode transitions are the owned cleanup points. Leaving temporary mode
+      // republishes this page's values over any stale persisted session;
+      // leaving remembered mode clears what this page restored or wrote.
+      if (previous || nextRemember) {
+        for (const [key, value] of memory) {
+          if (remember) persist(key, value)
+          else removePersisted(key)
+        }
       }
       persist(REMEMBER_ME_STORAGE_KEY, remember ? 'true' : null)
     },
