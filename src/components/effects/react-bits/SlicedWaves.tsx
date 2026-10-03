@@ -1,4 +1,4 @@
-import { useEffect, useRef, type FC } from 'react'
+import { useEffect, useRef, useState, type FC } from 'react'
 import { Mesh, Program, Renderer, Triangle } from 'ogl'
 
 import './SlicedWaves.css'
@@ -166,153 +166,185 @@ const SlicedWaves: FC<SlicedWavesProps> = ({
   className = '',
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null)
+  const [failed, setFailed] = useState(false)
 
   useEffect(() => {
     const container = containerRef.current
     if (!container) return
 
-    const renderer = new Renderer({
-      webgl: 2,
-      alpha: true,
-      premultipliedAlpha: true,
-      antialias: false,
-      dpr: Math.min(window.devicePixelRatio || 1, 2),
-    })
-
-    const gl = renderer.gl
-    gl.clearColor(0, 0, 0, 0)
-    const canvas = gl.canvas as HTMLCanvasElement
-    canvas.style.width = '100%'
-    canvas.style.height = '100%'
-    canvas.style.display = 'block'
-    container.appendChild(canvas)
-
-    const geometry = new Triangle(gl)
-    const program = new Program(gl, {
-      vertex,
-      fragment,
-      uniforms: {
-        iTime: { value: 0 },
-        iResolution: { value: new Float32Array([1, 1]) },
-        uColumns: { value: 14 },
-        uRows: { value: 8 },
-        uThickness: { value: 0.1 },
-        uSpeed: { value: 0.35 },
-        uTravel: { value: 0.7 },
-        uWaveSpread: { value: 0.9 },
-        uRowOffset: { value: 1.0 },
-        uSoftness: { value: 0.05 },
-        uGlow: { value: 0 },
-        uBrightness: { value: 1.0 },
-        uContrast: { value: 1.0 },
-        uOpacity: { value: 0.5 },
-        uVertical: { value: 0.0 },
-        uAlternate: { value: 0.0 },
-        uMouse: { value: new Float32Array([0.5, 0.5]) },
-        uMouseStrength: { value: 1 },
-        uMouseRadius: { value: 0.3 },
-        uEnableMouse: { value: 1.0 },
-        uMouseActive: { value: 0.0 },
-        uGrain: { value: 1.0 },
-        uGrainIntensity: { value: 0.05 },
-        uColor1: { value: new Float32Array([1, 1, 1]) },
-        uColor2: { value: new Float32Array([1, 1, 1]) },
-        uColor3: { value: new Float32Array([1, 1, 1]) },
-      },
-    })
-
-    const mesh = new Mesh(gl, { geometry, program })
-    ctxMap.set(container, { renderer, program, mesh })
-
-    const setSize = () => {
-      const rect = container.getBoundingClientRect()
-      const w = Math.max(1, Math.floor(rect.width))
-      const h = Math.max(1, Math.floor(rect.height))
-      renderer.setSize(w, h)
-      const res = program.uniforms.iResolution.value as Float32Array
-      res[0] = gl.drawingBufferWidth
-      res[1] = gl.drawingBufferHeight
-      renderer.render({ scene: mesh })
-    }
-
-    const ro = new ResizeObserver(setSize)
-    ro.observe(container)
-    setSize()
-
-    let currentMouse: [number, number] = [0.5, 0.5]
-    let targetMouse: [number, number] = [0.5, 0.5]
-    let currentActive = 0
-    let targetActive = 0
-
-    const onMouseMove = (event: MouseEvent) => {
-      const rect = canvas.getBoundingClientRect()
-      targetMouse = [(event.clientX - rect.left) / rect.width, 1.0 - (event.clientY - rect.top) / rect.height]
-      targetActive = 1
-    }
-    const onMouseLeave = () => {
-      targetActive = 0
-    }
-    window.addEventListener('mousemove', onMouseMove)
-    window.addEventListener('blur', onMouseLeave)
-    document.addEventListener('mouseleave', onMouseLeave)
-
-    let raf = 0
-    let isVisible = true
-    let isPageVisible = !document.hidden
-    const t0 = performance.now()
-
-    const loop = (time: number) => {
-      program.uniforms.iTime.value = (time - t0) * 0.001
-      currentMouse[0] += 0.05 * (targetMouse[0] - currentMouse[0])
-      currentMouse[1] += 0.05 * (targetMouse[1] - currentMouse[1])
-      const mouse = program.uniforms.uMouse.value as Float32Array
-      mouse[0] = currentMouse[0]
-      mouse[1] = currentMouse[1]
-      currentActive += 0.05 * (targetActive - currentActive)
-      program.uniforms.uMouseActive.value = currentActive
-      renderer.render({ scene: mesh })
-      raf = requestAnimationFrame(loop)
-    }
-
-    const tryStart = () => {
-      if (isVisible && isPageVisible && raf === 0) raf = requestAnimationFrame(loop)
-    }
-    const tryStop = () => {
-      if (raf !== 0) {
-        cancelAnimationFrame(raf)
-        raf = 0
+    const cleanup: (() => void)[] = []
+    let disposed = false
+    const dispose = () => {
+      if (disposed) return
+      disposed = true
+      for (const release of cleanup.reverse()) {
+        try { release() } catch (error) { console.warn('SlicedWaves cleanup failed', error) }
       }
     }
-
-    const io = new IntersectionObserver(([entry]) => {
-      isVisible = entry.isIntersecting
-      if (isVisible) tryStart()
-      else tryStop()
-    }, { threshold: 0 })
-    io.observe(container)
-
-    const onVisibility = () => {
-      isPageVisible = !document.hidden
-      if (isPageVisible) tryStart()
-      else tryStop()
+    const fail = (error: unknown) => {
+      if (disposed) return
+      dispose()
+      setFailed(true)
+      console.warn('SlicedWaves unavailable; using static background', error)
     }
-    document.addEventListener('visibilitychange', onVisibility)
-    tryStart()
 
-    return () => {
-      tryStop()
-      ro.disconnect()
-      io.disconnect()
-      document.removeEventListener('visibilitychange', onVisibility)
-      window.removeEventListener('mousemove', onMouseMove)
-      window.removeEventListener('blur', onMouseLeave)
-      document.removeEventListener('mouseleave', onMouseLeave)
-      ctxMap.delete(container)
-      try {
-        container.removeChild(canvas)
-      } catch {}
-      gl.getExtension('WEBGL_lose_context')?.loseContext()
-    }
+    try {
+      const canvas = document.createElement('canvas')
+      // The shader requires GLSL 300; OGL's WebGL1 fallback cannot render it.
+      const context = canvas.getContext('webgl2', { alpha: true, premultipliedAlpha: true, antialias: false })
+      if (!context) throw new Error('WebGL2 is unavailable')
+      cleanup.push(() => context.getExtension('WEBGL_lose_context')?.loseContext())
+      const renderer = new Renderer({
+        canvas,
+        webgl: 2,
+        alpha: true,
+        premultipliedAlpha: true,
+        antialias: false,
+        dpr: Math.min(window.devicePixelRatio || 1, 2),
+      })
+
+      const gl = renderer.gl
+      gl.clearColor(0, 0, 0, 0)
+      canvas.style.width = '100%'
+      canvas.style.height = '100%'
+      canvas.style.display = 'block'
+      container.appendChild(canvas)
+      cleanup.push(() => canvas.remove())
+      const onContextLost = () => fail(new Error('WebGL context lost'))
+      canvas.addEventListener('webglcontextlost', onContextLost)
+      cleanup.push(() => canvas.removeEventListener('webglcontextlost', onContextLost))
+
+      const geometry = new Triangle(gl)
+      cleanup.push(() => geometry.remove())
+      const program = new Program(gl, {
+        vertex,
+        fragment,
+        uniforms: {
+          iTime: { value: 0 },
+          iResolution: { value: new Float32Array([1, 1]) },
+          uColumns: { value: 14 },
+          uRows: { value: 8 },
+          uThickness: { value: 0.1 },
+          uSpeed: { value: 0.35 },
+          uTravel: { value: 0.7 },
+          uWaveSpread: { value: 0.9 },
+          uRowOffset: { value: 1.0 },
+          uSoftness: { value: 0.05 },
+          uGlow: { value: 0 },
+          uBrightness: { value: 1.0 },
+          uContrast: { value: 1.0 },
+          uOpacity: { value: 0.5 },
+          uVertical: { value: 0.0 },
+          uAlternate: { value: 0.0 },
+          uMouse: { value: new Float32Array([0.5, 0.5]) },
+          uMouseStrength: { value: 1 },
+          uMouseRadius: { value: 0.3 },
+          uEnableMouse: { value: 1.0 },
+          uMouseActive: { value: 0.0 },
+          uGrain: { value: 1.0 },
+          uGrainIntensity: { value: 0.05 },
+          uColor1: { value: new Float32Array([1, 1, 1]) },
+          uColor2: { value: new Float32Array([1, 1, 1]) },
+          uColor3: { value: new Float32Array([1, 1, 1]) },
+        },
+      })
+      cleanup.push(() => program.remove())
+
+      const mesh = new Mesh(gl, { geometry, program })
+      ctxMap.set(container, { renderer, program, mesh })
+      cleanup.push(() => ctxMap.delete(container))
+
+      const setSize = () => {
+        const rect = container.getBoundingClientRect()
+        const w = Math.max(1, Math.floor(rect.width))
+        const h = Math.max(1, Math.floor(rect.height))
+        renderer.setSize(w, h)
+        const res = program.uniforms.iResolution.value as Float32Array
+        res[0] = gl.drawingBufferWidth
+        res[1] = gl.drawingBufferHeight
+        renderer.render({ scene: mesh })
+      }
+
+      const ro = new ResizeObserver(() => {
+        if (disposed) return
+        try { setSize() } catch (error) { fail(error) }
+      })
+      cleanup.push(() => ro.disconnect())
+      ro.observe(container)
+      setSize()
+
+      let currentMouse: [number, number] = [0.5, 0.5]
+      let targetMouse: [number, number] = [0.5, 0.5]
+      let currentActive = 0
+      let targetActive = 0
+
+      const onMouseMove = (event: MouseEvent) => {
+        const rect = canvas.getBoundingClientRect()
+        targetMouse = [(event.clientX - rect.left) / rect.width, 1.0 - (event.clientY - rect.top) / rect.height]
+        targetActive = 1
+      }
+      const onMouseLeave = () => {
+        targetActive = 0
+      }
+      window.addEventListener('mousemove', onMouseMove)
+      window.addEventListener('blur', onMouseLeave)
+      document.addEventListener('mouseleave', onMouseLeave)
+      cleanup.push(() => {
+        window.removeEventListener('mousemove', onMouseMove)
+        window.removeEventListener('blur', onMouseLeave)
+        document.removeEventListener('mouseleave', onMouseLeave)
+      })
+
+      let raf = 0
+      cleanup.push(() => cancelAnimationFrame(raf))
+      let isVisible = true
+      let isPageVisible = !document.hidden
+      const t0 = performance.now()
+
+      const loop = (time: number) => {
+        if (disposed) return
+        try {
+          program.uniforms.iTime.value = (time - t0) * 0.001
+          currentMouse[0] += 0.05 * (targetMouse[0] - currentMouse[0])
+          currentMouse[1] += 0.05 * (targetMouse[1] - currentMouse[1])
+          const mouse = program.uniforms.uMouse.value as Float32Array
+          mouse[0] = currentMouse[0]
+          mouse[1] = currentMouse[1]
+          currentActive += 0.05 * (targetActive - currentActive)
+          program.uniforms.uMouseActive.value = currentActive
+          renderer.render({ scene: mesh })
+          raf = requestAnimationFrame(loop)
+        } catch (error) { fail(error) }
+      }
+
+      const tryStart = () => {
+        if (!disposed && isVisible && isPageVisible && raf === 0) raf = requestAnimationFrame(loop)
+      }
+      const tryStop = () => {
+        if (raf !== 0) {
+          cancelAnimationFrame(raf)
+          raf = 0
+        }
+      }
+
+      const io = new IntersectionObserver(([entry]) => {
+        isVisible = entry.isIntersecting
+        if (isVisible) tryStart()
+        else tryStop()
+      }, { threshold: 0 })
+      cleanup.push(() => io.disconnect())
+      io.observe(container)
+
+      const onVisibility = () => {
+        isPageVisible = !document.hidden
+        if (isPageVisible) tryStart()
+        else tryStop()
+      }
+      document.addEventListener('visibilitychange', onVisibility)
+      cleanup.push(() => document.removeEventListener('visibilitychange', onVisibility))
+      tryStart()
+    } catch (error) { fail(error) }
+    return dispose
   }, [])
 
   useEffect(() => {
@@ -355,7 +387,7 @@ const SlicedWaves: FC<SlicedWavesProps> = ({
     mouseStrength, mouseRadius, grain, grainIntensity,
   ])
 
-  return <div ref={containerRef} className={`sliced-waves-container ${className}`.trim()} />
+  return <div ref={containerRef} className={`sliced-waves-container ${failed ? 'site-background__static' : ''} ${className}`.trim()} />
 }
 
 export default SlicedWaves
