@@ -9,6 +9,7 @@ import type { Session, User } from '@supabase/supabase-js'
 
 import { readPublicEnv } from '../lib/env'
 import { getAuthRedirectUrl, getSupabaseClient, setRememberedAuthSession } from '../lib/supabase'
+import { observeSession } from './observeSession'
 
 type AuthActionSuccess = {
   ok: true
@@ -76,33 +77,13 @@ export function AuthProvider({ children }: PropsWithChildren) {
       return
     }
 
-    let cancelled = false
-
-    client.auth.getSession().then(({ data }) => {
-      if (cancelled) return
-      setSession(data.session)
-      setUser(data.session?.user ?? null)
-      setLoading(false)
-    }).catch(() => {
-      if (cancelled) return
-      setSession(null)
-      setUser(null)
-      setLoading(false)
-    })
-
-    const {
-      data: { subscription },
-    } = client.auth.onAuthStateChange((event, nextSession) => {
+    return observeSession(client.auth, (nextSession, recovery) => {
       setSession(nextSession)
       setUser(nextSession?.user ?? null)
-      if (event === 'PASSWORD_RECOVERY') setIsPasswordRecovery(true)
+      if (recovery) setIsPasswordRecovery(true)
+      if (!nextSession) setIsPasswordRecovery(false)
       setLoading(false)
     })
-
-    return () => {
-      cancelled = true
-      subscription.unsubscribe()
-    }
   }, [client])
 
   const signUp = async ({ displayName, email, password, rememberMe }: SignUpInput): Promise<AuthActionResult> => {

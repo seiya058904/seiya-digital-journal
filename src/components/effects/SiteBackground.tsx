@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from 'react'
+import { Component, lazy, Suspense, useEffect, useState, type PropsWithChildren } from 'react'
 
 import type { Page } from '../../appRoute'
 import type { BackgroundMode } from '../../backgroundMode'
@@ -9,6 +9,15 @@ import { PhoneOnly } from '../ui/DesktopOnly'
 
 const Beams = lazy(() => import('./react-bits/Beams'))
 const SlicedWaves = lazy(() => import('./react-bits/SlicedWaves'))
+
+class BackgroundBoundary extends Component<PropsWithChildren, { failed: boolean }> {
+  state = { failed: false }
+  static getDerivedStateFromError() { return { failed: true } }
+  componentDidCatch(error: Error) { console.warn('Decorative background unavailable', error) }
+  render() {
+    return this.state.failed ? <div className="site-background__static" /> : this.props.children
+  }
+}
 
 type SiteBackgroundProps = {
   page: Page
@@ -81,46 +90,76 @@ function DesktopSlicedWaves() {
 export function SiteBackground({ page, mode }: SiteBackgroundProps) {
   const isArchiveArea = page.startsWith('archive') || page === 'gallery'
   const showArchiveBackground = isArchiveArea
+  const [webglAvailable, setWebglAvailable] = useState(false)
+
+  useEffect(() => {
+    // Do not mount hidden, preloaded R3F backgrounds when no context is usable:
+    // their asynchronous renderer setup is outside React's error boundary.
+    const media = window.matchMedia('(prefers-reduced-motion: reduce), (hover: none) and (pointer: coarse)')
+    const update = () => {
+      if (media.matches) {
+        setWebglAvailable(true) // Existing components retain their own motion/touch gates.
+        return
+      }
+      let context: WebGL2RenderingContext | null = null
+      try {
+        context = document.createElement('canvas').getContext('webgl2')
+        setWebglAvailable(Boolean(context))
+      } catch (error) {
+        setWebglAvailable(false)
+        console.warn('WebGL unavailable; using static background', error)
+      } finally {
+        context?.getExtension('WEBGL_lose_context')?.loseContext()
+      }
+    }
+    update()
+    media.addEventListener('change', update)
+    return () => media.removeEventListener('change', update)
+  }, [])
 
   return (
     <div className="site-background" aria-hidden="true">
-      {isArchiveArea ? (
-        <PhoneOnly><AuroraBackground /></PhoneOnly>
-      ) : mode === 'beams' ? (
-        <DesktopBeams />
-      ) : mode === 'sliced-waves' ? (
-        <DesktopSlicedWaves />
-      ) : showArchiveBackground ? (
-        <PhoneOnly><AuroraBackground /></PhoneOnly>
-      ) : (
-        <AuroraBackground />
-      )}
-      {mode === 'default' && page === 'home' ? (
-        <DesktopGridScan
-          className="site-gridscan"
-          sensitivity={0.55}
-          lineThickness={1}
-          linesColor="#2F293A"
-          scanColor="#FF9FFC"
-          scanOpacity={0.4}
-          gridScale={0.1}
-          lineStyle="solid"
-          lineJitter={0.1}
-          scanDirection="pingpong"
-          enablePost
-          bloomIntensity={0.6}
-          chromaticAberration={0.002}
-          noiseIntensity={0.01}
-          scanGlow={0.5}
-          scanSoftness={2}
-          scanPhaseTaper={0.9}
-          scanDuration={2.0}
-          scanDelay={2.0}
-          scanOnClick
-          snapBackDelay={250}
-        />
-      ) : null}
-      <ArchiveBackground hidden={!showArchiveBackground} />
+      <BackgroundBoundary key={`${mode}:${isArchiveArea}`}>
+        {webglAvailable ? <>
+        {isArchiveArea ? (
+          <PhoneOnly><AuroraBackground /></PhoneOnly>
+        ) : mode === 'beams' ? (
+          <DesktopBeams />
+        ) : mode === 'sliced-waves' ? (
+          <DesktopSlicedWaves />
+        ) : showArchiveBackground ? (
+          <PhoneOnly><AuroraBackground /></PhoneOnly>
+        ) : (
+          <AuroraBackground />
+        )}
+        {mode === 'default' && page === 'home' ? (
+          <DesktopGridScan
+            className="site-gridscan"
+            sensitivity={0.55}
+            lineThickness={1}
+            linesColor="#2F293A"
+            scanColor="#FF9FFC"
+            scanOpacity={0.4}
+            gridScale={0.1}
+            lineStyle="solid"
+            lineJitter={0.1}
+            scanDirection="pingpong"
+            enablePost
+            bloomIntensity={0.6}
+            chromaticAberration={0.002}
+            noiseIntensity={0.01}
+            scanGlow={0.5}
+            scanSoftness={2}
+            scanPhaseTaper={0.9}
+            scanDuration={2.0}
+            scanDelay={2.0}
+            scanOnClick
+            snapBackDelay={250}
+          />
+        ) : null}
+        <ArchiveBackground hidden={!showArchiveBackground} />
+        </> : <div className="site-background__static" />}
+      </BackgroundBoundary>
     </div>
   )
 }
