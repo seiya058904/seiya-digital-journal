@@ -21,6 +21,8 @@ Seiya Digital Journal is a client-side journal SPA built with React 19, TypeScri
 
 There is no React Router. `src/App.tsx` uses the pure `src/appRoute.ts` parser for `location.hash` and preserves existing hashes such as `#/`, `#/auth`, `#/profile`, `#/lab`, `#/archive/*`, and `#/gallery`. Keep those routes stable unless the user explicitly asks for a routing change. The frontend uses `AuthProvider` and `ProfileProvider`, then calls the Worker API. The Worker validates Supabase access tokens and performs database writes with server-side credentials; do not move those credentials into frontend code. Vite uses the base path `/seiya-digital-journal/`, so public URLs should use `import.meta.env.BASE_URL` where appropriate.
 
+`src/auth/authPersistence.ts` keeps temporary sessions in page-local memory. Persisted tokens and the `seiya-remember-me` marker share remembered-session ownership: a page staying temporary must not delete another tab's persisted session or marker. Explicit remembered-to-temporary transitions still clear persistence while retaining the page-local session.
+
 Before proposing database-level atomic comment rate limiting, read the accepted engineering trade-off in `CLAUDE.md`; it is intentionally deferred for this low-traffic personal project unless the user explicitly reopens it.
 
 ## Build, Test & Development Commands
@@ -29,19 +31,21 @@ Before proposing database-level atomic comment rate limiting, read the accepted 
 npm ci
 npm run dev
 npm test
+npm run test:browser
 npm run lint
 npm run build
 npm run preview
-cd worker; npm ci; npm run typecheck
+cd worker; npm ci; npm run typecheck; npm test
 ```
 
 - `npm ci` installs root dependencies from `package-lock.json`.
 - `npm run dev` starts the Vite development server.
 - `npm test` runs the Node built-in test runner against `src/**/*.test.ts`.
+- `npm run test:browser` runs the browser regressions described below.
 - `npm run lint` runs Oxlint.
 - `npm run build` runs the TypeScript build check and Vite production build.
 - `npm run preview` previews the production build locally.
-- `cd worker; npm ci; npm run typecheck` validates the Worker project.
+- `cd worker; npm ci; npm run typecheck; npm test` typechecks and tests the Worker project.
 
 Deployment, publish, migration, database write, commit, push, release, and tag operations require explicit user authorization. The GitHub Pages workflow in `.github/workflows/deploy.yml` runs on pushes to `main`; do not trigger it implicitly.
 
@@ -51,11 +55,13 @@ Follow the existing code style: two-space indentation, single quotes, and no sem
 
 ## Testing & Verification
 
-Tests live beside the code as `*.test.ts` files under `src/` and use Node's built-in `node:test` and `node:assert/strict`. For code changes, run `npm test`, `npm run lint`, and `npm run build`; run the Worker typecheck when Worker code or shared Worker-imported code changes. For UI changes, manually check the relevant hash routes and responsive or reduced-motion behavior. Finish with `git status --short`, `git diff --stat`, and `git diff --check`.
+Tests live beside the code as `*.test.ts` files under `src/` and use Node's built-in `node:test` and `node:assert/strict`. For code changes, run `npm test`, `npm run lint`, and `npm run build`; run the Worker typecheck and runtime tests when Worker code or shared Worker-imported code changes. For UI changes, manually check the relevant hash routes and responsive or reduced-motion behavior. Finish with `git status --short`, `git diff --stat`, and `git diff --check`.
 
 ## Browser Testing
 
 For changes affecting web UI, routing, interaction, responsiveness, or runtime behavior, perform real browser verification before declaring completion.
+
+Automated regressions in `tests/browser/` run with `npm run test:browser` using Playwright Chromium. Use the synthetic-service setup in `.github/workflows/validate-pr.yml` and start Vite at `127.0.0.1:4178`; the runner does not start the server. Its default URL is `/seiya-digital-journal/` on that origin; `TEST_BASE_URL` overrides it.
 
 Use the most appropriate tool:
 
