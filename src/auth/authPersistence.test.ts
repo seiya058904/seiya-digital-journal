@@ -69,3 +69,25 @@ test('remembered mode observes external storage updates instead of stale cached 
   storage.removeItem('auth-token')
   assert.equal(auth.getItem('auth-token'), null)
 })
+
+test('temporary logout leaves another page remembered token and marker intact', () => {
+  const storage = createMemoryStorage()
+  const temporary = createAuthStorage(storage)
+  temporary.setItem('auth-token', 'account-A')
+  const remembered = createAuthStorage(storage)
+  remembered.setRememberMe(true)
+  remembered.setItem('auth-token', 'account-B')
+
+  temporary.removeItem('auth-token')
+  temporary.setRememberMe(false)
+  assert.equal(temporary.getItem('auth-token'), null)
+  assert.equal(storage.getItem(REMEMBER_ME_STORAGE_KEY), 'true')
+  assert.equal(remembered.getItem('auth-token'), 'account-B')
+  assert.equal(createAuthStorage(storage).getItem('auth-token'), 'account-B')
+
+  remembered.setRememberMe(false)
+  assert.equal(storage.getItem(REMEMBER_ME_STORAGE_KEY), null)
+  assert.equal(storage.getItem('auth-token'), null)
+  assert.equal(remembered.getItem('auth-token'), 'account-B')
+  assert.equal(createAuthStorage(storage).getItem('auth-token'), null)
+})

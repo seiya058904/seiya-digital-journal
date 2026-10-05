@@ -64,8 +64,10 @@ export function createAuthStorage(storage: StorageLike | null): AuthStorage {
           if (remember) persist(key, value)
           else removePersisted(key)
         }
+        // The shared marker belongs to the persisted session, too. A page
+        // staying temporary must not remove another page's remembered login.
+        persist(REMEMBER_ME_STORAGE_KEY, remember ? 'true' : null)
       }
-      persist(REMEMBER_ME_STORAGE_KEY, remember ? 'true' : null)
     },
   }
   return adapter
