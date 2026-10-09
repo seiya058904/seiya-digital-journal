@@ -1,78 +1,202 @@
-# Seiya — Digital Growth Journal
+<h1 align="center">✦ Seiya — Digital Growth Journal</h1>
 
-**A personal archive built as a living, interactive editorial space.**
+<p align="center">
+  <strong>A record of making, learning, and becoming.</strong>
+</p>
 
-Projects, notes, visual experiments and fragments of a digital journey — presented through motion, typography and a carefully layered interface.
+<p align="center">
+  A dark editorial space for ideas, images, writing, and the projects behind them.<br>
+  Not just a portfolio of finished things—a living archive of the journey.
+</p>
 
-**[🌐 Open the live journal](https://seiya058904.github.io/seiya-digital-journal/)** · [Sections](#explore-the-journal) · [Get started](#start-developing) · [Content map](#where-to-edit-content)
+<p align="center">
+  <a href="https://seiya058904.github.io/seiya-digital-journal/"><strong>🌐 Enter the Journal</strong></a>
+  &nbsp;·&nbsp;
+  <a href="#the-three-vaults">🗃️ The Archive</a>
+  &nbsp;·&nbsp;
+  <a href="#beyond-the-archive">✨ Explore</a>
+  &nbsp;·&nbsp;
+  <a href="#visitor-interactions">💬 Leave a Thought</a>
+  &nbsp;·&nbsp;
+  <a href="#run-locally">⚙️ Development</a>
+</p>
 
-<img width="700" alt="Seiya Digital Growth Journal project artwork" src="https://github.com/user-attachments/assets/a4ef3c33-0630-4b84-9cb0-4dd551daaf99" />
+<p align="center">
+  <sub>THREE ARCHIVE VAULTS &nbsp;·&nbsp; PERSONAL WRITING &nbsp;·&nbsp; VISUAL EXPLORATION &nbsp;·&nbsp; MOTION LAB</sub>
+</p>
 
+<p align="center">
+  <img width="740" alt="Seiya Digital Growth Journal — original project artwork" src="https://github.com/user-attachments/assets/a4ef3c33-0630-4b84-9cb0-4dd551daaf99" />
+</p>
 
-## Explore the journal
+---
 
-The site is meant to be *explored*: an editorial home, an archive of writing, a visual collection and a small space for motion experiments.
+> **A portfolio shows what was made. A journal remembers how it came to be.**
+>
+> Seiya is a personal digital journal about technology, language, creativity, and growth. The site connects finished work with fragments of learning and reflection, using motion and visual storytelling to give the archive its own atmosphere.
 
-This is not just a static portfolio. The journal combines personal storytelling with an evolving visual interface, while keeping editable content separate from presentation code.
+<a id="the-three-vaults"></a>
+## 🗃️ The Three Vaults
 
-| Space | What belongs there |
-| --- | --- |
-| **Home & Profile** | Identity, introduction, journey and interests |
-| **Archive** | Notes, short-form writing and learning records |
-| **Projects** | Selected work and experiments |
-| **Visual Archive** | Images and gallery metadata |
-| **Motion Lab** | Motion explorations and interactive effects |
-| **Account** | Supabase-based authentication and profile state |
+The heart of the journal is a public archive: **three distinct spaces** for different kinds of personal work. Browse them independently, or enter through [The Archive](https://seiya058904.github.io/seiya-digital-journal/#/archive).
 
-The frontend is delivered as a GitHub Pages application; authenticated API operations use a separate Cloudflare Worker backed by Supabase. The public frontend is not a substitute for the server-side API.
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <h3>🖼️ <a href="https://seiya058904.github.io/seiya-digital-journal/#/archive/images">Image Vault</a></h3>
+      <p><sub>EDITORIAL · ILLUSTRATION · MEMORY</sub></p>
+      <p>A visual archive of compositions, design studies, personal photographs, and places. Browse featured images, editorial work, memories, and city collections.</p>
+      <p><strong><a href="https://seiya058904.github.io/seiya-digital-journal/#/archive/images">Explore the images →</a></strong></p>
+    </td>
+    <td width="50%" valign="top">
+      <h3>📖 <a href="https://seiya058904.github.io/seiya-digital-journal/#/archive/notes">Notes Vault</a></h3>
+      <p><sub>LEARNING · THOUGHTS · JOURNAL</sub></p>
+      <p>Short essays, learning records, personal reflections, and journal fragments. Writing is grouped by theme so an idea can be followed beyond a single homepage excerpt.</p>
+      <p><strong><a href="https://seiya058904.github.io/seiya-digital-journal/#/archive/notes">Read the notes →</a></strong></p>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" valign="top">
+      <h3>🧩 <a href="https://seiya058904.github.io/seiya-digital-journal/#/archive/projects">Project Vault</a></h3>
+      <p><sub>WEBSITES · SYSTEMS · GAMES · EXPERIMENTS</sub></p>
+      <p>The things built along the way: software tools, interactive websites, games, and visual experiments. Project records connect the work with its context, techniques, and available links rather than treating each project as an isolated thumbnail.</p>
+      <p><strong><a href="https://seiya058904.github.io/seiya-digital-journal/#/archive/projects">Browse the projects →</a></strong></p>
+    </td>
+  </tr>
+</table>
 
-## Architecture and technologies
+<a id="beyond-the-archive"></a>
+## ✨ Beyond the Archive
 
-| Layer | Tools |
-| --- | --- |
-| Frontend | React 19 · TypeScript · Vite |
-| Motion & visual systems | Framer Motion · GSAP · Three.js |
-| Authentication | Supabase Auth |
-| API | Cloudflare Worker |
-| Data | Supabase PostgreSQL |
-| Deployment | GitHub Actions → GitHub Pages |
+The journal extends beyond its three vaults. Its homepage is a portrait of changing interests; its experiments explore how interfaces can feel as well as function.
 
-## Start developing
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <h3>🌌 A Personal Journey</h3>
+      <p><sub>TECHNOLOGY · LANGUAGE · CREATIVITY</sub></p>
+      <p>Explore interests in programming, English, design, and making. The homepage brings together an introduction, a personal timeline, image collections, and thoughts in progress.</p>
+      <p><strong><a href="https://seiya058904.github.io/seiya-digital-journal/">Visit the homepage →</a></strong></p>
+    </td>
+    <td width="50%" valign="top">
+      <h3>🌀 Motion Lab</h3>
+      <p><sub>INTERACTION · ANIMATION · CREATIVE CODING</sub></p>
+      <p>A curated collection of motion and UI experiments, including adapted React Bits examples. Some entries are interactive demos; others document experiments or planned integrations.</p>
+      <p><strong><a href="https://seiya058904.github.io/seiya-digital-journal/#/lab">Enter Motion Lab →</a></strong></p>
+    </td>
+  </tr>
+</table>
 
-Node.js/npm and the checked-in lockfile are required for local frontend development.
+### 🎨 An Editorial Interface
 
-```bash
+- **Dark, atmospheric design** — layered backgrounds, typography, imagery, and carefully controlled contrast.
+- **Motion with a purpose** — reveals, image arrangements, interactive details, and 3D experiments that support the content.
+- **Room for the work** — long-form notes, individual project views, and image collections have their own reading spaces.
+- **Responsive and considerate** — keyboard navigation, readable states, and support for reduced-motion preferences remain part of the experience.
+
+> **The archive is the point.** Visual effects are there to frame the writing and images—not to make the content harder to reach.
+
+<a id="visitor-interactions"></a>
+## 💬 Leave a Thought
+
+Visitors can explore the public journal without signing in. The archive also includes a small, optional community layer.
+
+<p align="center"><code>READ &nbsp;→&nbsp; EXPLORE &nbsp;→&nbsp; REFLECT &nbsp;→&nbsp; LEAVE A NOTE</code></p>
+
+- **❤️ Archive likes** — A simple public counter for the archive, rather than a social ranking system.
+- **✍️ Journal stepper** — A guided way to write a short thought and submit it as a comment. Publishing requires sign-in and a configured backend.
+- **👤 Personal space** — Supabase-backed authentication and profile settings for the features that need an identity.
+
+> [!NOTE]
+> Public reading and authenticated posting are separate. A visitor's comment is submitted through the Cloudflare Worker; server credentials are never part of the static site. The published site is **not** a public editor for the author's archive files.
+
+<a id="how-it-works"></a>
+## ⚙️ How It Works
+
+The journal is a **React 19 + TypeScript + Vite** application. **Framer Motion, GSAP, and Three.js** help create the editorial transitions and interactive visual elements. The static frontend and authenticated API are deployed separately.
+
+```text id="sk51mx"
+                   GitHub Pages
+              React · TypeScript · Vite
+                        │
+               Reader and browser UI
+                        │
+                Cloudflare Worker
+                        │
+                Supabase services
+              Auth · Profiles · Comments
+                     · Likes
+```
+
+The public pages use **hash-based navigation**, keeping deep links compatible with GitHub Pages. Authenticated requests go through the Worker, which validates access and keeps privileged database credentials on the server.
+
+<a id="run-locally"></a>
+## 🚀 Run Locally
+
+Use Node.js and the committed lockfile. From the repository root:
+
+```bash id="vyn983"
 npm ci
 npm run dev
 ```
 
-Open the local Vite URL (with the project's `/seiya-digital-journal/` base path). Some authenticated features additionally require valid backend configuration; do not put credentials into a public README or client code.
+Open the local Vite address, including the **`/seiya-digital-journal/`** base path. The archive can be explored locally; features that depend on sign-in, comments, or other API calls need a valid backend configuration.
 
-```bash
-npm test          # Node built-in test runner
-npm run lint      # Oxlint
-npm run build     # TypeScript + Vite build
-npm run preview   # Preview production output
+<details>
+<summary><strong>🛠️ Expand tests, project structure, and deployment notes</strong></summary>
+
+### Verify the frontend
+
+```bash id="zy5yba"
+npm test           # Node.js / TypeScript regressions
+npm run lint       # Oxlint
+npm run build      # TypeScript check + Vite production build
+npm run preview    # Preview built output
 ```
 
-For full browser coverage, use the repository's existing browser test workflow / `npm run test:browser` with the required browser environment.
+Browser regressions use Playwright Chromium and a running local Vite server. The repository's PR workflow starts Vite on `127.0.0.1:4178` before running:
 
-## Where to edit content
+```bash id="18eqid"
+npm run test:browser
+```
 
-| Location | Responsibility |
+### Repository guide
+
+| Path | Responsibility |
 | --- | --- |
-| [`src/pages/`](src/pages/) | Home, Archive, Profile, Gallery and Motion Lab views |
-| [`src/components/`](src/components/) | Shared UI, presentation effects, section components |
-| [`src/data/`](src/data/) | Curated copy, notes, projects, images and links |
-| [`src/auth/`](src/auth/), [`src/profile/`](src/profile/) | Frontend auth and profile state |
-| [`src/styles/`](src/styles/) | Tokens and application styles |
-| [`worker/`](worker/) | Server-side Cloudflare Worker API |
-| [`supabase/`](supabase/) | Data schema and SQL files |
+| [`src/pages/`](src/pages/) | Home, archive vaults, gallery, profile, and Motion Lab views |
+| [`src/components/`](src/components/) | Shared UI, archive interactions, and visual effects |
+| [`src/data/`](src/data/) | Authored notes, project records, image metadata, links, and profile copy |
+| [`src/auth/`](src/auth/) · [`src/profile/`](src/profile/) | Authentication and client-side profile state |
+| [`src/appRoute.ts`](src/appRoute.ts) | Hash-route parsing and navigation compatibility |
+| [`public/`](public/) · [`src/assets/`](src/assets/) | Static media, image collections, and imported assets |
+| [`worker/`](worker/) | Cloudflare Worker API and independent validation |
+| [`supabase/`](supabase/) | Database migrations and schema history |
 
-Most portfolio-facing content is maintained in `src/data/`: `profile.ts`, `notes.ts`, `projects.ts`, `visualArchive.ts`, `links.ts`, `effects.ts` and related datasets. Review the actual module before changing editorial copy.
+### Worker checks and deployment
 
-## Deployment and attribution
+The Worker has its own dependency tree. For an authorized local review:
 
-The frontend builds to `dist/` and is deployed via GitHub Actions under `/seiya-digital-journal/` when the repository's publishing workflow runs. Worker releases and database changes have separate procedures and must not be inferred from a successful static-site build.
+```bash id="4qqdu6"
+cd worker
+npm ci
+npm run typecheck
+npm test
+```
 
-See [`AGENTS.md`](AGENTS.md) for repository-specific invariants and [`PRODUCT.md`](PRODUCT.md) for product boundaries. Third-party libraries and visual materials retain their respective licensing terms; do not infer a blanket redistribution grant from this README.
+The [GitHub Pages workflow](.github/workflows/deploy.yml) builds the frontend and deploys `dist/` after the existing tests and checks. **Worker publishing and Supabase database operations are separate** and are not implied by a successful Pages deployment.
+
+For implementation and maintenance boundaries, read [`AGENTS.md`](AGENTS.md) and [`PRODUCT.md`](PRODUCT.md). Image-specific rules are documented in [`docs/image-rules.md`](docs/image-rules.md).
+
+</details>
+
+## 📜 Content & Rights
+
+This is a personal creative archive, not a general-purpose journaling service or a reusable social-network template. The repository does not declare a project-wide open-source license. Third-party dependencies and visual materials retain their respective licenses and attribution requirements.
+
+---
+
+<p align="center">
+  <sub>BUILDING A DIGITAL SELF. LEARNING THROUGH CODE.</sub><br>
+  <sub>Seiya · Digital Growth Journal</sub>
+</p>
