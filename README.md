@@ -1,20 +1,17 @@
-<div align="center">
-
 # Seiya — Digital Growth Journal
 
 **A personal archive built as a living, interactive editorial space.**
 
 Projects, notes, visual experiments and fragments of a digital journey — presented through motion, typography and a carefully layered interface.
 
-[**Explore the live journal ↗**](https://seiya058904.github.io/seiya-digital-journal/) · [Quick start](#-quick-start) · [Content map](#-content-structure) · [Repository guide](AGENTS.md)
-
-![React](https://img.shields.io/badge/React-19-149eca?style=flat-square) ![TypeScript](https://img.shields.io/badge/TypeScript-typed-3178c6?style=flat-square) ![Vite](https://img.shields.io/badge/build-Vite-646cff?style=flat-square)
+**[🌐 Open the live journal](https://seiya058904.github.io/seiya-digital-journal/)** · [Sections](#explore-the-journal) · [Get started](#start-developing) · [Content map](#where-to-edit-content)
 
 <img width="700" alt="Seiya Digital Growth Journal project artwork" src="https://github.com/user-attachments/assets/a4ef3c33-0630-4b84-9cb0-4dd551daaf99" />
 
-</div>
 
-## ✦ The experience
+## Explore the journal
+
+The site is meant to be *explored*: an editorial home, an archive of writing, a visual collection and a small space for motion experiments.
 
 This is not just a static portfolio. The journal combines personal storytelling with an evolving visual interface, while keeping editable content separate from presentation code.
 
@@ -29,7 +26,7 @@ This is not just a static portfolio. The journal combines personal storytelling 
 
 The frontend is delivered as a GitHub Pages application; authenticated API operations use a separate Cloudflare Worker backed by Supabase. The public frontend is not a substitute for the server-side API.
 
-## 🧩 Stack at a glance
+## Architecture and technologies
 
 | Layer | Tools |
 | --- | --- |
@@ -40,7 +37,7 @@ The frontend is delivered as a GitHub Pages application; authenticated API opera
 | Data | Supabase PostgreSQL |
 | Deployment | GitHub Actions → GitHub Pages |
 
-## 🚀 Quick start
+## Start developing
 
 Node.js/npm and the checked-in lockfile are required for local frontend development.
 
@@ -52,7 +49,7 @@ npm run dev
 Open the local Vite URL (with the project's `/seiya-digital-journal/` base path). Some authenticated features additionally require valid backend configuration; do not put credentials into a public README or client code.
 
 ```bash
-npm test          # Node test runner
+npm test          # Node built-in test runner
 npm run lint      # Oxlint
 npm run build     # TypeScript + Vite build
 npm run preview   # Preview production output
@@ -60,7 +57,7 @@ npm run preview   # Preview production output
 
 For full browser coverage, use the repository's existing browser test workflow / `npm run test:browser` with the required browser environment.
 
-## 🗂️ Content & structure
+## Where to edit content
 
 | Location | Responsibility |
 | --- | --- |
@@ -74,7 +71,7 @@ For full browser coverage, use the repository's existing browser test workflow /
 
 Most portfolio-facing content is maintained in `src/data/`: `profile.ts`, `notes.ts`, `projects.ts`, `visualArchive.ts`, `links.ts`, `effects.ts` and related datasets. Review the actual module before changing editorial copy.
 
-## 📦 Publishing & attribution
+## Deployment and attribution
 
 The frontend builds to `dist/` and is deployed via GitHub Actions under `/seiya-digital-journal/` when the repository's publishing workflow runs. Worker releases and database changes have separate procedures and must not be inferred from a successful static-site build.
 
