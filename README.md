@@ -1,80 +1,81 @@
+<div align="center">
+
 # Seiya — Digital Growth Journal
 
-<img width="1254" height="1254" alt="Seiya Digital Journal" src="https://github.com/user-attachments/assets/a4ef3c33-0630-4b84-9cb0-4dd551daaf99" />
+**A personal archive built as a living, interactive editorial space.**
 
+Projects, notes, visual experiments and fragments of a digital journey — presented through motion, typography and a carefully layered interface.
 
-A dark, editorial personal digital journal. Built with React, TypeScript, Framer Motion, Three.js, and Supabase — deployed to GitHub Pages with a Cloudflare Worker API backend.
+[**Explore the live journal ↗**](https://seiya058904.github.io/seiya-digital-journal/) · [Quick start](#-quick-start) · [Content map](#-content-structure) · [Repository guide](AGENTS.md)
 
-<https://seiya058904.github.io/seiya-digital-journal/>
+![React](https://img.shields.io/badge/React-19-149eca?style=flat-square) ![TypeScript](https://img.shields.io/badge/TypeScript-typed-3178c6?style=flat-square) ![Vite](https://img.shields.io/badge/build-Vite-646cff?style=flat-square)
 
----
+<img width="700" alt="Seiya Digital Growth Journal project artwork" src="https://github.com/user-attachments/assets/a4ef3c33-0630-4b84-9cb0-4dd551daaf99" />
 
-## Tech Stack
+</div>
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | React 19, TypeScript, Vite 8 |
-| Animation | Framer Motion, GSAP, Three.js |
-| Auth | Supabase Auth |
+## ✦ The experience
+
+This is not just a static portfolio. The journal combines personal storytelling with an evolving visual interface, while keeping editable content separate from presentation code.
+
+| Space | What belongs there |
+| --- | --- |
+| **Home & Profile** | Identity, introduction, journey and interests |
+| **Archive** | Notes, short-form writing and learning records |
+| **Projects** | Selected work and experiments |
+| **Visual Archive** | Images and gallery metadata |
+| **Motion Lab** | Motion explorations and interactive effects |
+| **Account** | Supabase-based authentication and profile state |
+
+The frontend is delivered as a GitHub Pages application; authenticated API operations use a separate Cloudflare Worker backed by Supabase. The public frontend is not a substitute for the server-side API.
+
+## 🧩 Stack at a glance
+
+| Layer | Tools |
+| --- | --- |
+| Frontend | React 19 · TypeScript · Vite |
+| Motion & visual systems | Framer Motion · GSAP · Three.js |
+| Authentication | Supabase Auth |
 | API | Cloudflare Worker |
-| Database | Supabase PostgreSQL |
-| Deploy | GitHub Actions → GitHub Pages |
+| Data | Supabase PostgreSQL |
+| Deployment | GitHub Actions → GitHub Pages |
 
-## Quick Start
+## 🚀 Quick start
 
-```powershell
-npm install
+Node.js/npm and the checked-in lockfile are required for local frontend development.
+
+```bash
+npm ci
 npm run dev
 ```
 
-Open [http://localhost:5173/seiya-digital-journal/](http://localhost:5173/seiya-digital-journal/).
+Open the local Vite URL (with the project's `/seiya-digital-journal/` base path). Some authenticated features additionally require valid backend configuration; do not put credentials into a public README or client code.
 
-## Scripts
-
-```powershell
-npm run dev      # Vite dev server
-npm test         # Run all tests (Node built-in runner)
-npm run lint     # Oxlint (zero warnings)
-npm run build    # tsc -b && vite build → dist/
-npm run preview  # Preview production build locally
-npm ci           # Clean install (for CI)
+```bash
+npm test          # Node test runner
+npm run lint      # Oxlint
+npm run build     # TypeScript + Vite build
+npm run preview   # Preview production output
 ```
 
-## Project Structure
+For full browser coverage, use the repository's existing browser test workflow / `npm run test:browser` with the required browser environment.
 
-```
-src/
-├── pages/          # Route pages (Home, Archive, Auth, Profile, Gallery, Motion Lab)
-├── components/
-│   ├── sections/   # Home page sections
-│   ├── effects/    # Visual effects + React Bits ports
-│   ├── ui/         # Shared UI (Header, AccountMenu, etc.)
-│   ├── profile/    # Profile editing & activity
-│   └── lab/        # Motion Lab demos
-├── data/           # Editable content (profile, notes, projects, links, etc.)
-├── styles/         # CSS (tokens.css, global.css, co-located component CSS)
-├── auth/           # AuthContext & auth utilities
-├── profile/        # ProfileProvider & state
-└── lib/            # Utility modules (API client, validation, etc.)
-worker/src/         # Cloudflare Worker (API endpoints)
-supabase/           # SQL migrations
-```
+## 🗂️ Content & structure
 
-## Editable Content
+| Location | Responsibility |
+| --- | --- |
+| [`src/pages/`](src/pages/) | Home, Archive, Profile, Gallery and Motion Lab views |
+| [`src/components/`](src/components/) | Shared UI, presentation effects, section components |
+| [`src/data/`](src/data/) | Curated copy, notes, projects, images and links |
+| [`src/auth/`](src/auth/), [`src/profile/`](src/profile/) | Frontend auth and profile state |
+| [`src/styles/`](src/styles/) | Tokens and application styles |
+| [`worker/`](worker/) | Server-side Cloudflare Worker API |
+| [`supabase/`](supabase/) | Data schema and SQL files |
 
-All user-facing text lives in `src/data/`:
+Most portfolio-facing content is maintained in `src/data/`: `profile.ts`, `notes.ts`, `projects.ts`, `visualArchive.ts`, `links.ts`, `effects.ts` and related datasets. Review the actual module before changing editorial copy.
 
-| File | Purpose |
-|------|---------|
-| `profile.ts` | Brand, Hero, About, Interests, Journey sections |
-| `thoughts.ts` | Journal quotes and short entries |
-| `notes.ts` | Archive notes (learning, thoughts, journal) |
-| `projects.ts` | Project vault |
-| `visualArchive.ts` | Gallery image metadata |
-| `links.ts` | Navigation and social links |
-| `effects.ts` | Motion Lab metadata |
-| `profileAvatars.ts` | Avatar definitions |
+## 📦 Publishing & attribution
 
-## Deploy
+The frontend builds to `dist/` and is deployed via GitHub Actions under `/seiya-digital-journal/` when the repository's publishing workflow runs. Worker releases and database changes have separate procedures and must not be inferred from a successful static-site build.
 
-Push to `main` triggers a GitHub Actions workflow that builds and deploys to GitHub Pages. The base path (`/seiya-digital-journal/`) is configured in `vite.config.ts`.
+See [`AGENTS.md`](AGENTS.md) for repository-specific invariants and [`PRODUCT.md`](PRODUCT.md) for product boundaries. Third-party libraries and visual materials retain their respective licensing terms; do not infer a blanket redistribution grant from this README.
