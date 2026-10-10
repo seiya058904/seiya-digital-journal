@@ -141,8 +141,12 @@ export function AuthPage({ variant = 'page', onAuthenticated, onBack }: AuthPage
   // F-1: the recovery flag flips the view outside of switchView, so route it
   // through switchView — state-driven transitions obey the same ownership
   // boundary (revoke in-flight operations, clear stale submitting state).
+  // The ref keeps the effect dependent on the flag flip alone while always
+  // calling the latest switchView closure.
+  const switchViewRef = useRef(switchView)
+  switchViewRef.current = switchView
   useEffect(() => {
-    if (isPasswordRecovery) switchView('reset-password')
+    if (isPasswordRecovery) switchViewRef.current('reset-password')
   }, [isPasswordRecovery])
 
   useEffect(() => {
