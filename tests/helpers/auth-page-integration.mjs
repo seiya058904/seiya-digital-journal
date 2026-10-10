@@ -23,21 +23,37 @@ let pendingUpdates = []
 const takeSignUps = () => pendingSignUps.splice(0)
 const takeSignIns = () => pendingSignIns.splice(0)
 
+let authState = { isPasswordRecovery: false }
 globalThis.__authPageHarnessAuth = () => ({
   backendMessage: null,
   clearPasswordRecovery: () => {},
   isAuthenticated: false,
   isConfigured: true,
-  isPasswordRecovery: false,
   loading: false,
   resetPasswordForEmail: () => { const d = deferred(); pendingResets.push(d); return d.promise },
   signIn: () => { const d = deferred(); pendingSignIns.push(d); return d.promise },
   signUp: () => { const d = deferred(); pendingSignUps.push(d); return d.promise },
   updatePassword: () => { const d = deferred(); pendingUpdates.push(d); return d.promise },
+  ...authState,
 })
 
 let tree
-const mount = async () => { await act(async () => { tree = create(React.createElement(AuthPage)) }) }
+let forceRender = () => {}
+let pageProps = {}
+const mount = async () => {
+  authState = { isPasswordRecovery: false } // scenarios start from a clean auth state
+  await act(async () => {
+    tree = create(React.createElement(function AuthPageHarnessRoot() {
+      const [, f] = React.useReducer(x => x + 1, 0)
+      forceRender = f
+      return React.createElement(AuthPage, pageProps)
+    }))
+  })
+}
+const setAuthState = async patch => {
+  Object.assign(authState, patch)
+  await act(async () => { forceRender() })
+}
 const unmount = async () => { await act(async () => tree.unmount()) }
 
 const inputs = () => tree.root.findAllByType('input')
@@ -181,7 +197,56 @@ const isBusy = () => tree.root.findByType('form').props['aria-busy']
   await unmount()
 }
 
-// ---------- Scenario 6: no-switch contracts unchanged ----------
+// ---------- Scenario 7 (F-1): signup pending → recovery transition → late signup settles ----------
+{
+  await mount()
+  await clickButton(switchButton()) // signin → signup
+  await typeInto('text', 'Old Display')
+  await typeInto('email', 'signup@example.invalid')
+  await typeInto('password', 'signup-password-1')
+  await typeInto('password', 'signup-password-1', 1) // confirm password
+  await submit()
+  assert.equal(isBusy(), true, 'scenario 7: signup is submitting')
+  const [signup] = takeSignUps()
+  // the recovery state flips while the signup is still pending
+  await setAuthState({ isPasswordRecovery: true })
+  assert.equal(title(), 'Choose a new password', 'scenario 7: recovery transition switches to the reset view')
+  await typeInto('password', 'reset-password-5')
+  await typeInto('password', 'reset-password-5', 1) // confirm password
+  // the stale signup settles after the transition
+  await act(async () => { signup.resolve({ ok: true, requiresEmailConfirmation: true, message: 'Check your email to confirm your account.' }) })
+  assert.equal(title(), 'Choose a new password', 'scenario 7: stale signup success must NOT hijack the reset view')
+  assert.equal(inputValue('password'), 'reset-password-5', 'scenario 7: reset password input untouched')
+  assert.equal(inputValue('password', 1), 'reset-password-5', 'scenario 7: reset confirm input untouched')
+  assert.equal(feedback(), null, 'scenario 7: no stale success feedback on the reset view')
+  assert.equal(isBusy(), false, 'scenario 7: reset form is not stuck busy')
+  await unmount()
+}
+
+// ---------- Scenario 8 (F-1): signup pending → Back → late signup failure ----------
+{
+  let backCalls = 0
+  pageProps = { onBack: () => { backCalls += 1 } }
+  await mount()
+  await clickButton(switchButton()) // signin → signup
+  await typeInto('text', 'Old Display')
+  await typeInto('email', 'signup@example.invalid')
+  await typeInto('password', 'signup-password-1')
+  await typeInto('password', 'signup-password-1', 1) // confirm password
+  await submit()
+  const [signup] = takeSignUps()
+  const backButton = buttons().find(node => node.props.className === 'auth-back')
+  await clickButton(backButton)
+  assert.equal(backCalls, 1, 'scenario 8: Back invokes the navigation callback')
+  // the stale signup fails while the page is (conceptually) animating out
+  await act(async () => { signup.resolve({ ok: false, message: 'Unable to create account right now. Please try again.' }) })
+  assert.equal(feedback(), null, 'scenario 8: stale signup failure must NOT surface after Back')
+  assert.equal(unhandled.length, 0, 'scenario 8: no unhandled rejections')
+  await unmount()
+  pageProps = {}
+}
+
+// ---------- Scenario 9: no-switch contracts unchanged ----------
 {
   await mount()
   // sign-in failure clears the password and shows the error (existing contract)

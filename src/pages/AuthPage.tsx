@@ -126,16 +126,6 @@ export function AuthPage({ variant = 'page', onAuthenticated, onBack }: AuthPage
     setIsExiting(true)
   }, [hasUpdatedPassword, isAuthenticated, isPasswordRecovery, loading, view, submittingMode, reduceMotion, isExiting, isNavigatingBack, onAuthenticated])
 
-  useEffect(() => {
-    if (isPasswordRecovery) setView('reset-password')
-  }, [isPasswordRecovery])
-
-  useEffect(() => {
-    return () => {
-      operationGateRef.current?.revokeAll()
-    }
-  }, [])
-
   const switchView = (nextView: AuthView) => {
     operationGateRef.current?.revokeAll()
     setView(nextView)
@@ -147,6 +137,19 @@ export function AuthPage({ variant = 'page', onAuthenticated, onBack }: AuthPage
       setShowConfirmPassword(false)
     }
   }
+
+  // F-1: the recovery flag flips the view outside of switchView, so route it
+  // through switchView — state-driven transitions obey the same ownership
+  // boundary (revoke in-flight operations, clear stale submitting state).
+  useEffect(() => {
+    if (isPasswordRecovery) switchView('reset-password')
+  }, [isPasswordRecovery])
+
+  useEffect(() => {
+    return () => {
+      operationGateRef.current?.revokeAll()
+    }
+  }, [])
 
   const updateFieldError = (mode: AuthMode, field: AuthFieldName, nextValues = values) => {
     if (!touchedFields[field]) return
@@ -197,6 +200,10 @@ export function AuthPage({ variant = 'page', onAuthenticated, onBack }: AuthPage
   }
 
   const handleBack = () => {
+    // F-1: leaving the auth page (callback, hash navigation or exit
+    // animation) revokes pending operations so their late callbacks cannot
+    // touch feedback or submitting state during/after the transition.
+    operationGateRef.current?.revokeAll()
     if (onBack) {
       onBack()
       return
