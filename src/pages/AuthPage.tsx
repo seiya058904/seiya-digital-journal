@@ -1,6 +1,6 @@
 import { AnimatePresence, motion, useReducedMotion, type AnimationDefinition, type Variants } from 'framer-motion'
 import { ArrowLeft, Eye, EyeOff, LoaderCircle, Mail } from 'lucide-react'
-import { useEffect, useId, useState, type FormEvent, type ReactNode } from 'react'
+import { useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from 'react'
 
 import { useAuth } from '../auth/AuthContext'
 import {
@@ -13,6 +13,7 @@ import {
   type AuthMode,
 } from '../lib/authForm'
 import { resolveAuthSuccessOutcome } from '../lib/authFlow'
+import { createAuthOperationGate } from '../lib/authOperationGate'
 import {
   consumeAuthReturnTarget,
 } from '../lib/authRoutes'
@@ -84,6 +85,13 @@ export function AuthPage({ variant = 'page', onAuthenticated, onBack }: AuthPage
   const [isExiting, setIsExiting] = useState(false)
   const [isNavigatingBack, setIsNavigatingBack] = useState(false)
 
+  // JR-03: ownership tokens for async auth operations. View switches, new
+  // submissions and unmount revoke earlier operations so their late callbacks
+  // can never update the new view. Revocation only blocks stale UI writes —
+  // it does not cancel any server-side signup, email or password action.
+  const operationGateRef = useRef<ReturnType<typeof createAuthOperationGate> | null>(null)
+  operationGateRef.current ??= createAuthOperationGate()
+
   const emailInputId = useId()
   const passwordInputId = useId()
   const displayNameInputId = useId()
@@ -122,7 +130,14 @@ export function AuthPage({ variant = 'page', onAuthenticated, onBack }: AuthPage
     if (isPasswordRecovery) setView('reset-password')
   }, [isPasswordRecovery])
 
+  useEffect(() => {
+    return () => {
+      operationGateRef.current?.revokeAll()
+    }
+  }, [])
+
   const switchView = (nextView: AuthView) => {
+    operationGateRef.current?.revokeAll()
     setView(nextView)
     setFieldErrors({})
     setTouchedFields({})
@@ -222,22 +237,45 @@ export function AuthPage({ variant = 'page', onAuthenticated, onBack }: AuthPage
     }
 
     setSubmittingMode(mode)
-    const result = isForgotPassword
-      ? await resetPasswordForEmail(values.email.trim())
-      : isResetPassword
-        ? await updatePassword(values.password)
-        : isSignUp
-      ? await signUp({
-          displayName: values.displayName.trim(),
-          email: values.email.trim(),
-          password: values.password,
-          rememberMe,
-        })
-      : await signIn({
-          email: values.email.trim(),
-          password: values.password,
-          rememberMe,
-        })
+    const gate = operationGateRef.current
+    if (!gate) return
+    const operation = gate.begin()
+    let result: Awaited<ReturnType<typeof signUp>>
+    try {
+      result = isForgotPassword
+        ? await resetPasswordForEmail(values.email.trim())
+        : isResetPassword
+          ? await updatePassword(values.password)
+          : isSignUp
+        ? await signUp({
+            displayName: values.displayName.trim(),
+            email: values.email.trim(),
+            password: values.password,
+            rememberMe,
+          })
+        : await signIn({
+            email: values.email.trim(),
+            password: values.password,
+            rememberMe,
+          })
+    } catch {
+      // JR-03: the SDK threw — only the owning operation may surface that.
+      if (!gate.isCurrent(operation)) return
+      setSubmittingMode(null)
+      setFeedback({ tone: 'error', message: 'Something went wrong. Please try again.' })
+      if (!isSignUp) {
+        setValues((current) => ({
+          ...current,
+          password: '',
+        }))
+      }
+      return
+    }
+    // JR-03: every write below belongs to this operation only. If the user
+    // switched views or started a newer operation meanwhile, this stale
+    // callback must not touch the new view, its inputs, feedback, or the
+    // submitting state of the newer operation.
+    if (!gate.isCurrent(operation)) return
     setSubmittingMode(null)
 
     if (!result.ok) {

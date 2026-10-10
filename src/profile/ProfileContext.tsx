@@ -15,7 +15,7 @@ import {
   type ProfileRecord,
   type ProfileStats,
 } from '../lib/profileApi'
-import { shouldApplyProfileMutation } from './profileState'
+import { shouldApplyProfileMutation, shouldApplyProfileReadResult } from './profileState'
 
 type ProfileUpdateInput = {
   displayName: string
@@ -74,7 +74,11 @@ export function ProfileProvider({ children }: PropsWithChildren) {
 
   const loadProfile = useCallback(async (token: string, requestId: number) => {
     const result = await getProfileMe(token)
-    if (!mountedRef.current || requestIdRef.current !== requestId) return
+    if (!shouldApplyProfileReadResult({
+      mounted: mountedRef.current,
+      currentReadRequestId: requestIdRef.current,
+      capturedReadRequestId: requestId,
+    })) return
 
     if (!result.ok) {
       setError(result.error.message)
@@ -145,9 +149,17 @@ export function ProfileProvider({ children }: PropsWithChildren) {
       }
     }
 
+    // JR-02: a successful save supersedes every read that is still in flight
+    // and may already hold a pre-save snapshot (for example a GET started by
+    // a token refresh while this PATCH was pending). Bumping the read counter
+    // invalidates those reads; because they bail out without touching state,
+    // this save also settles loading here. A read started after this point
+    // captures the new counter and still applies normally.
+    requestIdRef.current += 1
     setProfile(result.data.profile)
     setStats(result.data.stats)
     setError(null)
+    setLoading(false)
     return { ok: true }
   }, [])
 
