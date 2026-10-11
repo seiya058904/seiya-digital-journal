@@ -20,7 +20,7 @@ test('archive like button uses action semantics instead of pressed toggle semant
 })
 
 test('archive like label distinguishes an unknown count from a known count', () => {
-  assert.match(likeState, /model\.count === null\n    \? ARCHIVE_LIKE_UNKNOWN_LABEL\n    : `\$\{ARCHIVE_LIKE_UNKNOWN_LABEL\} — \$\{model\.count\} likes`/)
+  assert.match(likeState, /model\.count === null\r?\n    \? ARCHIVE_LIKE_UNKNOWN_LABEL\r?\n    : `\$\{ARCHIVE_LIKE_UNKNOWN_LABEL\} — \$\{model\.count\} likes`/)
   assert.doesNotMatch(likeButton, /count \?\? 0/)
   assert.doesNotMatch(likeState, /count \?\? 0/)
 })
