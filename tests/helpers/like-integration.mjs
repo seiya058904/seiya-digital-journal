@@ -164,4 +164,28 @@ const liveMessage = () => {
   if (get) await settle(get, { ok: true, data: 3 })
 }
 
-console.log('PASS: like button read/like ownership scenarios')
+// An unexpected transport rejection must release the guard as well.
+{
+  await mount()
+  const [get] = takeGets()
+  await settle(get, { ok: true, data: 10 })
+  let first, duplicate
+  await act(async () => {
+    first = button().props.onClick()
+    duplicate = button().props.onClick()
+  })
+  const posts = takePosts()
+  assert.equal(posts.length, 1)
+  await act(async () => { posts[0].reject(new Error('unexpected transport rejection')); await first; await duplicate })
+  assert.equal(button().props.disabled, false)
+  assert.match(String(liveMessage()), /could not be saved/)
+  let retry
+  await act(async () => { retry = button().props.onClick() })
+  const [post] = takePosts()
+  await settle(post, { ok: true, data: { count: 11 } })
+  await retry
+  assert.equal(aria(), 'Add a Like to the Archive — 11 likes')
+  await unmount()
+}
+
+console.log('PASS: like button read/like ownership and exception recovery scenarios')

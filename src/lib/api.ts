@@ -28,6 +28,10 @@ const NOT_CONFIGURED_ERROR = {
   message: 'Backend is not configured.',
 } as const
 
+const INVALID_RESPONSE_ERROR = {
+  code: 'INVALID_RESPONSE',
+  message: 'The backend returned an invalid response. Please try again.',
+} as const
 
 function readApiBaseUrl(): string | null {
   const env = readPublicEnv()
@@ -36,23 +40,38 @@ function readApiBaseUrl(): string | null {
 
 type ApiJson = Parameters<typeof normalizeApiError>[0]
 
-async function parseApiJson(response: Response): Promise<ApiJson> {
+async function parseApiJson(response: Response): Promise<unknown> {
   return response.json().catch(() => null)
 }
 
-async function requestApi<T>(url: string, init?: RequestInit): Promise<ApiResult<T>> {
+async function requestApi<T>(
+  url: string,
+  init?: RequestInit,
+  validateData?: (value: unknown) => value is T,
+): Promise<ApiResult<T>> {
   try {
     const response = await fetch(url, init)
     const json = await parseApiJson(response)
     if (!response.ok) {
-      return { ok: false, error: normalizeApiError(json) }
+      return { ok: false, error: normalizeApiError(json as ApiJson) }
     }
-    return json as ApiResult<T>
+    if (json && typeof json === 'object' && 'ok' in json) {
+      if (json.ok === false) return { ok: false, error: normalizeApiError(json as ApiJson) }
+      if (json.ok === true && 'data' in json
+        && (!validateData || validateData(json.data))) {
+        return { ok: true, data: json.data as T }
+      }
+    }
+    return { ok: false, error: { ...INVALID_RESPONSE_ERROR } }
   } catch {
     return { ok: false, error: { ...NETWORK_ERROR } }
   }
 }
 
+function isLikeCountData(value: unknown): value is { count: number } {
+  return value !== null && typeof value === 'object' && 'count' in value
+    && typeof value.count === 'number' && Number.isSafeInteger(value.count) && value.count >= 0
+}
 /**
  * Performs an authenticated API request with the current Supabase session.
  * Returns a failed ApiResult (without performing the request) when the
@@ -125,7 +144,7 @@ export async function fetchLikeCount(target: InteractionTarget): Promise<ApiResu
     return { ok: false, error: { ...NOT_CONFIGURED_ERROR } }
   }
 
-  const result = await requestApi<{ count: number }>(`${apiBaseUrl}/api/likes/count?${targetQuery(target)}`)
+  const result = await requestApi<{ count: number }>(`${apiBaseUrl}/api/likes/count?${targetQuery(target)}`, undefined, isLikeCountData)
   if (!result.ok) return result
   return { ok: true, data: result.data.count }
 }
@@ -138,5 +157,5 @@ export async function likeTarget(target: InteractionTarget): Promise<ApiResult<{
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(target),
-  })
+  }, isLikeCountData)
 }

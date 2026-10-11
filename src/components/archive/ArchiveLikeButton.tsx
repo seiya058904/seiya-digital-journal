@@ -18,8 +18,10 @@ export function ArchiveLikeButton() {
   const [pending, setPending] = useState(false)
   const [heartAnimationKey, setHeartAnimationKey] = useState(0)
   const pendingRef = useRef(false)
+  const mountedRef = useRef(false)
 
   useEffect(() => {
+    mountedRef.current = true
     let cancelled = false
 
     fetchLikeCount(ARCHIVE_STEPPER_TARGET).then((result) => {
@@ -29,10 +31,13 @@ export function ArchiveLikeButton() {
       if (!cancelled && result.ok) {
         setModel(current => applyInitialCountRead(current, result.data))
       }
+    }).catch(() => {
+      // A failed read keeps the existing unknown count and does not block likes.
     })
 
     return () => {
       cancelled = true
+      mountedRef.current = false
     }
   }, [])
 
@@ -45,18 +50,23 @@ export function ArchiveLikeButton() {
     setModel(beginLike)
     setHeartAnimationKey(key => key + 1)
 
-    const result = await likeTarget(ARCHIVE_STEPPER_TARGET)
-
-    if (result.ok) {
-      setModel(current => applyLikeSuccess(current, result.data.count))
-    } else {
-      // A failed POST leaves hasAcceptedLike false, so a still-pending
-      // trusted read can still populate the button — no permanent unknown.
-      setModel(current => applyLikeFailure(current, 'The like could not be saved. Please try again.'))
+    try {
+      const result = await likeTarget(ARCHIVE_STEPPER_TARGET)
+      if (!mountedRef.current) return
+      if (result.ok) {
+        setModel(current => applyLikeSuccess(current, result.data.count))
+      } else {
+        // A failed POST still allows a trusted initial read to populate the count.
+        setModel(current => applyLikeFailure(current, 'The like could not be saved. Please try again.'))
+      }
+    } catch {
+      if (mountedRef.current) {
+        setModel(current => applyLikeFailure(current, 'The like could not be saved. Please try again.'))
+      }
+    } finally {
+      pendingRef.current = false
+      if (mountedRef.current) setPending(false)
     }
-
-    pendingRef.current = false
-    setPending(false)
   }
 
   return (
