@@ -6,6 +6,7 @@ import test from 'node:test'
 const componentDir = resolve(import.meta.dirname)
 const likeButton = readFileSync(resolve(componentDir, 'ArchiveLikeButton.tsx'), 'utf8')
 const likeStyles = readFileSync(resolve(componentDir, 'ArchiveLikeButton.css'), 'utf8')
+const likeState = readFileSync(resolve(componentDir, 'likeButtonState.ts'), 'utf8')
 const archivePage = readFileSync(resolve(componentDir, '../../pages/ArchivePage.tsx'), 'utf8')
 
 test('archive community copy does not present sample comments as visitor submissions', () => {
@@ -19,8 +20,9 @@ test('archive like button uses action semantics instead of pressed toggle semant
 })
 
 test('archive like label distinguishes an unknown count from a known count', () => {
-  assert.match(likeButton, /count === null \? 'Add a Like to the Archive' : `Add a Like to the Archive — \$\{count\} likes`/)
+  assert.match(likeState, /model\.count === null\n    \? ARCHIVE_LIKE_UNKNOWN_LABEL\n    : `\$\{ARCHIVE_LIKE_UNKNOWN_LABEL\} — \$\{model\.count\} likes`/)
   assert.doesNotMatch(likeButton, /count \?\? 0/)
+  assert.doesNotMatch(likeState, /count \?\? 0/)
 })
 
 test('archive like count slots settle without animation for reduced-motion users', () => {

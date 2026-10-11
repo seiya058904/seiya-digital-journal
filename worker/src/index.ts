@@ -154,8 +154,12 @@ export default {
         await getOrCreateProfile(env, user)
         const body = await readJsonBody(request)
         const updates = parseProfileUpdate(body)
-        const profile = await updateProfile(env, user.id, updates)
+        // JR-01: the statistics reads below feed this request's own success
+        // response, so they must complete BEFORE the irreversible profile
+        // write. If they fail, the caller gets an error and the profile stays
+        // untouched instead of being saved under a failed-looking response.
         const stats = await getProfileStats(env, user.id)
+        const profile = await updateProfile(env, user.id, updates)
         return json({ ok: true, data: buildProfileResponse(user, profile, stats) }, 200, cors.headers)
       }
 
