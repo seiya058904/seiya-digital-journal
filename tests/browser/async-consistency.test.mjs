@@ -35,9 +35,9 @@ test('JR-04 late initial like read cannot clobber the accepted like', async () =
         if (!heldGet) {
           heldGet = deferred()
           await heldGet.promise
-          return route.fulfill({ headers: cors, json: { ok: true, data: 10 } })
+          return route.fulfill({ headers: cors, json: { ok: true, data: { count: 10 } } })
         }
-        return route.fulfill({ headers: cors, json: { ok: true, data: 10 } })
+        return route.fulfill({ headers: cors, json: { ok: true, data: { count: 10 } } })
       }
       if (url.includes('/api/likes') && request.method() === 'POST') {
         postCount++
