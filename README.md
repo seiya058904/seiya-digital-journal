@@ -115,25 +115,24 @@ Visitors can explore the public journal without signing in. The archive also inc
 
 The journal is a **React 19 + TypeScript + Vite** application. **Framer Motion, GSAP, and Three.js** help create the editorial transitions and interactive visual elements. The static frontend and authenticated API are deployed separately.
 
-```text id="sk51mx"
-                   GitHub Pages
-              React · TypeScript · Vite
-                        │
-               Reader and browser UI
-                        │
-                Cloudflare Worker
-                        │
-                Supabase services
-              Auth · Profiles · Comments
-                     · Likes
+```mermaid
+flowchart TD
+  UI["React frontend on GitHub Pages"]
+  Auth["Supabase Auth"]
+  API["Cloudflare Worker"]
+  DB["Supabase database"]
+  UI -->|Sign-in and sessions| Auth
+  UI -->|Application API requests| API
+  API -->|Validate access tokens| Auth
+  API -->|Profiles, comments and likes| DB
 ```
 
-The public pages use **hash-based navigation**, keeping deep links compatible with GitHub Pages. Authenticated requests go through the Worker, which validates access and keeps privileged database credentials on the server.
+The public pages use **hash-based navigation**, keeping deep links compatible with GitHub Pages. The browser connects directly to **Supabase Auth** for sign-in and session management. Application data requests go through the **Worker**, which validates access tokens when required and keeps privileged database credentials on the server.
 
 <a id="run-locally"></a>
 ## 🚀 Run Locally
 
-Use Node.js and the committed lockfile. From the repository root:
+Use a current **Node.js 22** release, matching the deployment workflow, and the committed lockfile. From the repository root:
 
 ```bash id="vyn983"
 npm ci
