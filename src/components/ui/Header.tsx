@@ -1,5 +1,5 @@
 import { Menu, X } from 'lucide-react'
-import { useState, type MouseEvent } from 'react'
+import { useEffect, useState, type MouseEvent } from 'react'
 
 import { useAuth } from '../../auth/AuthContext'
 import profileLogo from '../../assets/brand-icon.webp'
@@ -68,6 +68,34 @@ export function Header({ activePage = 'home', onBackgroundToggle }: HeaderProps)
   const { scrollTo } = useSmoothScroll()
 
   const isHashPage = activePage !== 'home'
+  const [activeSection, setActiveSection] = useState('#home')
+
+  useEffect(() => {
+    if (isHashPage) return
+    let frame = 0
+    const update = () => {
+      frame = 0
+      const marker = Math.min(window.innerHeight * 0.3, 240)
+      let current = '#home'
+      for (const item of headerItems) {
+        if (item.href.startsWith('#/')) continue
+        const section = document.getElementById(item.href.slice(1))
+        if (section && section.getBoundingClientRect().top <= marker) current = item.href
+      }
+      setActiveSection(current)
+    }
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(update)
+    }
+    schedule()
+    window.addEventListener('scroll', schedule, { passive: true })
+    window.addEventListener('resize', schedule)
+    return () => {
+      cancelAnimationFrame(frame)
+      window.removeEventListener('scroll', schedule)
+      window.removeEventListener('resize', schedule)
+    }
+  }, [isHashPage])
 
   const handleNavigation = (href: string, event: MouseEvent<HTMLAnchorElement>) => {
     setOpen(false)
@@ -92,16 +120,12 @@ export function Header({ activePage = 'home', onBackgroundToggle }: HeaderProps)
   }
 
   const getActiveHref = () => {
-    if (!isHashPage) return '#home'
+    if (!isHashPage) return activeSection
+    if (activePage.startsWith('archive') || activePage === 'gallery') return '#/archive'
     switch (activePage) {
       case 'auth': return '#/auth'
       case 'profile': return '#/profile'
       case 'lab': return '#/motion-lab'
-      case 'archive-images': return '#/archive/images'
-      case 'archive-notes':
-      case 'archive-notes-category': return '#/archive/notes'
-      case 'archive-projects': return '#/archive/projects'
-      case 'gallery': return '#/archive/images/gallery'
       default: return `#/${activePage}`
     }
   }
@@ -205,8 +229,9 @@ export function Header({ activePage = 'home', onBackgroundToggle }: HeaderProps)
               key={item.href}
               href={item.href}
               className={
-                (activePage === 'home' && item.href === '#home') ? 'is-active' : ''
+                item.href === getActiveHref() ? 'is-active' : ''
               }
+              aria-current={item.href === getActiveHref() ? (isHashPage ? 'page' : 'location') : undefined}
               onClick={(event) => handleNavigation(item.href, event)}
             >
               {item.label}

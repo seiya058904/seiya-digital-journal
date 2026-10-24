@@ -42,6 +42,8 @@ function CardNavComponent({
   const navRef = useRef<HTMLDivElement>(null)
   const cardsRef = useRef<(HTMLDivElement | null)[]>([])
   const tlRef = useRef<gsap.core.Timeline | null>(null)
+  const reducedMotionRef = useRef(false)
+  const openTargetRef = useRef(false)
 
   /* ── Dynamically measure expanded height ────── */
   const calculateHeight = () => {
@@ -98,12 +100,25 @@ function CardNavComponent({
   }
 
   useLayoutEffect(() => {
-    const tl = createTimeline()
-    tlRef.current = tl
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const context = gsap.context(() => {
+      tlRef.current = createTimeline()
+    }, navRef)
+    const syncMotion = () => {
+      reducedMotionRef.current = media.matches
+      if (media.matches) {
+        tlRef.current?.pause().progress(openTargetRef.current ? 1 : 0)
+        setIsExpanded(openTargetRef.current)
+      }
+    }
+    syncMotion()
+    media.addEventListener('change', syncMotion)
 
     return () => {
-      tl?.kill()
+      media.removeEventListener('change', syncMotion)
+      tlRef.current?.kill()
       tlRef.current = null
+      context.revert()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ease, items])
@@ -112,7 +127,7 @@ function CardNavComponent({
     const handleResize = () => {
       if (!tlRef.current) return
 
-      if (isExpanded) {
+      if (openTargetRef.current) {
         const newHeight = calculateHeight()
         gsap.set(navRef.current, { height: newHeight })
 
@@ -128,6 +143,7 @@ function CardNavComponent({
         if (newTl) {
           tlRef.current = newTl
         }
+        setIsExpanded(false)
       }
     }
 
@@ -143,11 +159,11 @@ function CardNavComponent({
     if (!isExpanded) return
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') toggleMenu()
+      if (e.key === 'Escape' && openTargetRef.current) toggleMenu()
     }
 
     const handleClickOutside = (e: MouseEvent) => {
-      if (cardNavRef.current && !cardNavRef.current.contains(e.target as Node)) {
+      if (openTargetRef.current && cardNavRef.current && !cardNavRef.current.contains(e.target as Node)) {
         toggleMenu()
       }
     }
@@ -164,14 +180,23 @@ function CardNavComponent({
   const toggleMenu = () => {
     const tl = tlRef.current
     if (!tl) return
-    if (!isExpanded) {
+    if (!openTargetRef.current) {
+      openTargetRef.current = true
       setIsHamburgerOpen(true)
       setIsExpanded(true)
-      tl.play(0)
+      tl.eventCallback('onReverseComplete', null)
+      if (reducedMotionRef.current) tl.pause().progress(1)
+      else tl.play(0)
     } else {
+      openTargetRef.current = false
       setIsHamburgerOpen(false)
-      tl.eventCallback('onReverseComplete', () => setIsExpanded(false))
-      tl.reverse()
+      if (reducedMotionRef.current) {
+        tl.pause().progress(0)
+        setIsExpanded(false)
+      } else {
+        tl.eventCallback('onReverseComplete', () => setIsExpanded(false))
+        tl.reverse()
+      }
     }
   }
 

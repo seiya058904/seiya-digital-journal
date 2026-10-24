@@ -31,7 +31,7 @@
   gap: 0.4rem;
   font-size: 0.72rem;
   font-family: var(--font-sans);
-  color: var(--color-faint);
+  color: var(--color-reading-muted);
   margin-bottom: 2rem;
 }
 
@@ -69,7 +69,7 @@
 .archive-note-detail__chinese-title {
   font-family: var(--font-sans);
   font-size: clamp(0.95rem, 1.2vw, 1.1rem);
-  color: var(--color-faint);
+  color: var(--color-reading-muted);
   font-style: italic;
   margin: 0 0 1rem;
 }
@@ -80,7 +80,7 @@
   align-items: center;
   gap: 0.35rem;
   font-size: 0.78rem;
-  color: var(--color-faint);
+  color: var(--color-reading-muted);
   font-family: var(--font-sans);
   margin-bottom: 0.75rem;
 }
@@ -103,8 +103,8 @@
 }
 
 .archive-note-detail__tag {
-  font-size: 0.62rem;
-  color: var(--color-faint);
+  font-size: 0.75rem;
+  color: var(--color-reading-muted);
   padding: 0.15rem 0.6rem;
   border: 1px solid var(--color-border);
   border-radius: 999px;
@@ -160,9 +160,9 @@
 
 .archive-note-detail__section-chinese {
   font-family: var(--font-sans);
-  font-size: 0.8rem;
+  font-size: 0.875rem;
   line-height: 1.6;
-  color: var(--color-faint);
+  color: var(--color-reading-muted);
   font-style: italic;
   margin: 0;
   padding-top: 0.5rem;
@@ -178,9 +178,9 @@
 
 .archive-note-detail__chinese-note {
   font-family: var(--font-sans);
-  font-size: 0.85rem;
+  font-size: 0.875rem;
   line-height: 1.7;
-  color: var(--color-faint);
+  color: var(--color-reading-muted);
   font-style: italic;
   padding: 1.25rem 1.5rem;
   border: 1px solid var(--color-border);
@@ -232,7 +232,7 @@
   align-items: center;
   gap: 0.35rem;
   font-size: 0.78rem;
-  color: var(--color-faint);
+  color: var(--color-reading-muted);
   text-decoration: none;
   max-width: 40%;
   transition: color var(--duration-fast) var(--ease-out);
