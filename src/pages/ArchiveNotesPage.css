@@ -48,7 +48,7 @@
   font-family: var(--font-sans);
   font-size: 0.85rem;
   line-height: 1.6;
-  color: var(--color-faint);
+  color: var(--color-reading-muted);
   max-width: 42rem;
   margin: 0.25rem 0 0;
 }
@@ -148,9 +148,9 @@
 }
 
 .archive-notes__cat-count {
-  font-size: 0.64rem;
+  font-size: 0.75rem;
   letter-spacing: 0.08em;
-  color: var(--color-faint);
+  color: var(--color-reading-muted);
   padding: 0.2rem 0.6rem;
   border: 1px solid var(--color-border);
   border-radius: 999px;
@@ -164,12 +164,11 @@
 }
 
 .archive-notes__cat-tag {
-  font-size: 0.6rem;
-  color: var(--color-faint);
+  font-size: 0.75rem;
+  color: var(--color-reading-muted);
   padding: 0.15rem 0.5rem;
   border: 1px solid var(--color-border);
   border-radius: 999px;
-  opacity: 0.7;
 }
 
 /* ── Featured / Latest notes ──────────────────── */
@@ -269,16 +268,16 @@
 }
 
 .archive-notes__note-chinese {
-  font-size: 0.72rem;
-  line-height: 1.4;
-  color: var(--color-faint);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--color-reading-muted);
   font-style: italic;
 }
 
 .archive-notes__note-excerpt {
-  font-size: 0.76rem;
-  line-height: 1.5;
-  color: var(--color-faint);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--color-reading-muted);
   margin: 0;
 }
 
@@ -286,8 +285,8 @@
   display: flex;
   align-items: center;
   gap: 0.3rem;
-  font-size: 0.65rem;
-  color: var(--color-faint);
+  font-size: 0.75rem;
+  color: var(--color-reading-muted);
   font-family: var(--font-sans);
 }
 
@@ -302,8 +301,8 @@
 }
 
 .archive-notes__note-tag-chip {
-  font-size: 0.6rem;
-  color: var(--color-faint);
+  font-size: 0.75rem;
+  color: var(--color-reading-muted);
   padding: 0.1rem 0.5rem;
   border: 1px solid var(--color-border);
   border-radius: 999px;
@@ -313,7 +312,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   color: var(--color-muted);
   margin-top: auto;
   padding-top: 0.3rem;

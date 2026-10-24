@@ -153,17 +153,3 @@
     display: none;
   }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .card-nav {
-    height: auto !important;
-    overflow: visible !important;
-  }
-
-  .card-nav-content {
-    visibility: visible !important;
-    pointer-events: auto !important;
-    position: relative !important;
-    top: auto !important;
-  }
-}

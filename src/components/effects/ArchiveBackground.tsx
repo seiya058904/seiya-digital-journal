@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import './ArchiveBackground.css'
 
 const Silk = lazy(() => import('./react-bits/Silk'))
@@ -6,16 +6,32 @@ const Silk = lazy(() => import('./react-bits/Silk'))
 const FADE_MS = 400
 
 export function ArchiveBackground({ hidden = false }: { hidden?: boolean }) {
-  const reducedMotion = useMemo(() => {
+  const [reducedMotion, setReducedMotion] = useState(() => {
     if (typeof window === 'undefined') return true
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  }, [])
+  })
 
-  const isMobile = useMemo(() => {
+  const [isMobile, setIsMobile] = useState(() => {
     if (typeof window === 'undefined') return true
     // Touch-only devices (phones, tablets) skip Silk entirely to save GPU/battery.
     // Desktops keep Silk pre-mounted for smooth background transitions.
     return window.matchMedia('(hover: none) and (pointer: coarse)').matches
+  })
+
+  useEffect(() => {
+    const motion = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const touch = window.matchMedia('(hover: none) and (pointer: coarse)')
+    const update = () => {
+      setReducedMotion(motion.matches)
+      setIsMobile(touch.matches)
+    }
+    update()
+    motion.addEventListener('change', update)
+    touch.addEventListener('change', update)
+    return () => {
+      motion.removeEventListener('change', update)
+      touch.removeEventListener('change', update)
+    }
   }, [])
 
   const [silkPausedInternal, setSilkPausedInternal] = useState(hidden)

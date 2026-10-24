@@ -538,7 +538,7 @@ main {
 
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 1.55fr) minmax(18rem, 0.45fr);
+  grid-template-columns: minmax(0, 1.55fr) minmax(19.75rem, 0.45fr);
   column-gap: clamp(2rem, 5vw, 5rem);
   align-items: center;
   min-height: 100svh;
@@ -682,7 +682,14 @@ main {
 }
 
 /* ProfileCard in Hero — reduced size */
+.hero-profile-card {
+  width: min(100%, 57.44svh, 315.92px);
+  min-width: 0;
+}
+
 .hero-profile-card .pc-card {
+  width: 100%;
+  height: auto;
   max-height: 440px;
 }
 
@@ -1815,6 +1822,10 @@ footer {
   .hero__copy { z-index: 3; }
   .hero h1 { max-width: 14ch; }
   .hero__subtitle { max-width: 35rem; }
+
+  .hero-profile-card {
+    max-width: 272.84px;
+  }
 
   .hero-profile-card .pc-card {
     max-height: 380px;
