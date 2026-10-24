@@ -78,7 +78,17 @@ test('Explore stays closed or open consistently across live motion preference ch
     const panel = page.locator('.card-nav-content')
     await trigger.waitFor()
     const checkClosed = async () => {
-      await page.waitForFunction(() => document.querySelector('.hamburger-menu')?.getAttribute('aria-expanded') === 'false')
+      // ARIA can commit before the reduced-motion CSS transition's next frame.
+      // Wait for the rendered closed state too; retain every assertion below.
+      await page.waitForFunction(() => {
+        const trigger = document.querySelector('.hamburger-menu')
+        const content = document.querySelector('.card-nav-content')
+        const nav = document.querySelector('.card-nav')
+        return trigger?.getAttribute('aria-expanded') === 'false'
+          && content?.getAttribute('aria-hidden') === 'true'
+          && getComputedStyle(content).visibility === 'hidden'
+          && nav?.getBoundingClientRect().height <= 61
+      }, undefined, { timeout: 3000 })
       assert.equal(await trigger.getAttribute('aria-expanded'), 'false')
       assert.equal(await panel.getAttribute('aria-hidden'), 'true')
       assert.equal(await panel.evaluate(e => getComputedStyle(e).visibility), 'hidden')
