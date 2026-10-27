@@ -24,7 +24,12 @@ jobs:
       - run: npm test
       - run: npm run lint
       - run: npm run build
-      - run: npx playwright install --with-deps chromium
+      - run: |
+          for i in 1 2 3; do
+            timeout 180 npx playwright install --with-deps chromium && break
+            [ "$i" = 3 ] && exit 1
+            sleep 5
+          done
       - name: Browser regressions with synthetic services
         env:
           VITE_SUPABASE_URL: https://synthetic.supabase.co
