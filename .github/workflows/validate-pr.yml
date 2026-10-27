@@ -2,6 +2,10 @@ name: Validate pull request
 
 on:
   pull_request:
+    paths-ignore:
+      - 'README.md'
+      - 'AGENTS.md'
+      - '**/readme-*'
 
 permissions:
   contents: read
