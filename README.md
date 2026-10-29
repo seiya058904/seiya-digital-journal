@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/readme-cover.svg" width="100%" alt="DIGITAL JOURNAL — illustrated project cover" />
+</p>
+
 <h1 align="center">✦ Seiya — Digital Growth Journal</h1>
 
 <p align="center">
@@ -134,7 +138,7 @@ The public pages use **hash-based navigation**, keeping deep links compatible wi
 
 Use a current **Node.js 22** release, matching the deployment workflow, and the committed lockfile. From the repository root:
 
-```bash id="vyn983"
+```bash
 npm ci
 npm run dev
 ```
@@ -146,7 +150,7 @@ Open the local Vite address, including the **`/seiya-digital-journal/`** base pa
 
 ### Verify the frontend
 
-```bash id="zy5yba"
+```bash
 npm test           # Node.js / TypeScript regressions
 npm run lint       # Oxlint
 npm run build      # TypeScript check + Vite production build
@@ -155,7 +159,7 @@ npm run preview    # Preview built output
 
 Browser regressions use Playwright Chromium and a running local Vite server. The repository's PR workflow starts Vite on `127.0.0.1:4178` before running:
 
-```bash id="18eqid"
+```bash
 npm run test:browser
 ```
 
@@ -176,7 +180,7 @@ npm run test:browser
 
 The Worker has its own dependency tree. For an authorized local review:
 
-```bash id="4qqdu6"
+```bash
 cd worker
 npm ci
 npm run typecheck
