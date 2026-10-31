@@ -65,7 +65,7 @@ Automated regressions in `tests/browser/` run with `npm run test:browser` using 
 
 Use the most appropriate tool:
 
-- **Browser plugin** — preferred for routine localhost checks, navigation, visual inspection, and exploratory testing.
+- **Ego Browser** — preferred for routine navigation, visual inspection, and exploratory testing when available; use another suitable browser tool if unavailable.
 - **Playwright** — use for repeatable E2E flows, regression tests, assertions, and important user paths.
 - **Chrome plugin** — use when the real Chrome profile, cookies, sessions, extensions, or logged-in state are required.
 - **Chrome DevTools** — use for console, network, rendering, memory, scrolling, or performance diagnosis.
@@ -108,5 +108,5 @@ Before editing, read the relevant files and state a brief plan. Make the smalles
 ## 浏览器测试依赖（固定版本）
 
 - Playwright 固定 1.64.1：playwright 已在 package.json 里精确锁定（不要写 ^、~ 或 latest），配套 chromium build 1248 位于 %LOCALAPPDATA%\ms-playwright。
-- 不要升级、降级或另装第二个 Playwright 版本，也不要把浏览器下载到别的目录或自行构建 Chromium。
-- 确需换版本时，先与其他使用 Playwright 的仓库统一到同一版本，再改本仓库并跑一次浏览器测试。
+- 不要擅自升级、降级或为本仓库另装第二个 Playwright 版本，也不要把浏览器下载到别的目录或自行构建 Chromium。
+- 确需换版本时，先取得本次依赖更新授权，核对本仓库及受影响工作流的兼容性，再运行相应浏览器回归；不要求其他仓库同步换版。
