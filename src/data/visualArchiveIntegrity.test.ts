@@ -131,8 +131,11 @@ test('gallery keeps confirmed lower-focused crops out of the standard crop group
   assert.match(strongShiftGroup, /object-position: center 64%/)
 })
 
-test('Claude instructions reference the image rules', () => {
-  const claude = readFileSync(resolve(ROOT_DIR, 'CLAUDE.md'), 'utf8')
-  assert.equal(claude.includes('visual-archive-entry-spec.md'), false)
-  assert.equal(claude.includes('image-rules.md'), true)
+test('Claude imports shared instructions with the current image rules', () => {
+  const entry = readFileSync(resolve(ROOT_DIR, 'CLAUDE.md'), 'utf8').trim()
+  assert.equal(entry, '@AGENTS.md')
+  const shared = readFileSync(resolve(ROOT_DIR, entry.slice(1)), 'utf8')
+  assert.equal(shared.includes('visual-archive-entry-spec.md'), false)
+  assert.equal(shared.includes('docs/image-rules.md'), true)
+  assert.equal(existsSync(resolve(ROOT_DIR, 'docs/image-rules.md')), true)
 })
