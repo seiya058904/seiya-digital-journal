@@ -4,6 +4,8 @@
 
 Seiya Digital Journal is a client-side journal SPA built with React 19, TypeScript, Vite 8, Framer Motion, GSAP, Three.js, and Supabase Auth. The frontend entry points are `src/main.tsx` and `src/App.tsx`; hash-based routing maps views such as Home, Archive, Gallery, Auth, Profile, and Motion Lab. The app is built to `dist/` and deployed to GitHub Pages under `/seiya-digital-journal/`. A separate Cloudflare Worker in `worker/` serves the authenticated API and talks to Supabase PostgreSQL with server-side credentials.
 
+The product is a personal digital journal about identity, growth, thoughts, interests and visual storytelling, presented as a restrained dark editorial magazine. Preserve that purpose; projects remain a deliberate Archive vault and a small external link rather than becoming the homepage's main portfolio section. Do not invent achievements, personal history, images, contact information or metrics; unknown URLs remain placeholders.
+
 ## Project Structure & Module Organization
 
 - `src/pages/` - page-level views, including the hash-routed app screens.
@@ -15,7 +17,9 @@ Seiya Digital Journal is a client-side journal SPA built with React 19, TypeScri
 - `supabase/migrations/` - tracked schema migrations.
 - `.github/workflows/deploy.yml` - GitHub Pages build and deploy workflow.
 - `scripts/` - local helper scripts.
-- `docs/` - supporting project documentation.
+- `docs/` - supporting project documentation; `docs/image-rules.md` governs Visual Archive entry format and evidence.
+
+`src/data/` is the content source of truth; do not hardcode personal content in components. Reuse `src/styles/tokens.css` semantic tokens and current co-located CSS, dark styling and reduced-motion behavior. Preserve TypeScript's `erasableSyntaxOnly` and `verbatimModuleSyntax` constraints. The absence of React StrictMode is deliberate for auth-effect behavior; do not change it incidentally.
 
 ## Architecture Notes
 
@@ -23,7 +27,26 @@ There is no React Router. `src/App.tsx` uses the pure `src/appRoute.ts` parser f
 
 `src/auth/authPersistence.ts` keeps temporary sessions in page-local memory. Persisted tokens and the `seiya-remember-me` marker share remembered-session ownership: a page staying temporary must not delete another tab's persisted session or marker. Explicit remembered-to-temporary transitions still clear persistence while retaining the page-local session.
 
-Before proposing database-level atomic comment rate limiting, read the accepted engineering trade-off in `CLAUDE.md`; it is intentionally deferred for this low-traffic personal project unless the user explicitly reopens it.
+## Auth, profile and interaction invariants
+
+- `profiles.display_name` is the canonical runtime identity; auth `user_metadata.display_name` is signup/legacy bootstrap input only. Comment authors use the canonical profile, and the existing database trigger keeps historical author names consistent. Preserve authenticated writes and server-only service-role credentials.
+- `ProfileContext.tsx` and `profileState.ts` reject obsolete reads/mutations using request, active-user and mount guards. Header profile loading shows a neutral skeleton; errors show a neutral placeholder, not a permanent skeleton or `avatar-01` pretending to be loaded.
+- Worker profile bootstrap is idempotent: select, conflict-safe insert (`resolution=ignore-duplicates`), then reselect the canonical row. Do not replace it with a race-prone select/insert/return sequence. Preserve CORS `PATCH` support and `Vary: Origin`, response/error contracts and shared frontend/Worker validators. Shared validators in `src/lib/` return discriminated success/error results rather than throwing; preserve that frontend/Worker contract.
+- Signing out from a protected view preserves the existing return-target clearing and route-guard behavior; correctness must not depend on awaiting `requestAnimationFrame`. Account popovers are not ARIA menus unless the complete menu keyboard pattern is implemented; avatar choices use a group with pressed buttons, not a partial listbox pattern.
+- The public Archive Like counter uses the `increment_like_counter` database function for atomic increments; the legacy `likes` table remains the source for existing profile statistics. Read the complete current `supabase/migrations/` set and verify actual remote application before authorized database work; a tracked migration is not proof it was applied.
+
+## Accepted Engineering Trade-off: comment rate limiting
+
+Reviewed on 2026-08-02: comment creation has a theoretical check-then-insert concurrency race around its per-user 10-second limit. Two requests may both pass; this does not bypass permissions or expose/damage existing data. The owner intentionally deferred a PostgreSQL RPC/migration/locking redesign because the benefit is small for this low-traffic journal. Do not reopen it solely as an abstract race. Reassess with an explicit user request, observed spam/duplicates, significant traffic, security-sensitive or billed comments, or reusable database atomic-operation infrastructure.
+
+## Content, assets and animation
+
+- Visual Archive ingestion keeps the established ownership workflow: user supplies the folder, Chinese filenames and identification/entries; the agent reviews format, converts to WebP, places files and thumbnails, then updates `src/data/visualArchive.ts`. Do not identify or guess image facts on the user's behalf. Use `docs/image-rules.md`; no private-machine skill path is required.
+- Preserve archive IDs and image/thumbnail paths. Image framing changes must stay consistent across `src/pages/ArchiveImagesPage.tsx`, its CSS and `src/pages/GalleryPage.css`; inspect the current modifier definitions rather than documenting transient coordinates or counts.
+- Notes use chapter cards for short text (150–500 words), optionally a mini contents list for 500–1200 words, and an article reading layout beyond 1200 words. Keep the Archive's glass tile style, existing label alignment, gradients and hover/3D behavior consistent with `src/components/effects/react-bits/GlassIcons.css`.
+- React Bits integration updates the component/CSS, `src/data/effects.ts`, and `src/components/lab/ReactBitsDemo.tsx`/CSS together. Raw `React bits/` references are local-only and may be absent; do not commit them. Preserve `integrationStatus` and homepage usage metadata. Heavy effects use the existing `HeavyEffectGate` where appropriate.
+- Framer Motion is primary; GSAP and Three.js retain their current scoped/lazy uses. Favor transform/opacity, preserve animation revisit behavior and reduced-motion/touch fallbacks, and avoid layout-property or large-filter animation. Give gallery images stable dimensions and lazy loading.
+- During effect ports, strip privacy-sensitive webcam/device-orientation features. Preserve the existing ban on `face-api`, `getUserMedia`, `modelsPath`, `DeviceOrientationEvent`, `enableWebcam` and `showPreview` in runtime source.
 
 ## Build, Test & Development Commands
 
@@ -55,7 +78,7 @@ Follow the existing code style: two-space indentation, single quotes, and no sem
 
 ## Testing & Verification
 
-Tests live beside the code as `*.test.ts` files under `src/` and use Node's built-in `node:test` and `node:assert/strict`. For code changes, run `npm test`, `npm run lint`, and `npm run build`; run the Worker typecheck and runtime tests when Worker code or shared Worker-imported code changes. For UI changes, manually check the relevant hash routes and responsive or reduced-motion behavior. Finish with `git status --short`, `git diff --stat`, and `git diff --check`.
+Tests live beside the code as `*.test.ts` files under `src/` and use Node's built-in `node:test` and `node:assert/strict`. TypeScript test imports must include the `.ts` extension for the Node strip-types runner. For code changes, run `npm test`, `npm run lint`, and `npm run build`; run the Worker typecheck and runtime tests when Worker code or shared Worker-imported code changes. For UI changes, manually check the relevant hash routes and responsive or reduced-motion behavior. Finish with `git status --short`, `git diff --stat`, and `git diff --check`.
 
 ## Browser Testing
 
