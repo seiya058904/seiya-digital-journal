@@ -178,6 +178,8 @@ npm run test:browser
 
 ### Worker checks and deployment
 
+Comment responses resolve current author names from `profiles` in one batch per page (up to 50 comments). The stored `comments.author_name` is a compatibility snapshot, used only for legacy rows whose profile is absent; failed profile reads do not silently fall back to stale names. After an insert commits, a failed author refresh still returns `201` with `Unknown author`, so clients confirm the saved comment without resubmitting it. A later list request resolves the current name. This read-time behavior needs no new database migration.
+
 The Worker has its own dependency tree. For an authorized local review:
 
 ```bash

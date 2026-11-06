@@ -86,6 +86,7 @@ const fakeProfile = {
 
 const fakeCommentRow = {
   id: 'comment-1',
+  user_id: 'user-1',
   author_name: 'Seiya',
   body: 'Hello archive',
   created_at: '2026-08-29T00:00:00Z',
@@ -154,7 +155,9 @@ describe('public endpoints', () => {
 
 describe('comment listing', () => {
   it('lists comments with mapped field names', async () => {
-    const calls = stubUpstream(() => jsonResponse([fakeCommentRow]))
+    const calls = stubUpstream((_request, url) => jsonResponse(
+      url.pathname === '/rest/v1/profiles' ? [fakeProfile] : [fakeCommentRow],
+    ))
 
     const response = await SELF.fetch(`https://example.com/api/comments?${TARGET_QUERY}`)
     expect(response.status).toBe(200)
@@ -164,7 +167,7 @@ describe('comment listing', () => {
       { id: 'comment-1', authorName: 'Seiya', body: 'Hello archive', createdAt: '2026-08-29T00:00:00Z' },
     ])
 
-    expect(calls).toHaveLength(1)
+    expect(calls).toHaveLength(2)
     expect(calls[0].url.searchParams.get('target_type')).toBe('eq.archive')
     expect(calls[0].url.searchParams.get('target_id')).toBe('eq.archive-stepper')
     expect(calls[0].url.searchParams.get('order')).toBe('created_at.desc')
