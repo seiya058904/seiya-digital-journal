@@ -34,6 +34,7 @@ type AuthenticatedUser = {
 
 type CommentRow = {
   id: string
+  user_id: string
   author_name: string
   body: string
   created_at: string
@@ -114,7 +115,16 @@ export default {
         const commentBody = parseCommentBody(body.body)
 
         await enforceCommentRateLimit(env, user.id)
-        const comment = await createComment(env, user.id, profile.display_name, target, commentBody)
+        const saved = await createComment(env, user.id, profile.display_name, target, commentBody)
+        let comment: CommentRow
+        try {
+          comment = (await resolveCommentAuthors(env, [saved]))[0]
+        } catch {
+          // The insert already committed. A display-name read must not turn it
+          // into a failed-looking write that the caller might submit again.
+          console.warn(JSON.stringify({ event: 'comment_author_refresh_failed' }))
+          comment = { ...saved, author_name: 'Unknown author' }
+        }
 
         return json({
           ok: true,
@@ -444,7 +454,7 @@ function buildProfileResponse(user: AuthenticatedUser, profile: ProfileRow, stat
 
 async function listComments(env: Env, target: typeof ARCHIVE_STEPPER_TARGET, limit: number): Promise<CommentRow[]> {
   const params = new URLSearchParams({
-    select: 'id,author_name,body,created_at',
+    select: 'id,user_id,author_name,body,created_at',
     target_type: `eq.${target.targetType}`,
     target_id: `eq.${target.targetId}`,
     status: 'eq.published',
@@ -453,7 +463,27 @@ async function listComments(env: Env, target: typeof ARCHIVE_STEPPER_TARGET, lim
   })
 
   const response = await restFetch<CommentRow[]>(env, `/comments?${params.toString()}`)
-  return response
+  return resolveCommentAuthors(env, response)
+}
+
+async function resolveCommentAuthors(env: Env, rows: CommentRow[]): Promise<CommentRow[]> {
+  if (rows.length === 0) return rows
+
+  // comments.user_id references auth.users, not profiles: PostgREST cannot
+  // embed profiles here without a new FK. Resolve the bounded page in one
+  // request instead of making an extra query for every comment.
+  const userIds = [...new Set(rows.map((row) => row.user_id))]
+  const params = new URLSearchParams({
+    select: 'user_id,display_name',
+    user_id: `in.(${userIds.join(',')})`,
+  })
+  const profiles = await restFetch<Array<Pick<ProfileRow, 'user_id' | 'display_name'>>>(
+    env, `/profiles?${params.toString()}`,
+  )
+  const names = new Map(profiles.map((profile) => [profile.user_id, profile.display_name]))
+  // The stored name is only a legacy snapshot for rows with no profile.
+  // A failed profile query propagates; it must not silently serve stale names.
+  return rows.map((row) => ({ ...row, author_name: names.get(row.user_id) ?? row.author_name }))
 }
 
 async function createComment(

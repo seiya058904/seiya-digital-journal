@@ -10,7 +10,7 @@ for (const viewport of [{ width: 1280, height: 900 }, { width: 390, height: 844 
       const browser = await chromium.launch()
       const page = await browser.newPage({ viewport, reducedMotion })
       page.setDefaultTimeout(15000)
-      let posts = 0, fail = false
+      let posts = 0, profileWrites = 0, fail = false
       const errors = []
       page.on('pageerror', error => errors.push(error.message))
       try {
@@ -20,10 +20,11 @@ for (const viewport of [{ width: 1280, height: 900 }, { width: 390, height: 844 
           if (request.method() === 'OPTIONS') return route.fulfill({ status: 204, headers: cors, body: '' })
           if (url.startsWith('https://synthetic.supabase.co/')) return route.fulfill({ headers: cors, json: { access_token: 'synthetic-access', refresh_token: 'synthetic-refresh', token_type: 'bearer', expires_in: 3600, user } })
           if (url.startsWith('https://api.example.invalid/')) {
+            if (url.includes('/profile/') && ['POST', 'PUT', 'PATCH'].includes(request.method())) profileWrites++
             if (url.includes('/api/comments') && request.method() === 'POST') {
               posts++
               assert.equal(request.headers().authorization, 'Bearer synthetic-access')
-              return route.fulfill({ headers: cors, status: fail ? 503 : 200, json: fail ? { ok: false, error: { code: 'TEST_FAILURE', message: 'Synthetic comment failure' } } : { ok: true, data: { id: 'synthetic-comment' } } })
+              return route.fulfill({ headers: cors, status: fail ? 503 : 201, json: fail ? { ok: false, error: { code: 'TEST_FAILURE', message: 'Synthetic comment failure' } } : { ok: true, data: { id: 'synthetic-comment', authorName: 'Unknown author', body: 'Synthetic browser thought', createdAt: '2026-11-06T00:00:00Z' } } })
             }
             return route.fulfill({ headers: cors, json: { ok: true, data: url.includes('/profile/') ? { profile: { displayName: 'Synthetic', avatarKey: 'avatar-01', email: user.email, memberSince: user.created_at }, stats: { comments: 0, likes: 0 } } : url.includes('likes') ? { count: 0 } : [] } })
           }
@@ -47,6 +48,7 @@ for (const viewport of [{ width: 1280, height: 900 }, { width: 390, height: 844 
         await stepper.getByRole('button', { name: 'Complete', exact: true }).click()
         await page.getByText('Comment published.', { exact: true }).waitFor()
         assert.equal(posts, 1)
+        assert.equal(profileWrites, 0, 'A committed comment with a temporary author placeholder must not update the profile')
         assert.equal(await page.evaluate(() => sessionStorage.getItem('archive-stepper-step')), '1')
         await stepper.getByRole('button', { name: 'Continue', exact: true }).waitFor()
         assert.equal(await page.getByRole('heading', { name: 'Welcome to the journal.' }).isVisible(), true)
@@ -63,6 +65,7 @@ for (const viewport of [{ width: 1280, height: 900 }, { width: 390, height: 844 
         await page.goto(base + '#/archive')
         await stepper.getByRole('button', { name: 'Continue', exact: true }).waitFor()
         assert.equal(posts, 3)
+        assert.equal(profileWrites, 0)
         await page.reload()
         await stepper.getByRole('button', { name: 'Continue', exact: true }).waitFor()
         await page.getByRole('button', { name: 'Go to step 3', exact: true }).click()
