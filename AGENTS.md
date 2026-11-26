@@ -21,4 +21,4 @@ npm run test:browser
 ## Security & Authorization
 - Never read, print, or commit `.env`, `.env.local`, `.dev.vars`, or expose `SUPABASE_SERVICE_ROLE_KEY` / `SUPABASE_SECRET_KEY` to the frontend.
 - Read all `supabase/migrations/` and verify actual remote application before any authorized DB work.
-- Explicit authorization is required before commits, pushes (pushing `main` triggers `.github/workflows/deploy.yml`), deploys, migrations, DB writes, releases, tags, dependency installs, auto-fixes, or whole-repo formatting.
+- Pushing `main` triggers `.github/workflows/deploy.yml`. Local commits, migrations, DB writes, tags, dependency installs, auto-fixes, and whole-repo formatting also require explicit authorization.
