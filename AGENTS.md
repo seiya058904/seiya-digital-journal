@@ -1,135 +1,24 @@
 # Repository Guidelines
 
-## Project Overview
+## Scope & Architecture Invariants
+- Personal journal identity; projects belong in the Archive vault (not main homepage portfolio). Never invent achievements, history, images, contacts, or metrics; keep unknown URLs as placeholders.
+- `src/data/` is the content source of truth; Visual Archive ingestion rules live in `docs/image-rules.md` (owner supplies folder/Chinese names/IDs; agent converts WebP and updates `src/data/visualArchive.ts` without guessing).
+- **Intentional omissions**: React `<StrictMode>` is intentionally absent in `src/main.tsx`; no React Router — keep `src/appRoute.ts` hash routes stable and use `import.meta.env.BASE_URL` for `/seiya-digital-journal/` assets.
+- **Unenforced Worker/UI invariants**: keep Worker profile bootstrap idempotent (`resolution=ignore-duplicates` in `worker/src/index.ts`); the 2026-08-02 comment rate-limit check-then-insert race trade-off is accepted; header profile errors must show a neutral placeholder (not `avatar-01`); keep AccountMenu popover ARIA (`aria-pressed` avatar group) intact.
+- **Privacy hard ban**: when porting effects, strip webcam/orientation features; never introduce `face-api`, `getUserMedia`, `modelsPath`, `DeviceOrientationEvent`, `enableWebcam`, or `showPreview` in runtime source.
 
-Seiya Digital Journal is a client-side journal SPA built with React 19, TypeScript, Vite 8, Framer Motion, GSAP, Three.js, and Supabase Auth. The frontend entry points are `src/main.tsx` and `src/App.tsx`; hash-based routing maps views such as Home, Archive, Gallery, Auth, Profile, and Motion Lab. The app is built to `dist/` and deployed to GitHub Pages under `/seiya-digital-journal/`. A separate Cloudflare Worker in `worker/` serves the authenticated API and talks to Supabase PostgreSQL with server-side credentials.
-
-The product is a personal digital journal about identity, growth, thoughts, interests and visual storytelling, presented as a restrained dark editorial magazine. Preserve that purpose; projects remain a deliberate Archive vault and a small external link rather than becoming the homepage's main portfolio section. Do not invent achievements, personal history, images, contact information or metrics; unknown URLs remain placeholders.
-
-## Project Structure & Module Organization
-
-- `src/pages/` - page-level views, including the hash-routed app screens.
-- `src/components/` - shared UI, effects, sections, profile pieces, and Motion Lab demos.
-- `src/data/` - editable journal, project, link, avatar, effect, and Visual Archive content.
-- `src/auth/`, `src/profile/`, `src/lib/`, and `src/worker/` - auth state, profile state, shared validation, API helpers, and worker-related helpers.
-- `public/` and `src/assets/` - static and imported assets used by the frontend.
-- `worker/src/index.ts` - Cloudflare Worker API entrypoint; `worker/` has its own package and typecheck.
-- `supabase/migrations/` - tracked schema migrations.
-- `.github/workflows/deploy.yml` - GitHub Pages build and deploy workflow.
-- `scripts/` - local helper scripts.
-- `docs/` - supporting project documentation; `docs/image-rules.md` governs Visual Archive entry format and evidence.
-
-`src/data/` is the content source of truth; do not hardcode personal content in components. Reuse `src/styles/tokens.css` semantic tokens and current co-located CSS, dark styling and reduced-motion behavior. Preserve TypeScript's `erasableSyntaxOnly` and `verbatimModuleSyntax` constraints. The absence of React StrictMode is deliberate for auth-effect behavior; do not change it incidentally.
-
-## Architecture Notes
-
-There is no React Router. `src/App.tsx` uses the pure `src/appRoute.ts` parser for `location.hash` and preserves existing hashes such as `#/`, `#/auth`, `#/profile`, `#/lab`, `#/archive/*`, and `#/gallery`. Keep those routes stable unless the user explicitly asks for a routing change. The frontend uses `AuthProvider` and `ProfileProvider`, then calls the Worker API. The Worker validates Supabase access tokens and performs database writes with server-side credentials; do not move those credentials into frontend code. Vite uses the base path `/seiya-digital-journal/`, so public URLs should use `import.meta.env.BASE_URL` where appropriate.
-
-`src/auth/authPersistence.ts` keeps temporary sessions in page-local memory. Persisted tokens and the `seiya-remember-me` marker share remembered-session ownership: a page staying temporary must not delete another tab's persisted session or marker. Explicit remembered-to-temporary transitions still clear persistence while retaining the page-local session.
-
-## Auth, profile and interaction invariants
-
-- `profiles.display_name` is the canonical runtime identity; auth `user_metadata.display_name` is signup/legacy bootstrap input only. Comment responses resolve profiles in a bounded batch. The stored `author_name` and existing synchronization trigger remain compatibility snapshots for legacy rows without profiles, not the authority for current names. After a comment commits, an author-refresh failure must preserve the successful response and use a neutral placeholder instead of encouraging duplicate submission. Preserve authenticated writes and server-only service-role credentials.
-- `ProfileContext.tsx` and `profileState.ts` reject obsolete reads/mutations using request, active-user and mount guards. Header profile loading shows a neutral skeleton; errors show a neutral placeholder, not a permanent skeleton or `avatar-01` pretending to be loaded.
-- Worker profile bootstrap is idempotent: select, conflict-safe insert (`resolution=ignore-duplicates`), then reselect the canonical row. Do not replace it with a race-prone select/insert/return sequence. Preserve CORS `PATCH` support and `Vary: Origin`, response/error contracts and shared frontend/Worker validators. Shared validators in `src/lib/` return discriminated success/error results rather than throwing; preserve that frontend/Worker contract.
-- Signing out from a protected view preserves the existing return-target clearing and route-guard behavior; correctness must not depend on awaiting `requestAnimationFrame`. Account popovers are not ARIA menus unless the complete menu keyboard pattern is implemented; avatar choices use a group with pressed buttons, not a partial listbox pattern.
-- The public Archive Like counter uses the `increment_like_counter` database function for atomic increments; the legacy `likes` table remains the source for existing profile statistics. Read the complete current `supabase/migrations/` set and verify actual remote application before authorized database work; a tracked migration is not proof it was applied.
-
-## Accepted Engineering Trade-off: comment rate limiting
-
-Reviewed on 2026-08-02: comment creation has a theoretical check-then-insert concurrency race around its per-user 10-second limit. Two requests may both pass; this does not bypass permissions or expose/damage existing data. The owner intentionally deferred a PostgreSQL RPC/migration/locking redesign because the benefit is small for this low-traffic journal. Do not reopen it solely as an abstract race. Reassess with an explicit user request, observed spam/duplicates, significant traffic, security-sensitive or billed comments, or reusable database atomic-operation infrastructure.
-
-## Content, assets and animation
-
-- Visual Archive ingestion keeps the established ownership workflow: user supplies the folder, Chinese filenames and identification/entries; the agent reviews format, converts to WebP, places files and thumbnails, then updates `src/data/visualArchive.ts`. Do not identify or guess image facts on the user's behalf. Use `docs/image-rules.md`; no private-machine skill path is required.
-- Preserve archive IDs and image/thumbnail paths. Image framing changes must stay consistent across `src/pages/ArchiveImagesPage.tsx`, its CSS and `src/pages/GalleryPage.css`; inspect the current modifier definitions rather than documenting transient coordinates or counts.
-- Notes use chapter cards for short text (150–500 words), optionally a mini contents list for 500–1200 words, and an article reading layout beyond 1200 words. Keep the Archive's glass tile style, existing label alignment, gradients and hover/3D behavior consistent with `src/components/effects/react-bits/GlassIcons.css`.
-- React Bits integration updates the component/CSS, `src/data/effects.ts`, and `src/components/lab/ReactBitsDemo.tsx`/CSS together. Raw `React bits/` references are local-only and may be absent; do not commit them. Preserve `integrationStatus` and homepage usage metadata. Heavy effects use the existing `HeavyEffectGate` where appropriate.
-- Framer Motion is primary; GSAP and Three.js retain their current scoped/lazy uses. Favor transform/opacity, preserve animation revisit behavior and reduced-motion/touch fallbacks, and avoid layout-property or large-filter animation. Give gallery images stable dimensions and lazy loading.
-- During effect ports, strip privacy-sensitive webcam/device-orientation features. Preserve the existing ban on `face-api`, `getUserMedia`, `modelsPath`, `DeviceOrientationEvent`, `enableWebcam` and `showPreview` in runtime source.
-
-## Build, Test & Development Commands
-
+## Commands & Verification
 ```powershell
-npm ci
-npm run dev
-npm test
+npm test && npm run lint && npm run build
+cd worker && npm run typecheck && npm test
 npm run test:browser
-npm run lint
-npm run build
-npm run preview
-cd worker; npm ci; npm run typecheck; npm test
 ```
+- `npm test` uses `--experimental-strip-types`: keep `.ts` extensions in test/shared imports. Editing `worker/` or shared `src/lib/{interactions,profile}.ts` / `src/worker/cors.ts` requires running Worker checks.
+- `npm run test:browser` does **not** start Vite: start preview/dev at `127.0.0.1:4178` with the synthetic-service env from `.github/workflows/validate-pr.yml` (default path `/seiya-digital-journal/`, override via `TEST_BASE_URL`).
+- **Playwright pin**: keep `playwright` exact `1.64.1` in `package.json` with Chromium build `1248` in `%LOCALAPPDATA%\ms-playwright`; never upgrade, downgrade, or download another browser without explicit dependency authorization.
+- **Formatting**: 2 spaces, single quotes, no semicolons, colocated plain CSS. Note `.gitignore` ignores `scripts/` (existing `scripts/trace-image.mjs` is force-tracked).
 
-- `npm ci` installs root dependencies from `package-lock.json`.
-- `npm run dev` starts the Vite development server.
-- `npm test` runs the Node built-in test runner against `src/**/*.test.ts`.
-- `npm run test:browser` runs the browser regressions described below.
-- `npm run lint` runs Oxlint.
-- `npm run build` runs the TypeScript build check and Vite production build.
-- `npm run preview` previews the production build locally.
-- `cd worker; npm ci; npm run typecheck; npm test` typechecks and tests the Worker project.
-
-Deployment, publish, migration, database write, commit, push, release, and tag operations require explicit user authorization. The GitHub Pages workflow in `.github/workflows/deploy.yml` runs on pushes to `main`; do not trigger it implicitly.
-
-## Coding Style & Naming Conventions
-
-Follow the existing code style: two-space indentation, single quotes, and no semicolons. React components use `PascalCase`; functions and variables use `camelCase`. Keep TypeScript strictness intact, avoid unused code, and preserve the current dark theme, reduced-motion behavior, touch support, and hash routes. Prefer colocated plain CSS and the dependencies already in the repo.
-
-## Testing & Verification
-
-Tests live beside the code as `*.test.ts` files under `src/` and use Node's built-in `node:test` and `node:assert/strict`. TypeScript test imports must include the `.ts` extension for the Node strip-types runner. For code changes, run `npm test`, `npm run lint`, and `npm run build`; run the Worker typecheck and runtime tests when Worker code or shared Worker-imported code changes. For UI changes, manually check the relevant hash routes and responsive or reduced-motion behavior. Finish with `git status --short`, `git diff --stat`, and `git diff --check`.
-
-## Browser Testing
-
-For changes affecting web UI, routing, interaction, responsiveness, or runtime behavior, perform real browser verification before declaring completion.
-
-Automated regressions in `tests/browser/` run with `npm run test:browser` using Playwright Chromium. Use the synthetic-service setup in `.github/workflows/validate-pr.yml` and start Vite at `127.0.0.1:4178`; the runner does not start the server. Its default URL is `/seiya-digital-journal/` on that origin; `TEST_BASE_URL` overrides it.
-
-Use the most appropriate tool:
-
-- **Ego Browser** — preferred for routine navigation, visual inspection, and exploratory testing when available; use another suitable browser tool if unavailable.
-- **Playwright** — use for repeatable E2E flows, regression tests, assertions, and important user paths.
-- **Chrome plugin** — use when the real Chrome profile, cookies, sessions, extensions, or logged-in state are required.
-- **Chrome DevTools** — use for console, network, rendering, memory, scrolling, or performance diagnosis.
-- **Computer Use** — use only when native OS interaction is required.
-
-Prefer real user flows over injected state, modified storage, hidden routes, or DOM manipulation.
-
-When relevant, verify the affected flow, routing/refresh behavior, representative desktop and mobile sizes, console errors, failed resources, and the deployed site when localhost may differ from production.
-
-A successful build or passing unit tests do not prove browser behavior is correct.
-
-If a bug is found, reproduce it, fix the root cause, and rerun the failing path. Add a Playwright regression test when recurrence would be costly.
-
-Keep testing proportional to risk; do not run every browser tool unnecessarily.
-
-Never claim browser verification passed unless the required flow was actually executed successfully.
-
-## Commit & Pull Request Guidelines
-
-Recent history uses short Conventional Commit subjects such as `feat:`, `fix:`, `perf:`, `refactor:`, `docs:`, and `chore:`. Keep each change focused on one purpose. PR or change notes should describe the behavior change and the verification performed. Include screenshots when a UI change needs visual review. Do not include `dist/`, `node_modules/`, logs, caches, temporary files, raw source-image folders, or unrelated changes.
-
-## Security & Configuration
-
-Never read, print, commit, or copy values from `.env`, `.env.local`, `.dev.vars`, or other local environment files. Do not expose `SUPABASE_SERVICE_ROLE_KEY` or any other server-side secret to the client. Do not commit secrets, tokens, passwords, private keys, database connection strings, logs, caches, or generated artifacts. Before changing authentication, permissions, database schema or data, production configuration, signing, or billing, explain the risk and obtain authorization.
-
-## Agent-Specific Instructions
-
-Before editing, read the relevant files and state a brief plan. Make the smallest reviewable change, preserve unrelated user work, and reuse existing helpers and dependencies. Do not invent commands, routes, APIs, or deployment steps. Do not install dependencies, run auto-fixes, or format the whole repository without permission. Stop and explain the risk when requirements or repository state are unclear. Report failed or skipped checks honestly. Commit, push, deploy, publish, release, tag, and database operations always require explicit authorization.
-
-## Pre-Commit Checklist
-
-- Check `git status --short`.
-- Check `git diff --stat`.
-- Check `git diff --check`.
-- Confirm only the intended files changed.
-- Confirm no secrets, debug logs, caches, or generated artifacts were added.
-- Confirm required tests and checks ran, or clearly state what was skipped.
-- Confirm commit or push only after explicit user authorization.
-
-## 浏览器测试依赖（固定版本）
-
-- Playwright 固定 1.64.1：playwright 已在 package.json 里精确锁定（不要写 ^、~ 或 latest），配套 chromium build 1248 位于 %LOCALAPPDATA%\ms-playwright。
-- 不要擅自升级、降级或为本仓库另装第二个 Playwright 版本，也不要把浏览器下载到别的目录或自行构建 Chromium。
-- 确需换版本时，先取得本次依赖更新授权，核对本仓库及受影响工作流的兼容性，再运行相应浏览器回归；不要求其他仓库同步换版。
+## Security & Authorization
+- Never read, print, or commit `.env`, `.env.local`, `.dev.vars`, or expose `SUPABASE_SERVICE_ROLE_KEY` / `SUPABASE_SECRET_KEY` to the frontend.
+- Read all `supabase/migrations/` and verify actual remote application before any authorized DB work.
+- Explicit authorization is required before commits, pushes (pushing `main` triggers `.github/workflows/deploy.yml`), deploys, migrations, DB writes, releases, tags, dependency installs, auto-fixes, or whole-repo formatting.
